@@ -1,10 +1,13 @@
 {
   "name": "little-daiko",
-  "version": "1.0.0",
-  "description": "\"mildom chat-scraping discord bot\"",
+  "version": "0.1.0",
+  "description": "mildom chat-scraping discord bot",
   "main": "index.js",
+  
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "npm run index",
+    "index": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +26,7 @@
   "homepage": "https://github.com/FomTarro/little-daiko#readme",
   "dependencies": {
     "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
     "uuid": "^8.3.2",
     "ws": "^7.5.2"
   }

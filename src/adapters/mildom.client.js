@@ -12,7 +12,7 @@ function getLiveInfo(url){
 async function getServerInfo(roomId){
     const url = new URL(serverUrl);
     url.searchParams.append("room_id", roomId);
-    console.log(url);
+    //console.log(url);
     const promise = new Promise(function(resolve, reject){
         const req = https.get(url, res => {
             console.log(`GET statusCode: ${res.statusCode}`)
@@ -36,7 +36,7 @@ async function getServerInfo(roomId){
     return promise;  
 }
 
-async function getListener(roomId){
+async function getListener(roomId, messageHandler){
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
 
@@ -51,12 +51,12 @@ async function getListener(roomId){
     url.searchParams.append("__la", "ja")
     url.searchParams.append("__sfr", "pc")
 
-    console.log(url);
+    //console.log(url);
 
     const serverInfo = await getServerInfo(roomId);
     if(serverInfo['wss_server']){
         const wsUrl = `wss://${serverInfo['wss_server']}?roomId=${roomId}`;
-        console.log(wsUrl);
+        //console.log(wsUrl);
         const socket = new ws(wsUrl);
         socket.on('open', function open() {
             console.log('open!');
@@ -77,16 +77,24 @@ async function getListener(roomId){
                 switch(dataStruct.cmd)
                 {
                     case "onChat":
-                        const messageStruct = {
+                        messageHandler({
                             userName: dataStruct.userName,
-                            message: dataStruct.msg
-                        }
-                        console.log(messageStruct);
+                            userId: dataStruct.userId,
+                            userImg: dataStruct.userImg,
+                            message: dataStruct.msg,
+                            time: dataStruct.time,
+                        });
+                        break;
+                    case "onLiveEnd":
+                        console.log("Live has ended, closing socket! Thank you for watching!");
+                        socket.close();
                         break;
                 }
             }
         });
     }
 }
-getListener(10203132)
-//getListener(10882672);
+// getListener(10203132, (m) => console.log(m))
+// //getListener(10882672);
+
+module.exports.ChatListener = getListener;
