@@ -1,0 +1,29 @@
+{
+  "name": "little-daiko",
+  "version": "1.0.0",
+  "description": "\"mildom chat-scraping discord bot\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FomTarro/little-daiko.git"
+  },
+  "keywords": [
+    "mildom",
+    "discord",
+    "bot"
+  ],
+  "author": "Tom \"Skeletom\" Farro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FomTarro/little-daiko/issues"
+  },
+  "homepage": "https://github.com/FomTarro/little-daiko#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "uuid": "^8.3.2",
+    "ws": "^7.5.2"
+  }
+}
