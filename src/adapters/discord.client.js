@@ -3,9 +3,20 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 
-client.on('ready', () => {
-	console.log(`Logged in as ${client.user.tag}!`);
-});
+function initialize(onLogin){
+    client.on('ready', () => {
+        console.log(`Logged in as ${client.user.tag}!`);
+        client.guilds.cache.forEach(guild => {
+            console.log(`${guild.name} | ${guild.id}`);
+        })
+        onLogin();
+    });
+    client.login(AppConfig.DISCORD_BOT_TOKEN);
+}
+
+function sendMessage(channelName, message){
+    client.channels.cache.find(i => i.name === channelName).send(generateEmbed(message));
+}
 
 function generateEmbed(message){
     // 0 sets the date to epoch
@@ -17,5 +28,6 @@ function generateEmbed(message){
     .setTimestamp(date)
 }
 
-module.exports.Bot = client;
-module.exports.GenerateEmbed = generateEmbed;
+module.exports.initialize = initialize;
+module.exports.sendMessage = sendMessage;
+module.exports.generateEmbed = generateEmbed;

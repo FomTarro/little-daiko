@@ -14,6 +14,7 @@ const appConfig = {
     get MILDOM_CLIENT(){ return require('./src/adapters/mildom.client')},
     get DISCORD_CLIENT(){ return require('./src/adapters/discord.client')},
     get PROFILES(){ return require('./src/models/profiles')},
+    get LANGUAGES(){ return require('./src/models/languages')},
 }
 
 module.exports.AppConfig = appConfig;

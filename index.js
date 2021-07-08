@@ -2,17 +2,20 @@ const { AppConfig } = require('./app.config');
 
 async function main(){
 
-    const bot = AppConfig.DISCORD_CLIENT.Bot
-    bot.login(AppConfig.DISCORD_BOT_TOKEN);
+    AppConfig.DISCORD_CLIENT.initialize(() => { console.log(`:^)`) });
 
     const profile = AppConfig.PROFILES.debug;
-    AppConfig.MILDOM_CLIENT.ChatListener(profile.streamer, (m) => {
+    const language = AppConfig.LANGUAGES.ENGLISH;
+    const startEpoch = Date.parse(new Date());
+    AppConfig.MILDOM_CLIENT.startListener(profile.streamer, (m) => {
         if(m.userId == profile.streamer 
-        || (profile.users.includes(m.userId) && m.message.startsWith('[EN]'))){
-            console.log(m);
-            bot.channels.cache.find(i => i.name === profile.channel).send(AppConfig.DISCORD_CLIENT.GenerateEmbed(m));
+        || (profile.users.includes(m.userId) && m.message.startsWith(language))){
+            if(m.time > startEpoch){
+                console.log(m);
+                AppConfig.DISCORD_CLIENT.sendMessage(profile.channel, m);
+            }
         }
     });
 }
 
-main();
+//main();
