@@ -35,10 +35,10 @@ async function getServerInfo(roomId){
     //console.log(url);
     const promise = new Promise(function(resolve, reject){
         const req = https.get(url, res => {
-            console.log(`GET statusCode: ${res.statusCode}`)
+            console.log(`GET Server Info status code: ${res.statusCode}`)
             res.on('data', d => {
                 if(res.statusCode != 200){
-                    reject(`bad status code: [${res.statusCode}]`);
+                    reject(`Bad status code: [${res.statusCode}]`);
                     return;
                 }else{
                     resolve(d);

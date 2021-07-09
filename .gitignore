@@ -106,11 +106,4 @@ dist
 .DS_Store
 .env
 
-.sass-cache/
-
-tools/credentials/
-tools/client_secret.json
-tools/out.json
-tools/out2.json
-tools/video-list.csv
-tools/video-list-new.csv
+data/

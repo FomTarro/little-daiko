@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "mildom chat-scraping discord bot",
   "main": "index.js",
-  
   "scripts": {
     "test": "test",
     "start": "npm run index",
@@ -27,6 +26,7 @@
   "dependencies": {
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
+    "enmap": "^5.8.6",
     "uuid": "^8.3.2",
     "ws": "^7.5.2"
   }
