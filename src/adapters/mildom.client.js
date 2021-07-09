@@ -5,29 +5,6 @@ const WebSocket = require('ws');
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
 
-async function getLiveInfo(url){
-    const promise = new Promise(function(resolve, reject){
-        const req = https.get(url, res => {
-            console.log(`GET statusCode: ${res.statusCode}`)
-            res.on('data', d => {
-                if(res.statusCode != 200){
-                    reject(`bad status code: [${res.statusCode}]`);
-                    return;
-                }else{
-                    resolve(d);
-                }
-            });
-        });
-            
-        req.on('error', error => {
-            reject(error.toString());
-        });
-        
-        req.end();
-    }).then((d) => { return JSON.parse(d.toString()) }).catch((error) => { console.error(error); return {} });
-
-    return promise;  
-}
 
 async function getServerInfo(roomId){
     const url = new URL(serverUrl);
@@ -117,6 +94,22 @@ async function startListener(roomId, onChatMessage){
                 }
             }
         });
+        return new ChatListener(roomId, ws);
     }
 }
+
+class ChatListener{
+    constructor(roomId, webSocket){
+        this.roomId = roomId;
+        this.webSocket = webSocket;
+    }
+
+    stopListener(){
+        if(this.webSocket){
+            this.webSocket.close();
+        }
+    }
+}
+
 module.exports.startListener = startListener;
+module.exports.ChatListener = ChatListener;
