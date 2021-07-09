@@ -11,10 +11,16 @@ const appConfig = {
     get RATE_LIMIT_MAX_REQUESTS(){return process.env.rate_limit_max_requests || 100;},
     get DISCORD_BOT_TOKEN(){return process.env.discord_bot_token},
 
-    get MILDOM_CLIENT(){ return require('./src/adapters/mildom.client')},
-    get DISCORD_CLIENT(){ return require('./src/adapters/discord.client')},
+    get MILDOM_CLIENT(){ return require('./src/adapters/mildom/mildom.client')},
+    get DISCORD_CLIENT(){ return require('./src/adapters/discord/discord.client')},
+    get DISCORD_HELPERS(){ return require('./src/adapters/discord/discord.helpers')},
+
+    get CONFIG_STORAGE(){ return require('./src/persistence/config.storage')},
+
     get PROFILES(){ return require('./src/models/profiles')},
     get LANGUAGES(){ return require('./src/models/languages')},
+    get EVENTS(){ return require('./src/models/event')},
+    get COMMANDS(){ return require('./src/models/command')},
 }
 
 module.exports.AppConfig = appConfig;
