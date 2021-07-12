@@ -22,12 +22,11 @@ function getProperty(subject, property){
 }
 
 function getAllProperties(subject){
-    return [... Object.entries(getGuildConfig(subject))];
+    return [...Object.entries(getGuildConfig(subject))];
 }
 
 function setProperty(subject, property, value){
-    console.log(DiscordHelpers.getGuildId(subject));
-    schema.set(DiscordHelpers.getGuildId(subject), value, property);
+    return schema.set(DiscordHelpers.getGuildId(subject), value, property);
 }
 
 function getGuildConfig(subject){

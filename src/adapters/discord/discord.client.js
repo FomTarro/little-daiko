@@ -3,12 +3,14 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 
-function initialize(onLogin){
+function initialize(onLogin, onException){
 
     const events = AppConfig.EVENTS;
     events.forEach((callback, event) => {
-        client.on(event, callback);
-    })
+        client.on(event, (input) => {
+            callback(input, onException);
+        });
+    });
 
     // client.on("message", async (message) => {
     //     // Skip processing messages from DMs and other bots

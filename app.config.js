@@ -16,6 +16,7 @@ const appConfig = {
     get DISCORD_HELPERS(){ return require('./src/adapters/discord/discord.helpers')},
 
     get CONFIG_STORAGE(){ return require('./src/persistence/config.storage')},
+    get LISTENER_STORAGE(){ return require('./src/persistence/listener.storage')},
 
     get PROFILES(){ return require('./src/models/profiles')},
     get LANGUAGES(){ return require('./src/models/languages')},

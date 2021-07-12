@@ -2,10 +2,10 @@ const { AppConfig } = require('../../app.config');
 const DiscordHelpers = AppConfig.DISCORD_HELPERS;
 
 const events = new Map([
-    ["guildDelete", async (input) => {
-        AppConfig.CONFIG_STORAGE.deleteGuildConfig(input);
+    ["guildDelete", async (input, onError) => {
+        return AppConfig.CONFIG_STORAGE.deleteGuildConfig(input);
     }],
-    ["message", async (message) => { 
+    ["message", async (message, onError) => { 
         if(DiscordHelpers.isDm(message) || DiscordHelpers.isBot(message)){
             return;
         }
@@ -19,7 +19,11 @@ const events = new Map([
         AppConfig.COMMANDS.forEach(entry => {
             if(entry.aliases.includes(command) 
             && entry.permissions(message, role)){
-                entry.callback(message, args);
+                entry.callback(message, args).then((out) => { 
+                    message.react(out);
+                }).catch((e) => { 
+                    onError(message, e);
+                });
                 return;
             }
         })
