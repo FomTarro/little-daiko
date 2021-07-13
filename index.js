@@ -5,7 +5,8 @@ async function main(){
     AppConfig.DISCORD_CLIENT.initialize(
         () => { console.log(`:^)`) }, 
         (input, e) => {
-            console.log(e)
+            console.error(e);
+            AppConfig.DISCORD_CLIENT.respondToMessage(input);
         }
     );
 }

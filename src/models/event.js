@@ -20,7 +20,9 @@ const events = new Map([
             if(entry.aliases.includes(command) 
             && entry.permissions(message, role)){
                 entry.callback(message, args).then((out) => { 
-                    message.react(out);
+                    if(out){
+                        message.react(out);
+                    }
                 }).catch((e) => { 
                     onError(message, e);
                 });

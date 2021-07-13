@@ -4,19 +4,19 @@ const DiscordHelpers = AppConfig.DISCORD_HELPERS;
 const REACT_OK = '✔️';
 const REACT_ERROR = '❌'
 
+/**
+ * A! 
+ */
 const commands = [
     {
         aliases: ['config', 'conf', 'c'],
         permissions: async (user, role) => { 
-            return DiscordHelpers.isBotOwner(user) 
-            || DiscordHelpers.isGuildOwner(user) 
-            || DiscordHelpers.isAdmin(user, role) },
+            return true },
         callback: async (message, args) => { 
             const configProps = AppConfig.CONFIG_STORAGE.getAllProperties(message).map(prop => {
                 return `${prop[0]}  :  ${prop[1]}`;
             });
             message.channel.send(`Here is this server's current configuration: \`\`\`${configProps.join("\n")}\`\`\``);
-            return REACT_OK;
         },
         help: {
             // TODO
@@ -58,7 +58,46 @@ const commands = [
             // TODO
         }
     },
-
+    {
+        aliases: ['users', 'u'],
+        permissions: async (user, role) => { 
+            return DiscordHelpers.isBotOwner(user) 
+            || DiscordHelpers.isGuildOwner(user) 
+            || DiscordHelpers.isAdmin(user, role) },
+        callback: async (message, args) => { 
+            if(args.length > 1){
+                const action = args[0];
+                const users = AppConfig.CONFIG_STORAGE.getProperty(message, 'users');
+                const argIds = [...new Set(args.map((user) => {
+                    return Number.parseInt(user);
+                }).filter((user) => { 
+                    return !isNaN(user) 
+                }))];
+                if(argIds.length <= 0){
+                    return REACT_ERROR;
+                }
+                if("remove" === action){
+                    const updatedUsers = users.filter((user) => { 
+                        return !argIds.includes(user)
+                    });
+                    if(updatedUsers.length === users.length){
+                        // no users removed
+                        return REACT_ERROR;
+                    }
+                    AppConfig.CONFIG_STORAGE.setProperty(message, "users", updatedUsers);
+                    return REACT_OK;
+                }else if("add" === action){
+                    const updatedUsers = [...new Set(users.concat(argIds))];
+                    AppConfig.CONFIG_STORAGE.setProperty(message, "users", updatedUsers);
+                    return REACT_OK;
+                }
+            }
+            return REACT_ERROR;
+        },
+        help: {
+            // TODO
+        }
+    },
     {
         aliases: ['channel', 'ch'],
         permissions: async (user, role) => { 

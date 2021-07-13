@@ -115,4 +115,13 @@ function initialize(onLogin, onException){
     client.login(AppConfig.DISCORD_BOT_TOKEN);
 }
 
+function respondToMessage(message, content){
+    try{
+        message.channel.send(content);
+    }catch(e){
+        console.error(e);
+    }
+}
+
 module.exports.initialize = initialize;
+module.exports.respondToMessage = respondToMessage;
