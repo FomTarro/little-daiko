@@ -47,13 +47,22 @@ function hasRole(subject, role){
 }
 
 function generateEmbed(message){
-    // 0 sets the date to epoch
-    const date = new Date(0).setUTCMilliseconds(message.time); 
-    return new Discord.MessageEmbed()
-    .setColor('#f1c40f')
-    .setAuthor(message.userName, message.userImg)
-    .setDescription(message.message)
-    .setTimestamp(date)
+    const embed = new Discord.MessageEmbed().setColor('#f1c40f');
+    embed.setDescription(message.message)
+    if(message.authorName){
+        embed.setAuthor(message.authorName, message.authorImage)
+    }
+    if(message.time){
+        // 0 sets the date to epoch
+        const date = new Date(0).setUTCMilliseconds(message.time); 
+        embed.setTimestamp(date);
+    }
+    if(message.fields){
+        for(let field of message.fields){
+            embed.addField(field.name, field.value, field.inline)
+        };
+    }
+    return embed;
 }
 
 module.exports.isMessage = isMessage;

@@ -6,6 +6,8 @@
   "scripts": {
     "test": "test",
     "start": "npm run index",
+    "start-pm2": "pm2 start index",
+    "stop-pm2": "pm2 stop all",
     "index": "node index.js"
   },
   "repository": {
@@ -27,6 +29,8 @@
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "enmap": "^5.8.6",
+    "oneline": "^1.0.3",
+    "pm2": "^5.1.0",
     "uuid": "^8.3.2",
     "ws": "^7.5.2"
   }

@@ -16,7 +16,7 @@ const events = new Map([
         const [...args] = message.content.split(/\s+/g);
         const command = args.shift().slice(prefix.length).toLowerCase();
         const role = AppConfig.CONFIG_STORAGE.getProperty(message, 'role');
-        AppConfig.COMMANDS.forEach(entry => {
+        for(let entry of AppConfig.COMMANDS){
             if(entry.aliases.includes(command) 
             && entry.permissions(message, role)){
                 entry.callback(message, args).then((out) => { 
@@ -28,7 +28,7 @@ const events = new Map([
                 });
                 return;
             }
-        })
+        }
      }]
 ]);
 

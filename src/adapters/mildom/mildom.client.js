@@ -80,9 +80,9 @@ async function startListener(roomId, onChatMessage){
                         break;
                     case "onChat":
                         onChatMessage({
-                            userName: dataStruct.userName,
-                            userId: dataStruct.userId,
-                            userImg: dataStruct.userImg,
+                            authorName: dataStruct.userName,
+                            authorId: dataStruct.userId,
+                            authorImage: dataStruct.userImg,
                             message: dataStruct.msg,
                             time: dataStruct.time,
                         });
