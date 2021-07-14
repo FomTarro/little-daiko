@@ -1,5 +1,4 @@
 require('dotenv').config();
-const path = require("path");
 
 const appConfig = {
     // config vars
@@ -16,7 +15,6 @@ const appConfig = {
     get LISTENER_STORAGE(){ return require('./src/persistence/listener.storage')},
 
     get PROFILES(){ return require('./src/models/profiles')},
-    get LANGUAGES(){ return require('./src/models/languages')},
     get EVENTS(){ return require('./src/models/event')},
     get COMMANDS(){ return require('./src/models/command')},
 }

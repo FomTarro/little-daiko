@@ -1,11 +1,9 @@
-const { AppConfig } = require('../../../app.config');
 const Discord = require('discord.js');
-
 const client = new Discord.Client();
 
-function initialize(onLogin, onException){
+function initialize(onLogin, onException, appConfig){
 
-    for(let [event, callback] of AppConfig.EVENTS){
+    for(let [event, callback] of appConfig.EVENTS(appConfig)){
         client.on(event, (input) => {
             callback(input, onException);
         });
@@ -19,7 +17,7 @@ function initialize(onLogin, onException){
         onLogin();
     });
 
-    client.login(AppConfig.DISCORD_BOT_TOKEN);
+    client.login(appConfig.DISCORD_BOT_TOKEN);
 }
 
 function respondToMessage(message, content){

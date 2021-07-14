@@ -10,7 +10,7 @@ const schema = new Enmap({
     autoEnsure: {
         prefix: "!",
         role: "@admin",
-        streamer: 00000,
+        streamer: 0,
         users: [],
         channel: "general",
         language: "en",

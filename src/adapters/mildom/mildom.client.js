@@ -5,7 +5,6 @@ const WebSocket = require('ws');
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
 
-
 async function getServerInfo(roomId){
     const url = new URL(serverUrl);
     url.searchParams.append("room_id", roomId);
@@ -37,6 +36,7 @@ async function startListener(roomId, onChatMessage){
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
 
+    /*
     const url = new URL(liveInfoURL);
     url.searchParams.append("user_id", roomId);
     url.searchParams.append("timestamp", Date.parse(new Date()))
@@ -48,9 +48,10 @@ async function startListener(roomId, onChatMessage){
     url.searchParams.append("__la", "ja")
     url.searchParams.append("__sfr", "pc")
 
-    // const liveStatus = await getLiveInfo(url);
-    // if(liveStatus.body && liveStatus.body['live_type'] === 2)
-    // console.log(liveStatus)
+    const liveStatus = await getLiveInfo(url);
+    if(liveStatus.body && liveStatus.body['live_type'] === 2)
+    console.log(liveStatus)
+    */
 
     const serverInfo = await getServerInfo(roomId);
     if(serverInfo['wss_server']){
