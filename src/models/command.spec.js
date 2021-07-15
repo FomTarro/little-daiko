@@ -370,3 +370,76 @@ describe("Users command tests", () => {
         expect(result).toEqual('❌');
     });
 });
+
+describe("Start command tests", () => {
+    test("Start", async() => {
+        // set up mock dependencies
+        let channel = undefined;
+        let listener = undefined;
+        const dummyConfig = {
+            CONFIG_STORAGE: {
+                getProperty(guild, prop){
+                    return 11629553; // My channel ID
+                }
+            },
+            MILDOM_CLIENT: AppConfig.MILDOM_CLIENT,
+            LISTENER_STORAGE: {
+                setListener(message, l){
+                    listener = l;
+                }
+            }
+        }
+        let sent = false;
+        const dummyMessage = {
+            channel: {
+                send(){
+                    sent = true;
+                }
+            },
+            guild: {
+                channels: {
+                    cache: [{
+                            name: 11629553
+                        }]
+                }
+            }
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const help = commands.filter(c => { return c.aliases.includes('start')})[0];
+        await help.callback(dummyMessage, []);
+        await new Promise((r) => setTimeout(r, 2000));
+        expect(listener).toBeInstanceOf(AppConfig.MILDOM_CLIENT.ChatListener);
+        expect(listener.roomId).toBe(11629553);
+        listener.stopListener();
+        expect(sent).toBe(true);
+    });
+});
+
+describe("Stop command tests", () => {
+    test("Stop", async() => {
+        // set up mock dependencies
+        let deleted = false;
+        const dummyConfig = {
+            LISTENER_STORAGE: {
+                deleteListener(message){
+                    deleted = true;
+                }
+            }
+        }
+        let sent = false;
+        const dummyMessage = {
+            channel: {
+                send(){
+                    sent = true;
+                }
+            },
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const help = commands.filter(c => { return c.aliases.includes('stop')})[0];
+        await help.callback(dummyMessage, []);
+        expect(sent).toBe(true);
+        expect(deleted).toBe(true);
+    });
+});
