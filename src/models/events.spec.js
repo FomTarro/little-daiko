@@ -1,5 +1,4 @@
 const { AppConfig } = require('../../app.config');
-const { generateEmbed } = require('../adapters/discord/discord.helpers');
 
 describe("Events tests", () => {
     test("Events", async() => {

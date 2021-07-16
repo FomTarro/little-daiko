@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-function initialize(onLogin, onException, appConfig){
+async function initialize(onLogin, onException, appConfig){
 
     for(let [event, callback] of appConfig.EVENTS(appConfig)){
         client.on(event, (input) => {
@@ -16,8 +16,18 @@ function initialize(onLogin, onException, appConfig){
         }
         onLogin();
     });
+}
 
-    client.login(appConfig.DISCORD_BOT_TOKEN);
+function login(token){
+    client.login(token);
+}
+
+function shutdown(){
+    client.destroy();
+}
+
+function emit(event, input){
+    client.emit(event, input)
 }
 
 function respondToMessage(message, content){
@@ -29,4 +39,7 @@ function respondToMessage(message, content){
 }
 
 module.exports.initialize = initialize;
+module.exports.emit = emit;
+module.exports.login = login;
+module.exports.shutdown = shutdown;
 module.exports.respondToMessage = respondToMessage;

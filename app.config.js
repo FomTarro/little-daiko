@@ -7,6 +7,8 @@ const appConfig = {
     get DOMAIN(){ return process.env.domain || `http://localhost:${this.PORT}` },
     get DISCORD_BOT_TOKEN(){return process.env.discord_bot_token},
 
+    get BOT(){ return require('./src/bot')},
+
     get MILDOM_CLIENT(){ return require('./src/adapters/mildom/mildom.client')},
     get DISCORD_CLIENT(){ return require('./src/adapters/discord/discord.client')},
     get DISCORD_HELPERS(){ return require('./src/adapters/discord/discord.helpers')},

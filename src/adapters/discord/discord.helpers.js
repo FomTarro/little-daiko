@@ -14,7 +14,9 @@ function isDm(subject){
 }
 
 function isBot(subject){
-    return isMessage(subject) ? subject.author.bot : subject.bot;
+    return isMessage(subject) ? 
+    subject.author.bot 
+    : subject.bot;
 }
 
 function isAdmin(subject, role){
