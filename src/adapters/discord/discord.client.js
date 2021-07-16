@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
 
 async function initialize(onLogin, onException, appConfig){
-
+    const client = new Discord.Client();
     for(let [event, callback] of appConfig.EVENTS(appConfig)){
         client.on(event, (input) => {
             callback(input, onException);
@@ -16,30 +15,40 @@ async function initialize(onLogin, onException, appConfig){
         }
         onLogin();
     });
+
+    return new DiscordClient(client);
 }
 
-function login(token){
-    client.login(token);
-}
-
-function shutdown(){
-    client.destroy();
-}
-
-function emit(event, input){
-    client.emit(event, input)
-}
-
-function respondToMessage(message, content){
-    try{
-        message.channel.send(content);
-    }catch(e){
-        console.error(e);
+class DiscordClient{
+    constructor(client){
+        this.client = client;
+    }
+    login(token){
+        if(this.client){
+            this.client.login(token);
+        }
+    }
+    
+    shutdown(){
+        if(this.client){
+            this.client.destroy();
+        }
+    }
+    
+    emit(event, input){
+        if(this.client){
+            this.client.emit(event, input)
+        }
+    }
+    
+    respondToMessage(message, content){
+        try{
+            message.channel.send(content);
+        }catch(e){
+            console.error(e);
+        }
     }
 }
 
 module.exports.initialize = initialize;
-module.exports.emit = emit;
-module.exports.login = login;
-module.exports.shutdown = shutdown;
-module.exports.respondToMessage = respondToMessage;
+module.exports.DiscordClient = DiscordClient;

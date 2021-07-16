@@ -47,11 +47,11 @@ describe("Error handling tests", () => {
             }
         }
         // execute test
-        await AppConfig.BOT.initialize(dummyConfig);
+        const bot = await AppConfig.BOT.initialize(dummyConfig);
         expect(sent).toBe(undefined);
-        AppConfig.DISCORD_CLIENT.emit('message', dummyMessage);
+        bot.client.emit('message', dummyMessage);
         await new Promise((r) => setTimeout(r, 1000));
-        AppConfig.BOT.shutdown();
+        bot.shutdown();
         expect(sent).toContain("here's a special new error!");
         expect(sent).toContain("We hit an error!");
     });

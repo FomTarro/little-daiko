@@ -9,7 +9,7 @@
     "stop-pm2": "pm2 stop all",
     "index": "node index.js",
     "check-push": "npm run test",
-    "test": "jest --coverage --collectCoverageFrom=src/**/*.{js,jsx} --runInBand --detectOpenHandles"
+    "test": "jest --coverage --collectCoverageFrom=src/**/*.{js,jsx}"
   },
   "repository": {
     "type": "git",

@@ -1,31 +1,34 @@
-// TODO: refactor this to output a class
-
-let config;
 async function initialize(appConfig){
-    config = appConfig;
     const client = await appConfig.DISCORD_CLIENT.initialize(
         () => { console.log(`:^)`) }, 
         (input, e) => {
             const error = `Sorry! We hit an error! The stupid mother fucker who wrote this bot doesn't know how to fucking program: \`\`\`${e}\`\`\``
-            appConfig.DISCORD_CLIENT.respondToMessage(input, error);
+            client.respondToMessage(input, error);
         },
         appConfig
     );
+    return new Bot(appConfig, client);
 }
 
-async function login(token){
-    if(config){
-        config.DISCORD_CLIENT.login(token);
+class Bot{
+    constructor(appConfig, client){
+        this.appConfig = appConfig;
+        this.client = client;
     }
-}
 
-async function shutdown(){
-    if(config){
-        config.DISCORD_CLIENT.shutdown();
+    async login(token){
+        if(this.client){
+            this.client.login(token);
+        }
+    }
+    
+    async shutdown(){
+        if(this.client){
+            this.client.shutdown();
+        }
     }
 }
 
 module.exports.initialize = initialize;
-module.exports.login = login;
-module.exports.shutdown = shutdown;
+module.exports.Bot = Bot;
 
