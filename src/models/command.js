@@ -150,56 +150,6 @@ function commands(appConfig){
             ]
         },
         {
-            aliases: ['languages', 'lang'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
-            callback: async (message, args) => { 
-                if(args && args.length > 1){
-                    const action = args[0];
-                    let languages = appConfig.CONFIG_STORAGE.getProperty(message, 'languages');
-                    languages = languages ? languages : [];
-                    const argLanguages = [...new Set(args.slice(1))];
-                    if(argLanguages.length <= 0){
-                        return REACT_ERROR;
-                    }
-                    if("remove" === action){
-                        const updatedLanguages = languages.filter((user) => { 
-                            return !argLanguages.includes(user)
-                        });
-                        if(updatedLanguages.length === languages.length){
-                            // no languages removed
-                            return REACT_ERROR;
-                        }
-                        appConfig.CONFIG_STORAGE.setProperty(message, 'languages', updatedLanguages);
-                        return REACT_OK;
-                    }else if("add" === action){
-                        const updatedLanguages = [...new Set(languages.concat(argLanguages))];
-                        appConfig.CONFIG_STORAGE.setProperty(message, 'languages', updatedLanguages);
-                        return REACT_OK;
-                    }
-                }
-                return REACT_ERROR;
-            },
-            help:
-            [
-                {
-                    usage: `languages add <list of language prefixes>`,
-                    description: oneline`Adds all listed language prefixes to the list of language prefixes to listen for. 
-                    Messages with any of these prefixes from any of the users to listen for 
-                    will be output into the designated chat output channel for that language (see \`!help output\`).            
-                    The list must be space-separated.`
-                },
-                {
-                    usage: `languages remove <list of language prefixes>`,
-                    description:  oneline`Removes all listed language prefixes from the list of language prefixes to listen for. 
-                    The list must be space-separated.`
-                },
-            ]
-        },
-        {
             aliases: ['output', 'out', 'o'],
             permissions: async (user, role) => { 
                 return discordHelpers.isBotOwner(user) 
@@ -209,12 +159,20 @@ function commands(appConfig){
             callback: async (message, args) => { 
                 if(args && args.length > 1){
                     const type = args[0];
-                    const channels =  appConfig.CONFIG_STORAGE.getProperty(message, "output");
+                    const channels = appConfig.CONFIG_STORAGE.getProperty(message, "output");
                     if(type === 'chat'){
                         if(args.length > 2){
-                            channels.chat[args[1]] = args[2];
-                            appConfig.CONFIG_STORAGE.setProperty(message, "output", channels);
-                            return REACT_OK;
+                            const operation = args[1];
+                            const language = args[2].toLowerCase();
+                            if(operation === 'add' && args.length > 3){
+                                channels.chat[language] = args[3];
+                                appConfig.CONFIG_STORAGE.setProperty(message, "output", channels);
+                                return REACT_OK;
+                            }else if(operation === 'remove'){
+                                delete channels.chat[language];
+                                appConfig.CONFIG_STORAGE.setProperty(message, "output", channels);
+                                return REACT_OK;
+                            }
                         }
                     }
                     if(type === 'alert'){
@@ -228,9 +186,13 @@ function commands(appConfig){
             help: 
             [
                 {
-                    usage: `output chat <language prefix> <channel name>`,
+                    usage: `output chat add <language prefix> <channel name>`,
                     description: oneline`Sets the server channel to which stream messages with the desginated language prefix will be posted to. 
                     Stream messages from the streamer will go to all language channels.`
+                },
+                {
+                    usage: `output chat remove <language prefix>`,
+                    description: `Stops posting tot he server for the given language prefix.`
                 },
                 {
                     usage: `output alert <channel name>`,
@@ -251,15 +213,14 @@ function commands(appConfig){
                 const streamer = Number(appConfig.CONFIG_STORAGE.getProperty(message, 'streamer'));
                 const listener = await appConfig.MILDOM_CLIENT.startListener(streamer, 
                 (comment) => {
-                    const languages = appConfig.CONFIG_STORAGE.getProperty(message, 'languages');
+                    const channels = appConfig.CONFIG_STORAGE.getProperty(message, 'output').chat;
                     const users = appConfig.CONFIG_STORAGE.getProperty(message, "users");
-                    for(let language of languages){
-                        language = language.toLowerCase();
+                    for(let prefix in channels){
                         if(comment.authorId == streamer
                         || (users.includes(comment.authorId) 
-                        && comment.message.toLowerCase().startsWith(`[${language}]`))){
+                        && comment.message.toLowerCase().startsWith(`[${prefix}]`))){
                             if(comment.time > startEpoch){
-                                const chatChannel = discordHelpers.getChannelByName(message.guild,appConfig.CONFIG_STORAGE.getProperty(message, 'output').chat[language]);
+                                const chatChannel = discordHelpers.getChannelByName(message.guild, channels[prefix]);
                                 if(chatChannel){
                                     chatChannel.send(appConfig.DISCORD_HELPERS.generateEmbed(comment));
                                 }
