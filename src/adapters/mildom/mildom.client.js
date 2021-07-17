@@ -32,7 +32,7 @@ async function getServerInfo(roomId){
     return promise;  
 }
 
-async function startListener(roomId, onChatMessage, onLiveStart){
+async function startListener(roomId, onChatMessage, onLiveStart, onError){
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
 

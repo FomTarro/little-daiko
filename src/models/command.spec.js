@@ -242,49 +242,71 @@ describe("Streamer command tests", () => {
     });
 });
 
-// describe("Channel command tests", () => {
-//     test("Channel with args", async() => {
-//         // set up mock dependencies
-//         let channel = undefined;
-//         const dummyConfig = {
-//             CONFIG_STORAGE: {
-//                 setProperty(guild, prop, value){
-//                     channel = value;
-//                 },
-//                 getProperty(guild, prop){
-//                     return {};
-//                 }
-//             }
-//         }
-//         const dummyMessage = {
-//         }
-//         // execute test
-//         const commands = AppConfig.COMMANDS(dummyConfig);
-//         const help = commands.filter(c => { return c.aliases.includes('channel')})[0];
-//         const result = await help.callback(dummyMessage, ['general', 'secondary']);
-//         expect(channel).toEqual('general');
-//         expect(result).toEqual('✔️')
-//     });
-//     test("Channel with no args", async() => {
-//         // set up mock dependencies
-//         let channel = 'general';
-//         const dummyConfig = {
-//             CONFIG_STORAGE: {
-//                 setProperty(guild, prop, value){
-//                     channel = value;
-//                 }
-//             }
-//         }
-//         const dummyMessage = {
-//         }
-//         // execute test
-//         const commands = AppConfig.COMMANDS(dummyConfig);
-//         const help = commands.filter(c => { return c.aliases.includes('channel')})[0];
-//         const result = await help.callback(dummyMessage, undefined);
-//         expect(channel).toEqual('general');
-//         expect(result).toEqual('❌');
-//     });
-// });
+describe("Channel command tests", () => {
+    test("Channel with add args", async() => {
+        // set up mock dependencies
+        let channel = undefined;
+        const dummyConfig = {
+            CONFIG_STORAGE: {
+                setProperty(guild, prop, value){
+                    channel = value;
+                },
+                getProperty(guild, prop){
+                    return { chat: {}};
+                }
+            }
+        }
+        const dummyMessage = {
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const help = commands.filter(c => { return c.aliases.includes('output')})[0];
+        const result = await help.callback(dummyMessage, ['chat', 'add', 'en', 'general', 'secondary']);
+        expect(channel).toEqual({chat: {en: 'general'}});
+        expect(result).toEqual('✔️')
+    });
+    test("Channel with remove args", async() => {
+        // set up mock dependencies
+        let channel = undefined;
+        const dummyConfig = {
+            CONFIG_STORAGE: {
+                setProperty(guild, prop, value){
+                    channel = value;
+                },
+                getProperty(guild, prop){
+                    return { chat: {en: 'general'}};
+                }
+            }
+        }
+        const dummyMessage = {
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const help = commands.filter(c => { return c.aliases.includes('output')})[0];
+        const result = await help.callback(dummyMessage, ['chat', 'remove', 'en', 'general', 'secondary']);
+        expect(channel).toEqual({chat: {}});
+        expect(result).toEqual('✔️')
+    });
+    test("Channel with no args", async() => {
+        // set up mock dependencies
+        let channel = 'general';
+        const dummyConfig = {
+            CONFIG_STORAGE: {
+                setProperty(guild, prop, value){
+                    channel = value;
+                }
+            }
+        }
+        const dummyMessage = {
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const help = commands.filter(c => { return c.aliases.includes('output')})[0];
+        const result = await help.callback(dummyMessage, undefined);
+        expect(channel).toEqual('general');
+        expect(result).toEqual('❌');
+    });
+});
 
 describe("Users command tests", () => {
     test("Users add with args", async() => {

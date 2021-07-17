@@ -49,23 +49,11 @@ function hasRole(subject, role){
 }
 
 function getRoleIdByName(guild, role){
-    if(isGuild(guild)){
-        const foundRole = guild.roles.cache.find((r) => r.name === role);
-        if(!foundRole){
-            throw `The provided role: '${role}' does not exist on this server.`;
-        }
-        return foundRole;
-    }
+    return isGuild(guild) ? guild.roles.cache.find((r) => r.name === role) : undefined;
 }
 
 function getChannelByName(guild, channel){
-    if(isGuild(guild)){
-        const foundChannel = guild.channels.cache.find((r) => r.name === channel);
-        if(!foundChannel){
-            throw `The provided channel: '${channel}' does not exist on this server.`;
-        }
-        return foundChannel;
-    }
+    return isGuild(guild) ? guild.channels.cache.find((r) => r.name === channel) : undefined;
 }
 
 function generateEmbed(message){

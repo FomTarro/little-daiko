@@ -35,6 +35,28 @@ function commands(appConfig){
             ]
         },
         {
+            aliases: ['prefix', 'p'],
+            permissions: async (user, role) => { 
+                return discordHelpers.isBotOwner(user) 
+                || discordHelpers.isGuildOwner(user) 
+                || discordHelpers.isAdmin(user, role) 
+            },
+            callback: async (message, args) => { 
+                if(args && args.length > 0){
+                        appConfig.CONFIG_STORAGE.setProperty(message, "prefix", args[0]);
+                        return REACT_OK;
+                    }
+                return REACT_ERROR;
+            },
+            help: 
+            [
+                {
+                    usage: `prefix <prefix string>`,
+                    description: `Sets the prefix to denote bot commands.`
+                },
+            ]
+        },
+        {
             aliases: ['role', 'r'],
             permissions: async (user, role) => { 
                 return discordHelpers.isBotOwner(user) 
@@ -218,7 +240,7 @@ function commands(appConfig){
                     for(let prefix in channels){
                         if(comment.authorId == streamer
                         || (users.includes(comment.authorId) 
-                        && comment.message.toLowerCase().startsWith(`[${prefix}]`))){
+                        && comment.message.toLowerCase().startsWith(`[${prefix.toLowerCase()}]`))){
                             if(comment.time > startEpoch){
                                 const chatChannel = discordHelpers.getChannelByName(message.guild, channels[prefix]);
                                 if(chatChannel){
@@ -232,7 +254,7 @@ function commands(appConfig){
                     const alertRole = discordHelpers.getRoleIdByName(message.guild, appConfig.CONFIG_STORAGE.getProperty(message, 'role').alert);
                     const alertChannel = discordHelpers.getChannelByName(message.guild,appConfig.CONFIG_STORAGE.getProperty(message, 'output').alert);
                     if(alertChannel){
-                        alertChannel.send(`${alertRole} https://www.mildom.com/${streamer}`);
+                        alertChannel.send(`${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`);
                     }
                 });
                 appConfig.LISTENER_STORAGE.setListener(message, listener);
