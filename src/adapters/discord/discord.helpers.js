@@ -48,6 +48,26 @@ function hasRole(subject, role){
     return user.roles.cache.has(role);
 }
 
+function getRoleIdByName(guild, role){
+    if(isGuild(guild)){
+        const foundRole = guild.roles.cache.find((r) => r.name === role);
+        if(!foundRole){
+            throw `The provided role: '${role}' does not exist on this server.`;
+        }
+        return foundRole;
+    }
+}
+
+function getChannelByName(guild, channel){
+    if(isGuild(guild)){
+        const foundChannel = guild.channels.cache.find((r) => r.name === channel);
+        if(!foundChannel){
+            throw `The provided channel: '${channel}' does not exist on this server.`;
+        }
+        return foundChannel;
+    }
+}
+
 function generateEmbed(message){
     const embed = new Discord.MessageEmbed().setColor('#f1c40f');
     embed.setDescription(message.message)
@@ -75,6 +95,8 @@ module.exports.isAdmin = isAdmin;
 module.exports.isGuildOwner = isGuildOwner;
 module.exports.isBotOwner = isBotOwner;
 module.exports.hasRole = hasRole;
+module.exports.getRoleIdByName = getRoleIdByName;
+module.exports.getChannelByName = getChannelByName;
 module.exports.getUserId = getUserId;
 module.exports.getGuildId = getGuildId;
 

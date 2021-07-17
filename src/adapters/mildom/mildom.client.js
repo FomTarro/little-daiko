@@ -32,7 +32,7 @@ async function getServerInfo(roomId){
     return promise;  
 }
 
-async function startListener(roomId, onChatMessage){
+async function startListener(roomId, onChatMessage, onLiveStart){
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
 
@@ -86,6 +86,11 @@ async function startListener(roomId, onChatMessage){
                             authorImage: dataStruct.userImg,
                             message: dataStruct.msg,
                             time: dataStruct.time,
+                        });
+                        break;
+                    case "onLiveStart":
+                        onLiveStart({
+                            roomId: dataStruct.roomId,
                         });
                         break;
                     case "onLiveEnd":

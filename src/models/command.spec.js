@@ -102,6 +102,9 @@ describe("Role command tests", () => {
             CONFIG_STORAGE: {
                 setProperty(guild, prop, value){
                     role = value;
+                },
+                getProperty(guild, prop){
+                    return {};
                 }
             }
         }
@@ -111,7 +114,51 @@ describe("Role command tests", () => {
         const commands = AppConfig.COMMANDS(dummyConfig);
         const help = commands.filter(c => { return c.aliases.includes('role')})[0];
         const result = await help.callback(dummyMessage, ['admin', 'secondary']);
-        expect(role).toEqual('admin');
+        expect(role).toEqual(undefined);
+        expect(result).toEqual('❌')
+    });
+    test("Role with ops args", async() => {
+        // set up mock dependencies
+        let role = undefined;
+        const dummyConfig = {
+            CONFIG_STORAGE: {
+                setProperty(guild, prop, value){
+                    role = value;
+                },
+                getProperty(guild, prop){
+                    return {};
+                }
+            }
+        }
+        const dummyMessage = {
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const help = commands.filter(c => { return c.aliases.includes('role')})[0];
+        const result = await help.callback(dummyMessage, ['ops', 'admin']);
+        expect(role).toEqual({ops: 'admin'});
+        expect(result).toEqual('✔️')
+    });
+    test("Role with alert args", async() => {
+        // set up mock dependencies
+        let role = undefined;
+        const dummyConfig = {
+            CONFIG_STORAGE: {
+                setProperty(guild, prop, value){
+                    role = value;
+                },
+                getProperty(guild, prop){
+                    return {};
+                }
+            }
+        }
+        const dummyMessage = {
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const help = commands.filter(c => { return c.aliases.includes('role')})[0];
+        const result = await help.callback(dummyMessage, ['alert', 'mildom']);
+        expect(role).toEqual({alert: 'mildom'});
         expect(result).toEqual('✔️')
     });
     test("Role with no args", async() => {
@@ -195,46 +242,49 @@ describe("Streamer command tests", () => {
     });
 });
 
-describe("Channel command tests", () => {
-    test("Channel with args", async() => {
-        // set up mock dependencies
-        let channel = undefined;
-        const dummyConfig = {
-            CONFIG_STORAGE: {
-                setProperty(guild, prop, value){
-                    channel = value;
-                }
-            }
-        }
-        const dummyMessage = {
-        }
-        // execute test
-        const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('channel')})[0];
-        const result = await help.callback(dummyMessage, ['general', 'secondary']);
-        expect(channel).toEqual('general');
-        expect(result).toEqual('✔️')
-    });
-    test("Channel with no args", async() => {
-        // set up mock dependencies
-        let channel = 'general';
-        const dummyConfig = {
-            CONFIG_STORAGE: {
-                setProperty(guild, prop, value){
-                    channel = value;
-                }
-            }
-        }
-        const dummyMessage = {
-        }
-        // execute test
-        const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('channel')})[0];
-        const result = await help.callback(dummyMessage, undefined);
-        expect(channel).toEqual('general');
-        expect(result).toEqual('❌');
-    });
-});
+// describe("Channel command tests", () => {
+//     test("Channel with args", async() => {
+//         // set up mock dependencies
+//         let channel = undefined;
+//         const dummyConfig = {
+//             CONFIG_STORAGE: {
+//                 setProperty(guild, prop, value){
+//                     channel = value;
+//                 },
+//                 getProperty(guild, prop){
+//                     return {};
+//                 }
+//             }
+//         }
+//         const dummyMessage = {
+//         }
+//         // execute test
+//         const commands = AppConfig.COMMANDS(dummyConfig);
+//         const help = commands.filter(c => { return c.aliases.includes('channel')})[0];
+//         const result = await help.callback(dummyMessage, ['general', 'secondary']);
+//         expect(channel).toEqual('general');
+//         expect(result).toEqual('✔️')
+//     });
+//     test("Channel with no args", async() => {
+//         // set up mock dependencies
+//         let channel = 'general';
+//         const dummyConfig = {
+//             CONFIG_STORAGE: {
+//                 setProperty(guild, prop, value){
+//                     channel = value;
+//                 }
+//             }
+//         }
+//         const dummyMessage = {
+//         }
+//         // execute test
+//         const commands = AppConfig.COMMANDS(dummyConfig);
+//         const help = commands.filter(c => { return c.aliases.includes('channel')})[0];
+//         const result = await help.callback(dummyMessage, undefined);
+//         expect(channel).toEqual('general');
+//         expect(result).toEqual('❌');
+//     });
+// });
 
 describe("Users command tests", () => {
     test("Users add with args", async() => {
@@ -379,6 +429,9 @@ describe("Start command tests", () => {
         const dummyConfig = {
             CONFIG_STORAGE: {
                 getProperty(guild, prop){
+                    if(prop === 'languages'){
+                        return ['en']
+                    }
                     return 11629553; // My channel ID
                 }
             },

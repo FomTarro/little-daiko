@@ -9,11 +9,19 @@ const schema = new Enmap({
     cloneLevel: 'deep',
     autoEnsure: {
         prefix: "!",
-        role: "@admin",
+        role: {
+            ops: "admin",
+            alert: "mildom" 
+        },
         streamer: 0,
         users: [],
-        channel: "general",
-        language: "en",
+        output: {
+            chat: {
+                "en": "general"
+            },
+            alert: "general"
+        },
+        languages: ["en"],
     }
 });
 
