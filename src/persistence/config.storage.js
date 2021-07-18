@@ -21,7 +21,6 @@ const schema = new Enmap({
             },
             alert: "general"
         },
-        languages: ["en"],
     }
 });
 

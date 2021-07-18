@@ -36,6 +36,11 @@ describe("Help command tests", () => {
                 generateEmbed(message){
                     embed = message;
                 }
+            },
+            CONFIG_STORAGE: {
+                getProperty(){
+                    return '!';
+                }
             }
         }
         let sent = false;

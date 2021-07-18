@@ -209,12 +209,12 @@ function commands(appConfig){
             [
                 {
                     usage: `output chat add <language prefix> <channel name>`,
-                    description: oneline`Sets the server channel to which stream messages with the desginated language prefix will be posted to. 
+                    description: oneline`Sets the server channel to which stream messages with the designated language prefix will be posted to. 
                     Stream messages from the streamer will go to all language channels.`
                 },
                 {
                     usage: `output chat remove <language prefix>`,
-                    description: `Stops posting tot he server for the given language prefix.`
+                    description: `Stops posting to the server for the given language prefix.`
                 },
                 {
                     usage: `output alert <channel name>`,
@@ -258,7 +258,9 @@ function commands(appConfig){
                     }
                 });
                 appConfig.LISTENER_STORAGE.setListener(message, listener);
-                message.guild.me.setNickname('little-daiko 🟢');
+                if(message.guild && message.guild.me){
+                    message.guild.me.setNickname('little-daiko 🟢');
+                }
             },
             help: 
             [
@@ -279,7 +281,9 @@ function commands(appConfig){
             callback: async (message, args) => { 
                 await message.channel.send("Stopping listener.");
                 appConfig.LISTENER_STORAGE.deleteListener(message);
-                message.guild.me.setNickname('little-daiko 🔴');
+                if(message.guild && message.guild.me){
+                    message.guild.me.setNickname('little-daiko 🔴');
+                }
             },
             help: 
             [
