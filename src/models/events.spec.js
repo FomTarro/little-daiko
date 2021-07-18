@@ -22,7 +22,8 @@ describe("Events tests", () => {
                     }
                 }
             },
-            COMMANDS: AppConfig.COMMANDS
+            COMMANDS: AppConfig.COMMANDS,
+            PERMISSIONS: AppConfig.PERMISSIONS
         }
         let sent = false;
         const dummyMessage = {

@@ -11,9 +11,7 @@ function commands(appConfig){
     return [
         {
             aliases: ['config', 'conf', 'c'],
-            permissions: async (user, role) => { 
-                return true 
-            },
+            permissions: 1,
             callback: async (message, args) => { 
                 const fields = appConfig.CONFIG_STORAGE.getAllProperties(message).map(prop => {
                     return {
@@ -36,11 +34,7 @@ function commands(appConfig){
         },
         {
             aliases: ['prefix', 'p'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
+            permissions: 2,
             callback: async (message, args) => { 
                 if(args && args.length > 0){
                         appConfig.CONFIG_STORAGE.setProperty(message, "prefix", args[0]);
@@ -58,10 +52,7 @@ function commands(appConfig){
         },
         {
             aliases: ['role', 'r'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-            },
+            permissions: 3,
             callback: async (message, args) => { 
                 if(args && args.length > 1){
                     const type = args[0];
@@ -95,11 +86,7 @@ function commands(appConfig){
         },
         {
             aliases: ['streamer', 's'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
+            permissions: 2,
             callback: async (message, args) => { 
                 if(args && args.length > 0){
                     const argId = Number(args[0]);
@@ -120,11 +107,7 @@ function commands(appConfig){
         },
         {
             aliases: ['users', 'u'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
+            permissions: 2,
             callback: async (message, args) => { 
                 if(args && args.length > 1){
                     const action = args[0];
@@ -173,11 +156,7 @@ function commands(appConfig){
         },
         {
             aliases: ['output', 'out', 'o'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
+            permissions: 2,
             callback: async (message, args) => { 
                 if(args && args.length > 1){
                     const type = args[0];
@@ -209,7 +188,7 @@ function commands(appConfig){
             [
                 {
                     usage: `output chat add <language prefix> <channel name>`,
-                    description: oneline`Sets the server channel to which stream messages with the designated language prefix will be posted to. 
+                    description: oneline`Sets the server channel which stream messages with the designated language prefix will be posted to. 
                     Stream messages from the streamer will go to all language channels.`
                 },
                 {
@@ -224,16 +203,13 @@ function commands(appConfig){
         },
         {
             aliases: ['start', 'listen', 'l'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
+            permissions: 2,
             callback: async (message, args) => { 
                 await message.channel.send("Starting listener.");
                 const startEpoch = Date.parse(new Date());
                 const streamer = Number(appConfig.CONFIG_STORAGE.getProperty(message, 'streamer'));
                 const listener = await appConfig.MILDOM_CLIENT.startListener(streamer, 
+                // on message
                 (comment) => {
                     const channels = appConfig.CONFIG_STORAGE.getProperty(message, 'output').chat;
                     const users = appConfig.CONFIG_STORAGE.getProperty(message, "users");
@@ -250,17 +226,29 @@ function commands(appConfig){
                         }
                     }
                 },
+                // on go live
                 (live) => {
                     const alertRole = discordHelpers.getRoleIdByName(message.guild, appConfig.CONFIG_STORAGE.getProperty(message, 'role').alert);
                     const alertChannel = discordHelpers.getChannelByName(message.guild,appConfig.CONFIG_STORAGE.getProperty(message, 'output').alert);
                     if(alertChannel){
                         alertChannel.send(`${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`);
                     }
+                },
+                // on open
+                () => {
+                    if(message.guild && message.guild.me){
+                        message.guild.me.setNickname('little-daiko 🟢');
+                    }
+                },
+                // on close
+                () => {
+                    if(message.guild && message.guild.me){
+                        message.guild.me.setNickname('little-daiko 🔴');
+                    }
                 });
+
                 appConfig.LISTENER_STORAGE.setListener(message, listener);
-                if(message.guild && message.guild.me){
-                    message.guild.me.setNickname('little-daiko 🟢');
-                }
+
             },
             help: 
             [
@@ -273,17 +261,10 @@ function commands(appConfig){
         },
         {
             aliases: ['stop', 'x'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
+            permissions: 2, 
             callback: async (message, args) => { 
                 await message.channel.send("Stopping listener.");
                 appConfig.LISTENER_STORAGE.deleteListener(message);
-                if(message.guild && message.guild.me){
-                    message.guild.me.setNickname('little-daiko 🔴');
-                }
             },
             help: 
             [
@@ -295,14 +276,16 @@ function commands(appConfig){
         },
         {
             aliases: ['status'],
-            permissions: async (user, role) => { 
-                return discordHelpers.isBotOwner(user) 
-                || discordHelpers.isGuildOwner(user) 
-                || discordHelpers.isAdmin(user, role) 
-            },
+            permissions: 2,
             callback: async (message, args) => { 
                 const listener = appConfig.LISTENER_STORAGE.getListener(message);
-                const status = listener ? "listening for messages" : "stopped";
+                const isListening = listener && listener.isListening;
+                if(isListening){
+
+                }else{
+
+                }
+                const status = isListening ? "listening" : "stopped";
                 message.channel.send(`Current status: \`${status}\`.`)
             },
             help: 
@@ -315,18 +298,17 @@ function commands(appConfig){
         },
         {
             aliases: ['help', 'halp', 'h'],
-            permissions: async (user, role) => { 
-                return true;
-            },
+            permissions: 1,
             callback: async (message, args) => { 
+                const prefix = appConfig.CONFIG_STORAGE.getProperty(message, 'prefix');
                 if(args && args.length > 0){
-                    const prefix = appConfig.CONFIG_STORAGE.getProperty(message, 'prefix');
                     for(let entry of commands(appConfig)){
                         if(entry.aliases.includes(args[0])){
                             const fields = entry.help.map(value => {
                                 return {
                                     name: `\`${prefix}${value.usage}\``,
-                                    value: value.description,
+                                    value: `Usable by: ${appConfig.PERMISSIONS(appConfig)[entry.permissions].description}.
+                                    ${value.description}`,
                                 };
                             });
                             message.channel.send(discordHelpers.generateEmbed({
@@ -338,17 +320,15 @@ function commands(appConfig){
                     }
                 }
                 const fields = commands(appConfig).map((value) => {
-                    return {
-                        name: `\`${value.aliases.join(', ')}\``,
-                        value: '- - -'
-                    };
+                    return `\`${value.aliases.join(', ')}\``;
                 }).sort((a, b) => { 
-                    return a.name.localeCompare(b.name);
+                    return a.localeCompare(b);
                 });
+
                 await message.channel.send(discordHelpers.generateEmbed({
                     message: `Here's a list of possible commands and their aliases. 
-                    You can learn more about them by typing \`!help <command>\`.`,
-                    fields: fields,
+                    You can learn more about them by typing \`${prefix}help <command>\`.
+                    ${fields.join('\n')}`,
                 }));
             },
             help: 

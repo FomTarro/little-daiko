@@ -17,7 +17,7 @@ function events(appConfig) {
             const role = appConfig.CONFIG_STORAGE.getProperty(message, 'role');
             for(let entry of appConfig.COMMANDS(appConfig)){
                 if(entry.aliases.includes(command)){
-                    if(entry.permissions(message, role)){
+                    if(appConfig.PERMISSIONS(appConfig)[entry.permissions].check(message, role)){
                         entry.callback(message, args).then((out) => { 
                             if(out){
                                 message.react(out);

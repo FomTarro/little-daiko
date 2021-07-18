@@ -31,11 +31,10 @@ describe("Error handling tests", () => {
                     async callback(){
                         throw "here's a special new error!"
                     },
-                    permissions(){
-                        return true;
-                    }
+                    permissions: 1
                 }
-            ]}
+            ]},
+            PERMISSIONS: AppConfig.PERMISSIONS
         }
         let sent = undefined
         const dummyMessage = {

@@ -9,6 +9,11 @@ describe("Help command tests", () => {
                 generateEmbed(message){
                     embed = message;
                 }
+            },
+            CONFIG_STORAGE: {
+                getProperty(){
+                    return '!';
+                }
             }
         }
         let sent = false;
@@ -25,7 +30,7 @@ describe("Help command tests", () => {
         const help = commands.filter(c => { return c.aliases.includes('help')})[0];
         const result = await help.callback(dummyMessage, undefined);
         expect(sent).toBe(true);
-        expect(embed.fields.length).toBe(commands.length);
+        expect(embed.message).toContain('streamer');
     });
 
     test("Help with 'users' arg", async() => {
@@ -40,6 +45,26 @@ describe("Help command tests", () => {
             CONFIG_STORAGE: {
                 getProperty(){
                     return '!';
+                }
+            },
+            PERMISSIONS(){
+                return {
+                    1: {
+                        check: () => { return true },
+                        decription: "desc"
+                    },
+                    2: {
+                        check: () => { return true },
+                        decription: "desc"
+                    },
+                    3: {
+                        check: () => { return true },
+                        decription: "desc"
+                    },
+                    100: {
+                        check: () => { return true },
+                        decription: "desc"
+                    }
                 }
             }
         }
@@ -492,6 +517,7 @@ describe("Start command tests", () => {
         expect(listener).toBeInstanceOf(AppConfig.MILDOM_CLIENT.ChatListener);
         expect(listener.roomId).toBe(11629553);
         listener.stopListener();
+        await new Promise((r) => setTimeout(r, 1000));
         expect(sent).toBe(true);
     });
 });

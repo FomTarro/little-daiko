@@ -107,3 +107,5 @@ dist
 .env
 
 data/
+
+notes.txt

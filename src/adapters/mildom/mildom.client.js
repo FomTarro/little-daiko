@@ -1,6 +1,7 @@
 const { v4 } = require('uuid');
 const https = require('https');
 const WebSocket = require('ws');
+const { throws } = require('assert');
 
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
@@ -32,7 +33,7 @@ async function getServerInfo(roomId){
     return promise;  
 }
 
-async function startListener(roomId, onChatMessage, onLiveStart, onError){
+async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose){
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
 
@@ -57,6 +58,12 @@ async function startListener(roomId, onChatMessage, onLiveStart, onError){
     if(serverInfo['wss_server']){
         const wsUrl = `wss://${serverInfo['wss_server']}?roomId=${roomId}`;
         //console.log(wsUrl);
+
+        const ws = generateWebSocket(wsUrl, roomId, guestId);
+        return new ChatListener(roomId, ws);
+    }
+
+    function generateWebSocket(wsUrl, roomId, guestId){
         const ws = new WebSocket(wsUrl);
         ws.on('open', () => {
             console.log(`Connecting to chat for roomId: ${roomId}...`);
@@ -70,6 +77,9 @@ async function startListener(roomId, onChatMessage, onLiveStart, onError){
                 nonopara: "nonopara",
                 cmd: "enterRoom",
             }));
+            if(onOpen){
+                onOpen();
+            }
         });   
         ws.on('message', (data) => {
             if(data){
@@ -95,12 +105,18 @@ async function startListener(roomId, onChatMessage, onLiveStart, onError){
                         break;
                     case "onLiveEnd":
                         console.log(`Live has ended, closing socket! Thank you for watching!`);
-                        ws.close();
                         break;
                 }
             }
         });
-        return new ChatListener(roomId, ws);
+        ws.on('close', (data) => {
+            console.log(`Closing connection to chat for roomId: ${roomId}!`);
+            if(onClose){
+                onClose();
+            }
+        })
+        ws.reopen = () => { return generateWebSocket(wsUrl, roomId, guestId)};
+        return ws;
     }
 }
 
@@ -108,11 +124,39 @@ class ChatListener{
     constructor(roomId, webSocket){
         this.roomId = roomId;
         this.webSocket = webSocket;
+        this.ping();
     }
 
     stopListener(){
+        if(this.pingTimer){
+            clearTimeout(this.pingTimer);
+        }
         if(this.webSocket){
             this.webSocket.close();
+        }
+    }
+
+    isListening(){
+        return this.webSocket ? this.webSocket.readyState === 1 : false;
+    }
+
+    async ping(){
+        try{
+            if(this.webSocket.readyState === 1){
+                this.webSocket.ping();
+            }else if(this.webSocket.readyState > 1){
+                console.error(`Websocket closed unexpectedly for RoomId ${this.roomId}`)
+                this.webSocket = this.webSocket.reopen();
+            }
+            this.pingTimer = setTimeout(() => {
+                // console.log('ping!')
+                this.ping();
+            }, 2500);
+        }catch(e){
+            if(this.webSocket){
+                this.webSocket.close();
+            }
+            console.error(`Websocket ping error to RoomId ${this.roomId}: ${e}`);
         }
     }
 }

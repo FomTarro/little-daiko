@@ -6,6 +6,7 @@ const appConfig = {
     get PORT(){ return process.env.PORT || 8080; },
     get DOMAIN(){ return process.env.domain || `http://localhost:${this.PORT}` },
     get DISCORD_BOT_TOKEN(){return process.env.discord_bot_token},
+    get DISCORD_BOT_NAME(){return 'little-daiko'},
 
     get BOT(){ return require('./src/bot')},
 
@@ -19,6 +20,7 @@ const appConfig = {
     get PROFILES(){ return require('./src/models/profiles')},
     get EVENTS(){ return require('./src/models/event')},
     get COMMANDS(){ return require('./src/models/command')},
+    get PERMISSIONS(){ return require('./src/models/permissions')},
 }
 
 module.exports.AppConfig = appConfig;

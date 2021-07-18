@@ -25,6 +25,7 @@ class Bot{
     async shutdown(){
         if(this.client){
             this.client.shutdown();
+            // TODO: clean up mildom listener if one is active
         }
     }
 }
