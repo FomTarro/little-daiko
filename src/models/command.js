@@ -258,6 +258,7 @@ function commands(appConfig){
                     }
                 });
                 appConfig.LISTENER_STORAGE.setListener(message, listener);
+                message.guild.me.setNickname('little-daiko 🟢');
             },
             help: 
             [
@@ -278,6 +279,7 @@ function commands(appConfig){
             callback: async (message, args) => { 
                 await message.channel.send("Stopping listener.");
                 appConfig.LISTENER_STORAGE.deleteListener(message);
+                message.guild.me.setNickname('little-daiko 🔴');
             },
             help: 
             [
@@ -314,11 +316,12 @@ function commands(appConfig){
             },
             callback: async (message, args) => { 
                 if(args && args.length > 0){
+                    const prefix = appConfig.CONFIG_STORAGE.getProperty(message, 'prefix');
                     for(let entry of commands(appConfig)){
                         if(entry.aliases.includes(args[0])){
                             const fields = entry.help.map(value => {
                                 return {
-                                    name: `\`${value.usage}\``,
+                                    name: `\`${prefix}${value.usage}\``,
                                     value: value.description,
                                 };
                             });

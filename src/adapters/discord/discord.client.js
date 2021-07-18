@@ -11,6 +11,7 @@ async function initialize(onLogin, onException, appConfig){
     client.on('ready', () => {
         console.log(`Logged in as ${client.user.tag}!`);
         for(let guild of client.guilds.cache.array()){
+            guild.me.setNickname('little-daiko 🔴');
             console.log(`${guild.name} | ${guild.id}`);
         }
         onLogin();
