@@ -73,12 +73,12 @@ function commands(appConfig){
             help: 
             [
                 {
-                    usage: `role ops <role name>`,
+                    usage: `role ops <role name or id>`,
                     description: oneline`Sets the role name of permitted bot operators for this server.
                     The server owner and the bot owner are granted these permissions without needing the role.`
                 },
                 {
-                    usage: `role alert <role name>`,
+                    usage: `role alert <role name or id>`,
                     description: oneline`Sets the role to ping when the designated streamer goes live. 
                     The alert will be posted in the designated alert channel.`
                 },
@@ -187,8 +187,8 @@ function commands(appConfig){
             help: 
             [
                 {
-                    usage: `output chat add <language prefix> <channel name>`,
-                    description: oneline`Sets the server channel which stream messages with the designated language prefix will be posted to. 
+                    usage: `output chat add <language prefix> <channel name or id>`,
+                    description: oneline`Sets the server channel which stream messages with the designated language prefix will be posted to.
                     Stream messages from the streamer will go to all language channels.`
                 },
                 {
@@ -196,7 +196,7 @@ function commands(appConfig){
                     description: `Stops posting to the server for the given language prefix.`
                 },
                 {
-                    usage: `output alert <channel name>`,
+                    usage: `output alert <channel name or id>`,
                     description: `Sets the server channel which stream go-live alerts will be posted to.`
                 },
             ]
@@ -218,7 +218,7 @@ function commands(appConfig){
                         || (users.includes(comment.authorId) 
                         && comment.message.toLowerCase().startsWith(`[${prefix.toLowerCase()}]`))){
                             if(comment.time > startEpoch){
-                                const chatChannel = discordHelpers.getChannelByName(message.guild, channels[prefix]);
+                                const chatChannel = discordHelpers.getChannel(message.guild, channels[prefix]);
                                 if(chatChannel){
                                     chatChannel.send(appConfig.DISCORD_HELPERS.generateEmbed(comment));
                                 }
@@ -228,8 +228,8 @@ function commands(appConfig){
                 },
                 // on go live
                 (live) => {
-                    const alertRole = discordHelpers.getRoleIdByName(message.guild, appConfig.CONFIG_STORAGE.getProperty(message, 'role').alert);
-                    const alertChannel = discordHelpers.getChannelByName(message.guild,appConfig.CONFIG_STORAGE.getProperty(message, 'output').alert);
+                    const alertRole = discordHelpers.getRole(message.guild, appConfig.CONFIG_STORAGE.getProperty(message, 'role').alert);
+                    const alertChannel = discordHelpers.getChannel(message.guild,appConfig.CONFIG_STORAGE.getProperty(message, 'output').alert);
                     if(alertChannel){
                         alertChannel.send(`${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`);
                     }

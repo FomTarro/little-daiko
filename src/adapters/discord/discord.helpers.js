@@ -45,15 +45,39 @@ function getGuildId(subject){
 
 function hasRole(subject, role){
     const user = isMessage(subject) ? subject.member : subject;
-    return user.roles.cache.has(role);
+    // TODO: make this use getRole
+    const foundRole = !isNaN(Number(role)) ? 
+    user.roles.cache.find((r) => r.id == Number(role)) : 
+    user.roles.cache.find((r) => r.name === role)
+    return foundRole !== undefined;
 }
 
-function getRoleIdByName(guild, role){
+function getRoleByName(guild, role){
     return isGuild(guild) ? guild.roles.cache.find((r) => r.name === role) : undefined;
+}
+
+function getRoleById(guild, role){
+    return isGuild(guild) ? guild.roles.cache.find((r) => r.id == role) : undefined;
+}
+
+function getRole(guild, roleIdentifier){
+    return !isNaN(Number(roleIdentifier)) ? 
+    getRoleById(guild, Number(roleIdentifier)) : 
+    getRoleByName(guild, roleIdentifier);
 }
 
 function getChannelByName(guild, channel){
     return isGuild(guild) ? guild.channels.cache.find((r) => r.name === channel) : undefined;
+}
+
+function getChannelById(guild, channel){
+    return isGuild(guild) ? guild.channels.cache.find((r) => r.id == channel) : undefined;
+}
+
+function getChannel(guild, channelIdentifier){
+    return !isNaN(Number(channelIdentifier)) ? 
+    getChannelById(guild, Number(channelIdentifier)) : 
+    getChannelByName(guild, channelIdentifier);
 }
 
 function generateEmbed(message){
@@ -83,8 +107,12 @@ module.exports.isAdmin = isAdmin;
 module.exports.isGuildOwner = isGuildOwner;
 module.exports.isBotOwner = isBotOwner;
 module.exports.hasRole = hasRole;
-module.exports.getRoleIdByName = getRoleIdByName;
+module.exports.getRoleByName = getRoleByName;
+module.exports.getRoleById = getRoleById;
+module.exports.getRole = getRole;
 module.exports.getChannelByName = getChannelByName;
+module.exports.getChannelById = getChannelById;
+module.exports.getChannel = getChannel;
 module.exports.getUserId = getUserId;
 module.exports.getGuildId = getGuildId;
 
