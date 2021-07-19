@@ -80,7 +80,7 @@ function commands(appConfig){
                 {
                     usage: `role alert <role name>`,
                     description: oneline`Sets the role to ping when the designated streamer goes live. 
-                    The alert will be posted in the desingated alert channel.`
+                    The alert will be posted in the designated alert channel.`
                 },
             ]
         },
@@ -100,8 +100,8 @@ function commands(appConfig){
             help: 
             [
                 {
-                    usage: `channel <channel name>`,
-                    description: `Sets the server channel which stream messages will be posted to.`
+                    usage: `streamer <streamer id>`,
+                    description: `Sets the streamer to listen to. The streamer id must be a number.`
                 },
             ]
         },
@@ -307,8 +307,7 @@ function commands(appConfig){
                             const fields = entry.help.map(value => {
                                 return {
                                     name: `\`${prefix}${value.usage}\``,
-                                    value: `Usable by: ${appConfig.PERMISSIONS(appConfig)[entry.permissions].description}.
-                                    ${value.description}`,
+                                    value: `Usable by: ${appConfig.PERMISSIONS(appConfig)[entry.permissions].description}.\n\n${value.description}`,
                                 };
                             });
                             message.channel.send(discordHelpers.generateEmbed({
