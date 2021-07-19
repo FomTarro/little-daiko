@@ -20,6 +20,11 @@ describe("Events tests", () => {
                     if(prop == 'prefix'){
                         return '!'
                     }
+                    if(prop == 'role'){
+                        return {
+                            ops: "admin"
+                        }
+                    }
                 }
             },
             COMMANDS: AppConfig.COMMANDS,

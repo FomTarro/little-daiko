@@ -21,6 +21,11 @@ describe("Error handling tests", () => {
                     if(prop == 'prefix'){
                         return '!'
                     }
+                    if(prop == 'role'){
+                        return {
+                            ops: "admin"
+                        }
+                    }
                 }
             },
             EVENTS: AppConfig.EVENTS,
