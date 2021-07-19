@@ -30,8 +30,9 @@ async function main(){
     const help = commands.filter(c => { return c.aliases.includes('help')})[0];
     for(command of commands){
         await help.callback(dummyMessage, [command.aliases[0]]);
+        output = output + `### \`[${command.aliases.join(', ')}]\`\n\n`
         for(field of helpText.fields){
-            output = output + `### ${field.name}\n\n${field.value.trim()}\n\n`;
+            output = output + `${field.name}\n\n${field.value.trim()}\n\n`;
         }
     }
     template = template.replace('${COMMANDS}', output);

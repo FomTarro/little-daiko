@@ -1,5 +1,5 @@
 # little-daiko
-A Discord bot for integrating with the [mildom.com](https://www.mildom.com) streaming platform
+A Discord bot for integrating with the [mildom.com](https://www.mildom.com) streaming platform.
  
 ## About
 Named after the digital persona of beloved mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her western fans. 

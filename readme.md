@@ -1,5 +1,5 @@
 # little-daiko
-A Discord bot for integrating with the [mildom.com](https://www.mildom.com) streaming platform
+A Discord bot for integrating with the [mildom.com](https://www.mildom.com) streaming platform.
  
 ## About
 Named after the digital persona of beloved mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her western fans. 
@@ -19,91 +19,111 @@ While it was built with kson in mind, it can be configured by server operators t
 In addition, there is no limit to the number of `[language : Discord channel]` pairs for translation message transmission. This means that you can have seperate output channels for `[EN]`, `[ES]`, `[JP]`, `[ITA]`, etc.
  
 ## Commands
-### `!config`
+### `[config, conf, c]`
+
+`!config`
 
 Usable by: Any user.
 
 Displays a list of all configurable properties for the server.
 
-### `!prefix <prefix string>`
+### `[prefix, p]`
+
+`!prefix <prefix string>`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Sets the prefix to denote bot commands.
 
-### `!role ops <role name or id>`
+### `[role, r]`
+
+`!role ops <role name or id>`
 
 Usable by: Server Owner or Bot Owner.
 
 Sets the role name of permitted bot operators for this server. The server owner and the bot owner are granted these permissions without needing the role.
 
-### `!role alert <role name or id>`
+`!role alert <role name or id>`
 
 Usable by: Server Owner or Bot Owner.
 
 Sets the role to ping when the designated streamer goes live.  The alert will be posted in the designated alert channel.
 
-### `!streamer <streamer id>`
+### `[streamer, s]`
+
+`!streamer <streamer id>`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Sets the streamer to listen to. The streamer id must be a number.
 
-### `!users add <list of numeric user ids>`
+### `[users, u]`
+
+`!users add <list of numeric user ids>`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Adds all listed user ids to the list of users to listen for.  The list must be space-separated. The user ids must be numbers. The streamer is implicitly on the list.
 
-### `!users remove <list of numeric user ids>`
+`!users remove <list of numeric user ids>`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Removes all listed user ids from the list of users to listen for.  The list must be space-separated. The user ids must be numbers.
 
-### `!output chat add <language prefix> <channel name or id>`
+### `[output, out, o]`
+
+`!output chat add <language prefix> <channel name or id>`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Sets the server channel which stream messages with the designated language prefix will be posted to. Stream messages from the streamer will go to all language channels.
 
-### `!output chat remove <language prefix>`
+`!output chat remove <language prefix>`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Stops posting to the server for the given language prefix.
 
-### `!output alert <channel name or id>`
+`!output alert <channel name or id>`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Sets the server channel which stream go-live alerts will be posted to.
 
-### `!start`
+### `[start, listen, l]`
+
+`!start`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Starts listening to the chat of the selected streamer,  for messages tagged with the designated language tag that are posted by users on the designated users list.
 
-### `!stop`
+### `[stop, x]`
+
+`!stop`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Stops listening to the chat of the selected streamer.
 
-### `!status`
+### `[status]`
+
+`!status`
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Lists the status of the chat listener for the server.
 
-### `!help`
+### `[help, halp, h]`
+
+`!help`
 
 Usable by: Any user.
 
 Displays a list of all commands and their aliases.
 
-### `!help <command>`
+`!help <command>`
 
 Usable by: Any user.
 
