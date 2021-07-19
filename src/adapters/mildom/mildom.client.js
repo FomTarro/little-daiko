@@ -104,7 +104,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                         });
                         break;
                     case "onLiveEnd":
-                        console.log(`Live has ended, closing socket! Thank you for watching!`);
+                        console.log(`Live has ended, thank you for watching!`);
                         break;
                 }
             }
