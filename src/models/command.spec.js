@@ -27,7 +27,7 @@ describe("Help command tests", () => {
         // execute test
         expect(sent).toBe(false);
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('help')})[0];
+        const help = commands.find(c => { return c.aliases.includes('help')});
         const result = await help.callback(dummyMessage, undefined);
         expect(sent).toBe(true);
         expect(embed.message).toContain('streamer');
@@ -79,7 +79,7 @@ describe("Help command tests", () => {
         // execute test
         expect(sent).toBe(false);
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('help')})[0];
+        const help = commands.find(c => { return c.aliases.includes('help')});
         const result = await help.callback(dummyMessage, 'users');
         expect(sent).toBe(true);
         expect(embed.fields.length).toBe(2);
@@ -116,7 +116,7 @@ describe("Config command tests", () => {
         // execute test
         expect(sent).toBe(false);
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('config')})[0];
+        const help = commands.find(c => { return c.aliases.includes('config')});
         const result = await help.callback(dummyMessage, undefined);
         expect(sent).toBe(true);
         expect(embed.fields.length).toBe(2);
@@ -142,7 +142,7 @@ describe("Role command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('role')})[0];
+        const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, ['admin', 'secondary']);
         expect(role).toEqual(undefined);
         expect(result).toEqual('❌')
@@ -164,7 +164,7 @@ describe("Role command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('role')})[0];
+        const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, ['ops', 'admin']);
         expect(role).toEqual({ops: 'admin'});
         expect(result).toEqual('✔️')
@@ -186,7 +186,7 @@ describe("Role command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('role')})[0];
+        const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, ['alert', 'mildom']);
         expect(role).toEqual({alert: 'mildom'});
         expect(result).toEqual('✔️')
@@ -205,7 +205,7 @@ describe("Role command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('role')})[0];
+        const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, undefined);
         expect(role).toEqual(undefined);
         expect(result).toEqual('❌');
@@ -227,7 +227,7 @@ describe("Streamer command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('streamer')})[0];
+        const help = commands.find(c => { return c.aliases.includes('streamer')});
         const result = await help.callback(dummyMessage, [12345, 'secondary']);
         expect(streamer).toEqual(12345);
         expect(result).toEqual('✔️')
@@ -246,7 +246,7 @@ describe("Streamer command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('streamer')})[0];
+        const help = commands.find(c => { return c.aliases.includes('streamer')});
         const result = await help.callback(dummyMessage, undefined);
         expect(streamer).toEqual(undefined);
         expect(result).toEqual('❌');
@@ -265,7 +265,7 @@ describe("Streamer command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('streamer')})[0];
+        const help = commands.find(c => { return c.aliases.includes('streamer')});
         const result = await help.callback(dummyMessage, ['12a345', 'secondary']);
         expect(streamer).toEqual(undefined);
         expect(result).toEqual('❌');
@@ -290,7 +290,7 @@ describe("Channel command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('output')})[0];
+        const help = commands.find(c => { return c.aliases.includes('output')});
         const result = await help.callback(dummyMessage, ['chat', 'add', 'en', 'general', 'secondary']);
         expect(channel).toEqual({chat: {en: 'general'}});
         expect(result).toEqual('✔️')
@@ -356,7 +356,7 @@ describe("Users command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('users')})[0];
+        const help = commands.find(c => { return c.aliases.includes('users')});
         const result = await help.callback(dummyMessage, ['add', 12345, 'secondary', 67890]);
         expect(users).toEqual([12345, 67890]);
         expect(result).toEqual('✔️')
@@ -378,7 +378,7 @@ describe("Users command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('users')})[0];
+        const help = commands.find(c => { return c.aliases.includes('users')});
         const result = await help.callback(dummyMessage, ['add']);
         expect(users).toEqual([3456, 2313]);
         expect(result).toEqual('❌');
@@ -511,7 +511,7 @@ describe("Start command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('start')})[0];
+        const help = commands.find(c => { return c.aliases.includes('start')});
         await help.callback(dummyMessage, []);
         await new Promise((r) => setTimeout(r, 2000));
         expect(listener).toBeInstanceOf(AppConfig.MILDOM_CLIENT.ChatListener);
@@ -543,9 +543,122 @@ describe("Stop command tests", () => {
         }
         // execute test
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.filter(c => { return c.aliases.includes('stop')})[0];
+        const help = commands.find(c => { return c.aliases.includes('stop')});
         await help.callback(dummyMessage, []);
         expect(sent).toBe(true);
         expect(deleted).toBe(true);
+    });
+});
+
+describe("Remote command tests", () => {
+    test("Remote set prefix", async() => {
+        // set up mock dependencies
+        let newProp = undefined;
+        const dummyConfig = {
+            CONFIG_STORAGE:{
+                getProperty(){
+                    return '!'
+                },
+                setProperty(key, prop, input){
+                    newProp = input;
+                }
+            },
+            COMMANDS: AppConfig.COMMANDS,
+            PERMISSIONS: AppConfig.PERMISSIONS,
+            DISCORD_HELPERS: {
+                generateEmbed(input){
+                    return input;
+                }
+            },
+        }
+        let sent = false;
+        const dummyMessage = {
+            channel: {
+                send(){
+                    sent = true;
+                }
+            },
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const remote = commands.find(c => { return c.aliases.includes('remote')});
+        const result = await remote.callback(dummyMessage, ['11223344', 'prefix', '?']);
+        expect(newProp).toBe('?');
+        expect(result).toBe('✔️');
+    });
+});
+
+describe("Status command tests", () => {
+    test("Status up", async() => {
+        // set up mock dependencies
+        const dummyConfig = {
+            LISTENER_STORAGE: {
+                getListener(){
+                    return {
+                        isListening(){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        let sent = false;
+        let nickname = undefined;
+        const dummyMessage = {
+            channel: {
+                send(){
+                    sent = true;
+                }
+            },
+            guild:{
+                me:{
+                    setNickname(nick){
+                        nickname = nick;
+                    }
+                }
+            }
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const status = commands.find(c => { return c.aliases.includes('status')});
+        const result = await status.callback(dummyMessage, []);
+        expect(sent).toBe(true);
+        expect(nickname).toBe('little-daiko 🟢');
+    });
+    test("Status down", async() => {
+        // set up mock dependencies
+        const dummyConfig = {
+            LISTENER_STORAGE: {
+                getListener(){
+                    return {
+                        isListening(){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        let sent = false;
+        let nickname = undefined;
+        const dummyMessage = {
+            channel: {
+                send(){
+                    sent = true;
+                }
+            },
+            guild:{
+                me:{
+                    setNickname(nick){
+                        nickname = nick;
+                    }
+                }
+            }
+        }
+        // execute test
+        const commands = AppConfig.COMMANDS(dummyConfig);
+        const status = commands.find(c => { return c.aliases.includes('status')});
+        const result = await status.callback(dummyMessage, []);
+        expect(sent).toBe(true);
+        expect(nickname).toBe('little-daiko 🔴');
     });
 });

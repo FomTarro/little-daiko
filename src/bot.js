@@ -2,6 +2,7 @@ async function initialize(appConfig){
     const client = await appConfig.DISCORD_CLIENT.initialize(
         () => { console.log(`:^)`) }, 
         (input, e) => {
+            console.error(e);
             const error = `Sorry! We hit an error! The stupid mother fucker who wrote this bot doesn't know how to fucking program: \`\`\`${e}\`\`\``
             client.respondToMessage(input, error);
         },
@@ -25,7 +26,6 @@ class Bot{
     async shutdown(){
         if(this.client){
             this.client.shutdown();
-            // TODO: clean up mildom listener if one is active
         }
     }
 }
