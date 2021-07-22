@@ -330,6 +330,29 @@ function commands(appConfig){
             ]
         },
         {
+            aliases: ['servers', 'sv', 'guilds'],
+            permissions: 100, 
+            callback: async (message, args) => { 
+                const guilds = message.guild.me.client.guilds.cache.array().map((guild) => {
+                    return {
+                        name: `${guild.name}`,
+                        value: `\`${guild.id}\``
+                    }
+                });
+                message.channel.send(discordHelpers.generateEmbed({
+                    message: 'Connected Servers:',
+                    fields: guilds
+                }));
+            },
+            help: 
+            [
+                {
+                    usage: `servers`,
+                    description: oneline`Lists all servers that the bot is currently connected to.`
+                },
+            ]
+        },
+        {
             aliases: ['help', 'h'],
             permissions: 1,
             callback: async (message, args, override) => { 

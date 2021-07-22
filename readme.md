@@ -115,7 +115,23 @@ Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Lists the status of the chat listener for the server.
 
-### `[help, halp, h]`
+### `[remote, rem]`
+
+`!remote <server id> <command> <command args>`
+
+Usable by: Bot Owner.
+
+Allows remote execution of commands on deployed servers by the bot owner,  for checking on bot status and assisting with setup.
+
+### `[servers, sv, guilds]`
+
+`!remote <server id> <command> <command args>`
+
+Usable by: Bot Owner.
+
+Allows remote execution of commands on deployed servers by the bot owner,  for checking on bot status and assisting with setup.
+
+### `[help, h]`
 
 `!help`
 

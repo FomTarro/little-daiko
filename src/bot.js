@@ -1,6 +1,14 @@
 async function initialize(appConfig){
     const client = await appConfig.DISCORD_CLIENT.initialize(
-        () => { console.log(`:^)`) }, 
+        (c) => { 
+            for(let guild of c.guilds.cache.array()){
+                if(guild && guild.me){
+                    guild.me.setNickname('little-daiko 🔴');
+                    // TODO: notify servers of changes since last login
+                }
+                console.log(`${guild.name} | ${guild.id}`);
+            } 
+        }, 
         (input, e) => {
             console.error(e);
             const error = `Sorry! We hit an error! The stupid mother fucker who wrote this bot doesn't know how to fucking program: \`\`\`${e}\`\`\``

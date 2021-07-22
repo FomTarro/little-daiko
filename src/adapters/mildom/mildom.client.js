@@ -1,7 +1,6 @@
 const { v4 } = require('uuid');
 const https = require('https');
 const WebSocket = require('ws');
-const { throws } = require('assert');
 
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
