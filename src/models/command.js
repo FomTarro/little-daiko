@@ -12,8 +12,9 @@ function commands(appConfig){
         {
             aliases: ['config', 'conf', 'c'],
             permissions: 1,
-            callback: async (message, args) => { 
-                const fields = appConfig.CONFIG_STORAGE.getAllProperties(message).map(prop => {
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
+                const fields = appConfig.CONFIG_STORAGE.getAllProperties(configKey).map(prop => {
                     return {
                         name: `${prop[0]}:`,
                         value: `\`${JSON.stringify(prop[1], undefined, 2)}\``,
@@ -35,11 +36,12 @@ function commands(appConfig){
         {
             aliases: ['prefix', 'p'],
             permissions: 2,
-            callback: async (message, args) => { 
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
                 if(args && args.length > 0){
-                        appConfig.CONFIG_STORAGE.setProperty(message, "prefix", args[0]);
-                        return REACT_OK;
-                    }
+                    appConfig.CONFIG_STORAGE.setProperty(configKey, "prefix", args[0]);
+                    return REACT_OK;
+                }
                 return REACT_ERROR;
             },
             help: 
@@ -53,18 +55,19 @@ function commands(appConfig){
         {
             aliases: ['role', 'r'],
             permissions: 3,
-            callback: async (message, args) => { 
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
                 if(args && args.length > 1){
                     const type = args[0];
-                    const roles =  appConfig.CONFIG_STORAGE.getProperty(message, "role");
+                    const roles =  appConfig.CONFIG_STORAGE.getProperty(configKey, "role");
                     if(type === 'ops'){
                         roles.ops = args[1];
-                        appConfig.CONFIG_STORAGE.setProperty(message, "role", roles);
+                        appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
                         return REACT_OK;
                     }
                     if(type === 'alert'){
                         roles.alert = args[1];
-                        appConfig.CONFIG_STORAGE.setProperty(message, "role", roles);
+                        appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
                         return REACT_OK;
                     }
                 }
@@ -87,11 +90,12 @@ function commands(appConfig){
         {
             aliases: ['streamer', 's'],
             permissions: 2,
-            callback: async (message, args) => { 
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
                 if(args && args.length > 0){
                     const argId = Number(args[0]);
                     if(!isNaN(argId)){
-                        appConfig.CONFIG_STORAGE.setProperty(message, "streamer", argId);
+                        appConfig.CONFIG_STORAGE.setProperty(configKey, "streamer", argId);
                         return REACT_OK;
                     }
                 }
@@ -108,10 +112,11 @@ function commands(appConfig){
         {
             aliases: ['users', 'u'],
             permissions: 2,
-            callback: async (message, args) => { 
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
                 if(args && args.length > 1){
                     const action = args[0];
-                    let users = appConfig.CONFIG_STORAGE.getProperty(message, 'users');
+                    let users = appConfig.CONFIG_STORAGE.getProperty(configKey, 'users');
                     users = users ? users : [];
                     const argIds = [...new Set(args.map((user) => {
                         return Number(user);
@@ -129,11 +134,11 @@ function commands(appConfig){
                             // no users removed
                             return REACT_ERROR;
                         }
-                        appConfig.CONFIG_STORAGE.setProperty(message, "users", updatedUsers);
+                        appConfig.CONFIG_STORAGE.setProperty(configKey, "users", updatedUsers);
                         return REACT_OK;
                     }else if("add" === action){
                         const updatedUsers = [...new Set(users.concat(argIds))];
-                        appConfig.CONFIG_STORAGE.setProperty(message, "users", updatedUsers);
+                        appConfig.CONFIG_STORAGE.setProperty(configKey, "users", updatedUsers);
                         return REACT_OK;
                     }
                 }
@@ -157,28 +162,29 @@ function commands(appConfig){
         {
             aliases: ['output', 'out', 'o'],
             permissions: 2,
-            callback: async (message, args) => { 
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
                 if(args && args.length > 1){
                     const type = args[0];
-                    const channels = appConfig.CONFIG_STORAGE.getProperty(message, "output");
+                    const channels = appConfig.CONFIG_STORAGE.getProperty(configKey, "output");
                     if(type === 'chat'){
                         if(args.length > 2){
                             const operation = args[1];
                             const language = args[2].toLowerCase();
                             if(operation === 'add' && args.length > 3){
                                 channels.chat[language] = args[3];
-                                appConfig.CONFIG_STORAGE.setProperty(message, "output", channels);
+                                appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
                                 return REACT_OK;
                             }else if(operation === 'remove'){
                                 delete channels.chat[language];
-                                appConfig.CONFIG_STORAGE.setProperty(message, "output", channels);
+                                appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
                                 return REACT_OK;
                             }
                         }
                     }
                     if(type === 'alert'){
                         channels.alert = args[1];
-                        appConfig.CONFIG_STORAGE.setProperty(message, "output", channels);
+                        appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
                         return REACT_OK;
                     }
                 }
@@ -262,9 +268,10 @@ function commands(appConfig){
         {
             aliases: ['stop', 'x'],
             permissions: 2, 
-            callback: async (message, args) => { 
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
                 await message.channel.send("Stopping listener.");
-                appConfig.LISTENER_STORAGE.deleteListener(message);
+                appConfig.LISTENER_STORAGE.deleteListener(configKey);
             },
             help: 
             [
@@ -279,11 +286,13 @@ function commands(appConfig){
             permissions: 2,
             callback: async (message, args) => { 
                 const listener = appConfig.LISTENER_STORAGE.getListener(message);
-                const isListening = listener && listener.isListening;
-                if(isListening){
-
-                }else{
-
+                const isListening = listener && listener.isListening();
+                if(message.guild && message.guild.me){
+                    if(isListening){
+                        message.guild.me.setNickname('little-daiko 🟢');
+                    }else{
+                        message.guild.me.setNickname('little-daiko 🔴');
+                    }
                 }
                 const status = isListening ? "listening" : "stopped";
                 message.channel.send(`Current status: \`${status}\`.`)
@@ -297,10 +306,58 @@ function commands(appConfig){
             ]
         },
         {
-            aliases: ['help', 'halp', 'h'],
-            permissions: 1,
+            aliases: ['remote', 'rem'],
+            permissions: 100, 
             callback: async (message, args) => { 
-                const prefix = appConfig.CONFIG_STORAGE.getProperty(message, 'prefix');
+                if(args.length > 1){
+                    const command = commands(appConfig).find(c => { return c.aliases.includes(args[1]); });
+                    const override = {
+                        guild: {
+                            id: args[0]
+                        }
+                    }
+                    return await command.callback(message, args.slice(2), override);
+                }
+                return REACT_ERROR;
+            },
+            help: 
+            [
+                {
+                    usage: `remote <server id> <command> <command args>`,
+                    description: oneline`Allows remote execution of commands on deployed servers by the bot owner, 
+                    for checking on bot status and assisting with setup.`
+                },
+            ]
+        },
+        {
+            aliases: ['servers', 'sv', 'guilds'],
+            permissions: 100, 
+            callback: async (message, args) => { 
+                const guilds = message.guild.me.client.guilds.cache.array().map((guild) => {
+                    return {
+                        name: `${guild.name}`,
+                        value: `\`${guild.id}\``
+                    }
+                });
+                message.channel.send(discordHelpers.generateEmbed({
+                    message: 'Connected Servers:',
+                    fields: guilds
+                }));
+            },
+            help: 
+            [
+                {
+                    usage: `servers`,
+                    description: oneline`Lists all servers that the bot is currently connected to.`
+                },
+            ]
+        },
+        {
+            aliases: ['help', 'h'],
+            permissions: 1,
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
+                const prefix = appConfig.CONFIG_STORAGE.getProperty(configKey, 'prefix');
                 if(args && args.length > 0){
                     for(let entry of commands(appConfig)){
                         if(entry.aliases.includes(args[0])){
