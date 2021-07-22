@@ -125,11 +125,11 @@ Allows remote execution of commands on deployed servers by the bot owner,  for c
 
 ### `[servers, sv, guilds]`
 
-`!remote <server id> <command> <command args>`
+`!servers`
 
 Usable by: Bot Owner.
 
-Allows remote execution of commands on deployed servers by the bot owner,  for checking on bot status and assisting with setup.
+Lists all servers that the bot is currently connected to.
 
 ### `[help, h]`
 
