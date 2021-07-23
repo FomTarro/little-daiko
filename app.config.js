@@ -17,10 +17,10 @@ const appConfig = {
     get CONFIG_STORAGE(){ return require('./src/persistence/config.storage')},
     get LISTENER_STORAGE(){ return require('./src/persistence/listener.storage')},
 
-    get PROFILES(){ return require('./src/models/profiles')},
     get EVENTS(){ return require('./src/models/event')},
     get COMMANDS(){ return require('./src/models/command')},
     get PERMISSIONS(){ return require('./src/models/permissions')},
+    // get LOGGER(){ return require('./src/utils/logger')},
 }
 
 module.exports.AppConfig = appConfig;

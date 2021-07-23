@@ -43,6 +43,12 @@ function getGuildId(subject){
                                 : subject.guild.id;
 }
 
+function getOtherBotGuilds(subject){
+    return  isMessage(subject) ? subject.guild.me.client.guilds.cache.array() :
+            isGuild(subject) ? subject.me.client.guilds.cache.array() :
+            [];
+}
+
 function hasRole(subject, role){
     const user = isMessage(subject) ? subject.member : subject;
     // TODO: make this use getRole
@@ -115,5 +121,6 @@ module.exports.getChannelById = getChannelById;
 module.exports.getChannel = getChannel;
 module.exports.getUserId = getUserId;
 module.exports.getGuildId = getGuildId;
+module.exports.getOtherBotGuilds = getOtherBotGuilds;
 
 module.exports.generateEmbed = generateEmbed;

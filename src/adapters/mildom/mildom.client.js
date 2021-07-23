@@ -5,13 +5,12 @@ const WebSocket = require('ws');
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
 
-async function getServerInfo(roomId){
+async function getServerInfo(roomId, logger){
     const url = new URL(serverUrl);
     url.searchParams.append("room_id", roomId);
-    //console.log(url);
     const promise = new Promise(function(resolve, reject){
         const req = https.get(url, res => {
-            console.log(`GET Server Info status code: ${res.statusCode}`)
+            logger.log(`GET Server Info status code: ${res.statusCode}`)
             res.on('data', d => {
                 if(res.statusCode != 200){
                     reject(`Bad status code: [${res.statusCode}]`);
@@ -27,12 +26,12 @@ async function getServerInfo(roomId){
         });
         
         req.end();
-    }).then((d) => { return JSON.parse(d.toString()) }).catch((error) => { console.error(error); return {} });
+    }).then((d) => { return JSON.parse(d.toString()) }).catch((error) => { logger.error(error); return {} });
 
     return promise;  
 }
 
-async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose){
+async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose, logger){
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
 
@@ -53,19 +52,18 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
     console.log(liveStatus)
     */
 
-    const serverInfo = await getServerInfo(roomId);
+    const serverInfo = await getServerInfo(roomId, logger);
     if(serverInfo['wss_server']){
         const wsUrl = `wss://${serverInfo['wss_server']}?roomId=${roomId}`;
-        //console.log(wsUrl);
-
-        const ws = generateWebSocket(wsUrl, roomId, guestId);
-        return new ChatListener(roomId, ws);
+        logger.log(`Obtained websocket URL: ${wsUrl}`);
+        const ws = generateWebSocket(wsUrl, roomId, guestId, logger);
+        return new ChatListener(roomId, ws, logger);
     }
 
-    function generateWebSocket(wsUrl, roomId, guestId){
+    function generateWebSocket(wsUrl, roomId, guestId, logger){
         const ws = new WebSocket(wsUrl);
         ws.on('open', () => {
-            console.log(`Connecting to chat for roomId: ${roomId}...`);
+            logger.log(`Connecting to chat for roomId: ${roomId}...`);
             ws.send(JSON.stringify(
             {
                 level: 1,
@@ -86,7 +84,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                 switch(dataStruct.cmd)
                 {
                     case "enterRoom":
-                        console.log(`Connected to chat for roomId: ${roomId}!`);
+                        logger.log(`Connected to chat for roomId: ${roomId}!`);
                         break;
                     case "onChat":
                         onChatMessage({
@@ -98,31 +96,33 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                         });
                         break;
                     case "onLiveStart":
+                        logger.log(`Live has started, let's watch!`);
                         onLiveStart({
                             roomId: dataStruct.roomId,
                         });
                         break;
                     case "onLiveEnd":
-                        console.log(`Live has ended, thank you for watching!`);
+                        logger.log(`Live has ended, thank you for watching!`);
                         break;
                 }
             }
         });
         ws.on('close', (data) => {
-            console.log(`Closing connection to chat for roomId: ${roomId}!`);
+            logger.log(`Closing connection to chat for roomId: ${roomId}!`);
             if(onClose){
                 onClose();
             }
         })
-        ws.reopen = () => { return generateWebSocket(wsUrl, roomId, guestId)};
+        ws.reopen = () => { return generateWebSocket(wsUrl, roomId, guestId, logger)};
         return ws;
     }
 }
 
 class ChatListener{
-    constructor(roomId, webSocket){
+    constructor(roomId, webSocket, logger){
         this.roomId = roomId;
         this.webSocket = webSocket;
+        this.logger = logger ? logger : console;
         this.ping();
     }
 
@@ -144,7 +144,7 @@ class ChatListener{
             if(this.webSocket.readyState === 1){
                 this.webSocket.ping();
             }else if(this.webSocket.readyState > 1){
-                console.error(`Websocket closed unexpectedly for RoomId ${this.roomId}`)
+                this.logger.error(`Websocket closed unexpectedly for RoomId ${this.roomId}`)
                 this.webSocket = this.webSocket.reopen();
             }
             this.pingTimer = setTimeout(() => {
@@ -155,7 +155,7 @@ class ChatListener{
             if(this.webSocket){
                 this.webSocket.close();
             }
-            console.error(`Websocket ping error to RoomId ${this.roomId}: ${e}`);
+            this.logger.error(`Websocket ping error to RoomId ${this.roomId}: ${e}`);
         }
     }
 }

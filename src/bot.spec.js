@@ -14,6 +14,12 @@ describe("Error handling tests", () => {
                 },
                 generateEmbed(message){
                     return message;
+                },
+                getGuildId(){
+                    return 1234;
+                },
+                getOtherBotGuilds(){
+                    return [];
                 }
             },
             CONFIG_STORAGE: {
@@ -51,7 +57,7 @@ describe("Error handling tests", () => {
             }
         }
         // execute test
-        const bot = await AppConfig.BOT.initialize(dummyConfig);
+        const bot = await AppConfig.BOT.initialize(dummyConfig, 'test');
         expect(sent).toBe(undefined);
         bot.client.emit('message', dummyMessage);
         await new Promise((r) => setTimeout(r, 1000));

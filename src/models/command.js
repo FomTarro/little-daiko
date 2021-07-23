@@ -1,11 +1,10 @@
 const oneline = require('oneline')
+const constants = require('./constants');
+const Logger = require('../utils/logger');
 
 const REACT_OK = '✔️';
 const REACT_ERROR = '❌'
 
-/**
- * A! 
- */
 function commands(appConfig){
     const discordHelpers = appConfig.DISCORD_HELPERS;
     return [
@@ -210,22 +209,27 @@ function commands(appConfig){
         {
             aliases: ['start', 'listen', 'l'],
             permissions: 2,
-            callback: async (message, args) => { 
-                await message.channel.send("Starting listener.");
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
+                const logger = new Logger(discordHelpers.getGuildId(configKey));
+                const guild = discordHelpers.getOtherBotGuilds(message).find(g => g.id == configKey.guild.id);
                 const startEpoch = Date.parse(new Date());
-                const streamer = Number(appConfig.CONFIG_STORAGE.getProperty(message, 'streamer'));
+                const streamer = Number(appConfig.CONFIG_STORAGE.getProperty(configKey, 'streamer'));
+                await message.channel.send(`Starting listener.`);
+                logger.log(`Starting listener for streamer: ${streamer}!`)
                 const listener = await appConfig.MILDOM_CLIENT.startListener(streamer, 
                 // on message
                 (comment) => {
-                    const channels = appConfig.CONFIG_STORAGE.getProperty(message, 'output').chat;
-                    const users = appConfig.CONFIG_STORAGE.getProperty(message, "users");
+                    const channels = appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat;
+                    const users = appConfig.CONFIG_STORAGE.getProperty(configKey, "users");
                     for(let prefix in channels){
                         if(comment.authorId == streamer
                         || (users.includes(comment.authorId) 
                         && comment.message.toLowerCase().startsWith(`[${prefix.toLowerCase()}]`))){
                             if(comment.time > startEpoch){
-                                const chatChannel = discordHelpers.getChannel(message.guild, channels[prefix]);
+                                const chatChannel = discordHelpers.getChannel(guild, channels[prefix]);
                                 if(chatChannel){
+                                    logger.log(`Posting: ${JSON.stringify(comment)}`);
                                     chatChannel.send(appConfig.DISCORD_HELPERS.generateEmbed(comment));
                                 }
                             }
@@ -234,27 +238,29 @@ function commands(appConfig){
                 },
                 // on go live
                 (live) => {
-                    const alertRole = discordHelpers.getRole(message.guild, appConfig.CONFIG_STORAGE.getProperty(message, 'role').alert);
-                    const alertChannel = discordHelpers.getChannel(message.guild,appConfig.CONFIG_STORAGE.getProperty(message, 'output').alert);
+                    const alertRole = discordHelpers.getRole(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'role').alert);
+                    const alertChannel = discordHelpers.getChannel(guild ,appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').alert);
                     if(alertChannel){
-                        alertChannel.send(`${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`);
+                        const post = `${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`;
+                        logger.log(`Posting: ${post}`);
+                        alertChannel.send(post);
                     }
                 },
                 // on open
                 () => {
-                    if(message.guild && message.guild.me){
-                        message.guild.me.setNickname('little-daiko 🟢');
+                    if(guild && guild.me){
+                        guild.me.setNickname(constants.BOT_NAME_ONLINE);
                     }
                 },
                 // on close
                 () => {
-                    if(message.guild && message.guild.me){
-                        message.guild.me.setNickname('little-daiko 🔴');
+                    if(guild && guild.me){
+                        guild.me.setNickname(constants.BOT_NAME_OFFLINE);
                     }
-                });
-
-                appConfig.LISTENER_STORAGE.setListener(message, listener);
-
+                },
+                logger);
+                appConfig.LISTENER_STORAGE.setListener(configKey, listener);
+                logger.log(`Listener instantiated.`);
             },
             help: 
             [
@@ -270,8 +276,10 @@ function commands(appConfig){
             permissions: 2, 
             callback: async (message, args, override) => { 
                 const configKey = override ? override : message;
+                const logger = new Logger(discordHelpers.getGuildId(configKey));
                 await message.channel.send("Stopping listener.");
                 appConfig.LISTENER_STORAGE.deleteListener(configKey);
+                logger.log(`Stopping listener.`);
             },
             help: 
             [
@@ -284,18 +292,16 @@ function commands(appConfig){
         {
             aliases: ['status'],
             permissions: 2,
-            callback: async (message, args) => { 
-                const listener = appConfig.LISTENER_STORAGE.getListener(message);
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
+                const guild = discordHelpers.getOtherBotGuilds(message).find(g => g.id == configKey.guild.id);
+                const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
                 const isListening = listener && listener.isListening();
-                if(message.guild && message.guild.me){
-                    if(isListening){
-                        message.guild.me.setNickname('little-daiko 🟢');
-                    }else{
-                        message.guild.me.setNickname('little-daiko 🔴');
-                    }
+                if(guild && guild.me){
+                    guild.me.setNickname(isListening == true ? constants.BOT_NAME_ONLINE : constants.BOT_NAME_OFFLINE);
                 }
                 const status = isListening ? "listening" : "stopped";
-                message.channel.send(`Current status: \`${status}\`.`)
+                message.channel.send(`Current status: \`${status}\`.`);
             },
             help: 
             [
@@ -309,13 +315,16 @@ function commands(appConfig){
             aliases: ['remote', 'rem'],
             permissions: 100, 
             callback: async (message, args) => { 
-                if(args.length > 1){
+                if(args.length > 1 && discordHelpers.getOtherBotGuilds(message).find(g => g.id == args[0])){
                     const command = commands(appConfig).find(c => { return c.aliases.includes(args[1]); });
                     const override = {
                         guild: {
                             id: args[0]
                         }
                     }
+                    const origin = discordHelpers.getGuildId(message);
+                    new Logger(origin).log(`Remote execution of command: [${args[1]}] on server: ${args[0]}`);
+                    new Logger(args[0]).log(`Remote execution of command: [${args[1]}] from server: ${origin}`);
                     return await command.callback(message, args.slice(2), override);
                 }
                 return REACT_ERROR;
@@ -332,8 +341,9 @@ function commands(appConfig){
         {
             aliases: ['servers', 'sv', 'guilds'],
             permissions: 100, 
-            callback: async (message, args) => { 
-                const guilds = message.guild.me.client.guilds.cache.array().map((guild) => {
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
+                const guilds = discordHelpers.getOtherBotGuilds(message).map((guild) => {
                     return {
                         name: `${guild.name}`,
                         value: `\`${guild.id}\``
@@ -399,7 +409,7 @@ function commands(appConfig){
                 },
             ]
         },
-    ]
+    ];
 }
 
 module.exports = commands;

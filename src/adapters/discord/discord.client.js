@@ -1,24 +1,25 @@
 const Discord = require('discord.js');
 
-async function initialize(onLogin, onException, appConfig){
+async function initialize(onLogin, onException, events, logger){
     const client = new Discord.Client();
-    for(let [event, callback] of appConfig.EVENTS(appConfig)){
+    for(let [event, callback] of events){
         client.on(event, (input) => {
             callback(input, onException);
         });
     }
 
     client.on('ready', () => {
-        console.log(`Logged in as ${client.user.tag}!`);
+        logger.log(`Logged in as ${client.user.tag}!`);
         onLogin(client);
     });
-    console.log(`Client created, awaiting login...`);
-    return new DiscordClient(client);
+    logger.log(`Client instantiated, awaiting login...`);
+    return new DiscordClient(client, logger);
 }
 
 class DiscordClient{
-    constructor(client){
+    constructor(client, logger){
         this.client = client;
+        this.logger = logger;
     }
     login(token){
         if(this.client){
@@ -28,7 +29,7 @@ class DiscordClient{
     
     shutdown(){
         if(this.client){
-            console.log(`Client shutting down...`)
+            this.logger.log(`Client shutting down...`)
             this.client.destroy();
         }
     }
@@ -43,7 +44,7 @@ class DiscordClient{
         try{
             message.channel.send(content);
         }catch(e){
-            console.error(e);
+            this.logger.error(e);
         }
     }
 }

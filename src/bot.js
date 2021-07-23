@@ -1,20 +1,25 @@
-async function initialize(appConfig){
+const constants = require("./models/constants");
+const Logger = require('./utils/logger');
+
+async function initialize(appConfig, logId){
+    const logger = new Logger(logId);
     const client = await appConfig.DISCORD_CLIENT.initialize(
         (c) => { 
             for(let guild of c.guilds.cache.array()){
                 if(guild && guild.me){
-                    guild.me.setNickname('little-daiko 🔴');
+                    guild.me.setNickname(constants.BOT_NAME_OFFLINE);
                     // TODO: notify servers of changes since last login
                 }
-                console.log(`${guild.name} | ${guild.id}`);
+                logger.log(`${guild.name} | ${guild.id}`);
             } 
         }, 
         (input, e) => {
-            console.error(e);
+            new Logger(appConfig.DISCORD_HELPERS.getGuildId(input)).error(`${e.stack ? e.stack : e}`);
             const error = `Sorry! We hit an error! The stupid mother fucker who wrote this bot doesn't know how to fucking program: \`\`\`${e}\`\`\``
             client.respondToMessage(input, error);
         },
-        appConfig
+        appConfig.EVENTS(appConfig),
+        logger
     );
     return new Bot(appConfig, client);
 }
