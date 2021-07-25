@@ -3,7 +3,8 @@ const Logger = require('./utils/logger');
 
 async function initialize(appConfig, logId){
     const logger = new Logger(logId);
-    const client = await appConfig.DISCORD_CLIENT.initialize(
+    logger.log(`-------------`)
+    const client = await appConfig.DISCORD_CLIENT.startClient(
         (c) => { 
             for(let guild of c.guilds.cache.array()){
                 if(guild && guild.me){
@@ -11,6 +12,7 @@ async function initialize(appConfig, logId){
                     // TODO: notify servers of changes since last login
                 }
                 logger.log(`${guild.name} | ${guild.id}`);
+                new Logger(appConfig.DISCORD_HELPERS.getGuildId(guild)).log(`-------------`);
             } 
         }, 
         (input, e) => {

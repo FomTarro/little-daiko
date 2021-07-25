@@ -1,3 +1,8 @@
+/**
+ * List of events for the discord client to listen for
+ * @param {AppConfig} appConfig 
+ * @returns List of events
+ */
 function events(appConfig) { 
     const discordHelpers = appConfig.DISCORD_HELPERS;
         return new Map([

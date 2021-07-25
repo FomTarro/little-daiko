@@ -1,3 +1,8 @@
+/**
+ * Map of permission levels and their corresonding check functions
+ * @param {AppConfig} appConfig 
+ * @returns Map of permissions
+ */
 function permissions(appConfig){
     const discordHelpers = appConfig.DISCORD_HELPERS;
     return {

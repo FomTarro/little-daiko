@@ -2,15 +2,23 @@ const oneline = require('oneline')
 const constants = require('./constants');
 const Logger = require('../utils/logger');
 
-const REACT_OK = '✔️';
-const REACT_ERROR = '❌'
-
+/**
+ * A list of command definitions for the bot to listen to, 
+ * including permission levels, the callback function, and help tooltips.
+ * @param {AppConfig} appConfig 
+ * @returns The list of commands
+ */
 function commands(appConfig){
     const discordHelpers = appConfig.DISCORD_HELPERS;
     return [
         {
             aliases: ['config', 'conf', 'c'],
             permissions: 1,
+            /**
+             * @param {*} message Activating message
+             * @param {string[]} args List of arguments
+             * @param {*} override Optional message override for remote access
+             */
             callback: async (message, args, override) => { 
                 const configKey = override ? override : message;
                 const fields = appConfig.CONFIG_STORAGE.getAllProperties(configKey).map(prop => {
@@ -39,9 +47,9 @@ function commands(appConfig){
                 const configKey = override ? override : message;
                 if(args && args.length > 0){
                     appConfig.CONFIG_STORAGE.setProperty(configKey, "prefix", args[0]);
-                    return REACT_OK;
+                    return constants.REACT_OK_EMOJI;
                 }
-                return REACT_ERROR;
+                return constants.REACT_ERROR_EMOJI;
             },
             help: 
             [
@@ -62,15 +70,15 @@ function commands(appConfig){
                     if(type === 'ops'){
                         roles.ops = args[1];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
-                        return REACT_OK;
+                        return constants.REACT_OK_EMOJI;
                     }
                     if(type === 'alert'){
                         roles.alert = args[1];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
-                        return REACT_OK;
+                        return constants.REACT_OK_EMOJI;
                     }
                 }
-                return REACT_ERROR;
+                return constants.REACT_ERROR_EMOJI;
             },
             help: 
             [
@@ -95,10 +103,10 @@ function commands(appConfig){
                     const argId = Number(args[0]);
                     if(!isNaN(argId)){
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "streamer", argId);
-                        return REACT_OK;
+                        return constants.REACT_OK_EMOJI;
                     }
                 }
-                return REACT_ERROR;
+                return constants.REACT_ERROR_EMOJI;
             },
             help: 
             [
@@ -123,7 +131,7 @@ function commands(appConfig){
                         return !isNaN(user) 
                     }))];
                     if(argIds.length <= 0){
-                        return REACT_ERROR;
+                        return constants.REACT_ERROR_EMOJI;
                     }
                     if("remove" === action){
                         const updatedUsers = users.filter((user) => { 
@@ -131,17 +139,17 @@ function commands(appConfig){
                         });
                         if(updatedUsers.length === users.length){
                             // no users removed
-                            return REACT_ERROR;
+                            return constants.REACT_ERROR_EMOJI;
                         }
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "users", updatedUsers);
-                        return REACT_OK;
+                        return constants.REACT_OK_EMOJI;
                     }else if("add" === action){
                         const updatedUsers = [...new Set(users.concat(argIds))];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "users", updatedUsers);
-                        return REACT_OK;
+                        return constants.REACT_OK_EMOJI;
                     }
                 }
-                return REACT_ERROR;
+                return constants.REACT_ERROR_EMOJI;
             },
             help:
             [
@@ -173,21 +181,21 @@ function commands(appConfig){
                             if(operation === 'add' && args.length > 3){
                                 channels.chat[language] = args[3];
                                 appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
-                                return REACT_OK;
+                                return constants.REACT_OK_EMOJI;
                             }else if(operation === 'remove'){
                                 delete channels.chat[language];
                                 appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
-                                return REACT_OK;
+                                return constants.REACT_OK_EMOJI;
                             }
                         }
                     }
                     if(type === 'alert'){
                         channels.alert = args[1];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
-                        return REACT_OK;
+                        return constants.REACT_OK_EMOJI;
                     }
                 }
-                return REACT_ERROR;
+                return constants.REACT_ERROR_EMOJI;
             },
             help: 
             [
@@ -314,10 +322,11 @@ function commands(appConfig){
         {
             aliases: ['remote', 'rem'],
             permissions: 100, 
-            callback: async (message, args) => { 
+            callback: async (message, args, override) => { 
+                const configKey = override ? override : message;
                 if(args.length > 1 && discordHelpers.getOtherBotGuilds(message).find(g => g.id == args[0])){
                     const command = commands(appConfig).find(c => { return c.aliases.includes(args[1]); });
-                    const override = {
+                    const newOverride = {
                         guild: {
                             id: args[0]
                         }
@@ -325,9 +334,10 @@ function commands(appConfig){
                     const origin = discordHelpers.getGuildId(message);
                     new Logger(origin).log(`Remote execution of command: [${args[1]}] on server: ${args[0]}`);
                     new Logger(args[0]).log(`Remote execution of command: [${args[1]}] from server: ${origin}`);
-                    return await command.callback(message, args.slice(2), override);
+                    await command.callback(message, args.slice(2), newOverride);
+                    return constants.REACT_OK_EMOJI;
                 }
-                return REACT_ERROR;
+                return constants.REACT_ERROR_EMOJI;
             },
             help: 
             [
@@ -381,9 +391,10 @@ function commands(appConfig){
                                 message: 'Command Information:',
                                 fields: fields
                             }));
-                            return;
+                            return constants.REACT_OK_EMOJI;
                         }
                     }
+                    return constants.REACT_ERROR_EMOJI;
                 }
                 const fields = commands(appConfig).map((value) => {
                     return `\`${value.aliases.join(', ')}\``;

@@ -5,6 +5,12 @@ const WebSocket = require('ws');
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
 
+/**
+ * Gets info from mildom including the websocket address for the given channel
+ * @param {Number} roomId Channel ID, must be numeric
+ * @param {console} logger Logging implementation
+ * @returns 
+ */
 async function getServerInfo(roomId, logger){
     const url = new URL(serverUrl);
     url.searchParams.append("room_id", roomId);
@@ -31,6 +37,16 @@ async function getServerInfo(roomId, logger){
     return promise;  
 }
 
+/**
+ * Creates and starts a listener to the mildom channel of the given ID
+ * @param {Number} roomId Channel ID, must be numeric
+ * @param {function} onChatMessage Callback to execute upon recieving a chat message
+ * @param {function} onLiveStart Callback to execute upon the channel going live
+ * @param {function} onOpen Callback to execute upon successful connection to the channel
+ * @param {function} onClose Callback to execute upon disconnect from the channel
+ * @param {console} logger Logging implementation
+ * @returns {ChatListener} The listener to the channel 
+ */
 async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose, logger){
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
@@ -113,11 +129,15 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                 onClose();
             }
         })
+        // Stored function configuration to allow the websocket to recreate itself later.
         ws.reopen = () => { return generateWebSocket(wsUrl, roomId, guestId, logger)};
         return ws;
     }
 }
 
+/**
+ * A listener to the mildom channel of the given ID
+ */
 class ChatListener{
     constructor(roomId, webSocket, logger){
         this.roomId = roomId;
@@ -126,6 +146,9 @@ class ChatListener{
         this.ping();
     }
 
+    /**
+     * Gracefully disconnects the listener and stops automatic reconnect attempts
+     */
     stopListener(){
         if(this.pingTimer){
             clearTimeout(this.pingTimer);
@@ -135,10 +158,17 @@ class ChatListener{
         }
     }
 
+    /**
+     * Checks if the listener is actively connected to the channel
+     * @returns {Boolean}
+     */
     isListening(){
         return this.webSocket ? this.webSocket.readyState === 1 : false;
     }
 
+    /**
+     * Recursively pings the channel to keep the listener alive
+     */
     async ping(){
         try{
             if(this.webSocket.readyState === 1){

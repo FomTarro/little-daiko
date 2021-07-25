@@ -7,8 +7,8 @@ class Logger{
     constructor(guildId){
         this.console = streams.has(guildId) ? streams.get(guildId) : 
         streams.set(guildId, AppConfig.ENV == "test" ? 
-            console :  
-            new console.Console(fs.createWriteStream(`./logs/${guildId}.log`, {flags:'a'}))).get(guildId);
+            testLogger : new console.Console(fs.createWriteStream(`./logs/${guildId}.log`, {flags:'a'}))
+            ).get(guildId);
     }
     log(message){
         this.console.log(`[INFO] (${new Date().toLocaleString()}) - ${message}`);
@@ -20,5 +20,11 @@ class Logger{
         this.console.error(`[FAIL] (${new Date().toLocaleString()}) - ${message}`);
     }
 } 
+
+const testLogger = {
+    log(){},
+    warn(){},
+    error(){}
+}
 
 module.exports = Logger;
