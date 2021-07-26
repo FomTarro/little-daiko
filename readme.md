@@ -2,7 +2,7 @@
 A Discord bot for integrating with the [mildom.com](https://www.mildom.com) streaming platform.
  
 ## About
-Named after the digital persona of beloved mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her western fans. 
+Named after the digital persona of beloved mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her fans abroad. 
  
 To that end, this bot seeks to achieve two primary goals:
 1) To provide go-live alerts for a designated streamer by pinging a designated role, and posting the alert in a designated Discord channel.
@@ -27,6 +27,40 @@ Usable by: Any user.
 
 Displays a list of all configurable properties for the server.
 
+### `[help, h]`
+
+`!help`
+
+Usable by: Any user.
+
+Displays a list of all commands and their aliases.
+
+`!help <command>`
+
+Usable by: Any user.
+
+Displays usage information about a specific command.
+
+### `[output, out, o]`
+
+`!output chat add <language prefix> <channel name or id>`
+
+Usable by: Bot Operator, Server Owner or Bot Owner.
+
+Sets the server channel which stream messages with the designated language prefix will be posted to. Stream messages from the streamer will go to all language channels.
+
+`!output chat remove <language prefix>`
+
+Usable by: Bot Operator, Server Owner or Bot Owner.
+
+Stops posting to the server for the given language prefix.
+
+`!output alert <channel name or id>`
+
+Usable by: Bot Operator, Server Owner or Bot Owner.
+
+Sets the server channel which stream go-live alerts will be posted to.
+
 ### `[prefix, p]`
 
 `!prefix <prefix string>`
@@ -34,6 +68,14 @@ Displays a list of all configurable properties for the server.
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Sets the prefix to denote bot commands.
+
+### `[remote, rem]`
+
+`!remote <server id> <command> <command args>`
+
+Usable by: Bot Owner.
+
+Allows remote execution of commands on deployed servers by the bot owner,  for checking on bot status and assisting with setup.
 
 ### `[role, r]`
 
@@ -48,6 +90,38 @@ Sets the role name of permitted bot operators for this server. The server owner 
 Usable by: Server Owner or Bot Owner.
 
 Sets the role to ping when the designated streamer goes live.  The alert will be posted in the designated alert channel.
+
+### `[servers, sv, guilds]`
+
+`!servers`
+
+Usable by: Bot Owner.
+
+Lists all servers that the bot is currently connected to.
+
+### `[start, listen, l]`
+
+`!start`
+
+Usable by: Bot Operator, Server Owner or Bot Owner.
+
+Starts listening to the chat of the selected streamer,  for messages tagged with the designated language tag that are posted by users on the designated users list.
+
+### `[status]`
+
+`!status`
+
+Usable by: Bot Operator, Server Owner or Bot Owner.
+
+Lists the status of the chat listener for the server.
+
+### `[stop, x]`
+
+`!stop`
+
+Usable by: Bot Operator, Server Owner or Bot Owner.
+
+Stops listening to the chat of the selected streamer.
 
 ### `[streamer, s]`
 
@@ -70,78 +144,4 @@ Adds all listed user ids to the list of users to listen for.  The list must be s
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Removes all listed user ids from the list of users to listen for.  The list must be space-separated. The user ids must be numbers.
-
-### `[output, out, o]`
-
-`!output chat add <language prefix> <channel name or id>`
-
-Usable by: Bot Operator, Server Owner or Bot Owner.
-
-Sets the server channel which stream messages with the designated language prefix will be posted to. Stream messages from the streamer will go to all language channels.
-
-`!output chat remove <language prefix>`
-
-Usable by: Bot Operator, Server Owner or Bot Owner.
-
-Stops posting to the server for the given language prefix.
-
-`!output alert <channel name or id>`
-
-Usable by: Bot Operator, Server Owner or Bot Owner.
-
-Sets the server channel which stream go-live alerts will be posted to.
-
-### `[start, listen, l]`
-
-`!start`
-
-Usable by: Bot Operator, Server Owner or Bot Owner.
-
-Starts listening to the chat of the selected streamer,  for messages tagged with the designated language tag that are posted by users on the designated users list.
-
-### `[stop, x]`
-
-`!stop`
-
-Usable by: Bot Operator, Server Owner or Bot Owner.
-
-Stops listening to the chat of the selected streamer.
-
-### `[status]`
-
-`!status`
-
-Usable by: Bot Operator, Server Owner or Bot Owner.
-
-Lists the status of the chat listener for the server.
-
-### `[remote, rem]`
-
-`!remote <server id> <command> <command args>`
-
-Usable by: Bot Owner.
-
-Allows remote execution of commands on deployed servers by the bot owner,  for checking on bot status and assisting with setup.
-
-### `[servers, sv, guilds]`
-
-`!servers`
-
-Usable by: Bot Owner.
-
-Lists all servers that the bot is currently connected to.
-
-### `[help, h]`
-
-`!help`
-
-Usable by: Any user.
-
-Displays a list of all commands and their aliases.
-
-`!help <command>`
-
-Usable by: Any user.
-
-Displays usage information about a specific command.
 

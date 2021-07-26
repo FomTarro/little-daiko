@@ -47,26 +47,7 @@ describe("Help command tests", () => {
                     return '!';
                 }
             },
-            PERMISSIONS(){
-                return {
-                    1: {
-                        check: () => { return true },
-                        decription: "desc"
-                    },
-                    2: {
-                        check: () => { return true },
-                        decription: "desc"
-                    },
-                    3: {
-                        check: () => { return true },
-                        decription: "desc"
-                    },
-                    100: {
-                        check: () => { return true },
-                        decription: "desc"
-                    }
-                }
-            }
+            PERMISSIONS: AppConfig.PERMISSIONS,
         }
         let sent = false;
         const dummyMessage = {
@@ -476,7 +457,6 @@ describe("Users command tests", () => {
 describe("Start command tests", () => {
     test("Start", async() => {
         // set up mock dependencies
-        let channel = undefined;
         let listener = undefined;
         const dummyConfig = {
             CONFIG_STORAGE: {
@@ -491,6 +471,14 @@ describe("Start command tests", () => {
             LISTENER_STORAGE: {
                 setListener(message, l){
                     listener = l;
+                }
+            },
+            DISCORD_HELPERS:{
+                getGuildId(){
+                    return 1234;
+                },
+                getOtherBotGuilds(){
+                    return [];
                 }
             }
         }
@@ -531,6 +519,11 @@ describe("Stop command tests", () => {
                 deleteListener(message){
                     deleted = true;
                 }
+            },
+            DISCORD_HELPERS:{
+                getGuildId(){
+                    return 1234;
+                },
             }
         }
         let sent = false;
@@ -568,6 +561,14 @@ describe("Remote command tests", () => {
             DISCORD_HELPERS: {
                 generateEmbed(input){
                     return input;
+                },
+                getGuildId(){
+                    return 11223344;
+                },
+                getOtherBotGuilds(){
+                    return [{
+                        id: 11223344
+                    }];
                 }
             },
         }
@@ -600,6 +601,21 @@ describe("Status command tests", () => {
                         }
                     }
                 }
+            },
+            DISCORD_HELPERS:{
+                getGuildId(){
+                    return 1234;
+                },
+                getOtherBotGuilds(){
+                    return [{
+                        id: 1234,
+                        me:{
+                            setNickname(nick){
+                                nickname = nick;
+                            }
+                        }
+                    }];
+                }
             }
         }
         let sent = false;
@@ -611,11 +627,7 @@ describe("Status command tests", () => {
                 }
             },
             guild:{
-                me:{
-                    setNickname(nick){
-                        nickname = nick;
-                    }
-                }
+                id: 1234
             }
         }
         // execute test
@@ -636,6 +648,21 @@ describe("Status command tests", () => {
                         }
                     }
                 }
+            },
+            DISCORD_HELPERS: {
+                getGuildId(){
+                    return 1234;
+                },
+                getOtherBotGuilds(){
+                    return [{
+                        id: 1234,
+                        me:{
+                            setNickname(nick){
+                                nickname = nick;
+                            }
+                        }
+                    }];
+                }
             }
         }
         let sent = false;
@@ -647,11 +674,7 @@ describe("Status command tests", () => {
                 }
             },
             guild:{
-                me:{
-                    setNickname(nick){
-                        nickname = nick;
-                    }
-                }
+                id: 1234
             }
         }
         // execute test

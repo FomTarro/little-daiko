@@ -1,52 +1,78 @@
 const Discord = require('discord.js');
+const { ErrorCallback, EventCallback } = require('../../engine/events');
 
-async function initialize(onLogin, onException, appConfig){
+/**
+ * The callback for an event.
+ *
+ * @callback LoginCallback
+ * @param {Discord.Client} client
+ */
+
+/**
+ * Creates a Discord client.
+ * @param {LoginCallback} onLogin Callback to execute on login.
+ * @param {ErrorCallback} onError Callback to execute on error.
+ * @param {Map<String, EventCallback} events List of other events to listen for.
+ * @param {console} logger Logging implementation.
+ * @returns {DiscordClient}
+ */
+async function startClient(onLogin, onError, events, logger){
     const client = new Discord.Client();
-    for(let [event, callback] of appConfig.EVENTS(appConfig)){
+    for(let [event, callback] of events){
         client.on(event, (input) => {
-            callback(input, onException);
+            callback(input, onError);
         });
     }
 
     client.on('ready', () => {
-        console.log(`Logged in as ${client.user.tag}!`);
+        logger.log(`Logged in as ${client.user.tag}!`);
         onLogin(client);
     });
-    console.log(`Client created, awaiting login...`);
-    return new DiscordClient(client);
+    logger.log(`Client instantiated, awaiting login...`);
+    return new DiscordClient(client, logger);
 }
 
+/**
+ * A client for a Discord bot.
+ */
 class DiscordClient{
-    constructor(client){
+    constructor(client, logger){
         this.client = client;
+        this.logger = logger;
     }
+    /**
+     * Logs in to the bot account.
+     * @param {string} token The login token.
+     */
     login(token){
         if(this.client){
             this.client.login(token);
         }
     }
     
+    /**
+     * Logs out and shuts down the bot.
+     */
     shutdown(){
         if(this.client){
-            console.log(`Client shutting down...`)
+            this.logger.log(`Client shutting down...`)
             this.client.destroy();
         }
     }
     
+    /**
+     * Spoofs a message to intercept.
+     * 
+     * Mostly useful for testing.
+     * @param {string} event The event name to emit.
+     * @param {any} input The event payload.
+     */
     emit(event, input){
         if(this.client){
             this.client.emit(event, input)
         }
     }
-    
-    respondToMessage(message, content){
-        try{
-            message.channel.send(content);
-        }catch(e){
-            console.error(e);
-        }
-    }
 }
 
-module.exports.initialize = initialize;
+module.exports.startClient = startClient;
 module.exports.DiscordClient = DiscordClient;

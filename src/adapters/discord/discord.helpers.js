@@ -1,4 +1,6 @@
 const Discord = require('discord.js');
+const { ChatMessage } = require('../../models/chat.message');
+
 const owner = '106091790301421568';
 
 function isMessage (subject){
@@ -43,6 +45,12 @@ function getGuildId(subject){
                                 : subject.guild.id;
 }
 
+function getOtherBotGuilds(subject){
+    return  isMessage(subject) ? subject.guild.me.client.guilds.cache.array() :
+            isGuild(subject) ? subject.me.client.guilds.cache.array() :
+            [];
+}
+
 function hasRole(subject, role){
     const user = isMessage(subject) ? subject.member : subject;
     // TODO: make this use getRole
@@ -80,6 +88,11 @@ function getChannel(guild, channelIdentifier){
     getChannelByName(guild, channelIdentifier);
 }
 
+/**
+ * Generates an embed for a given ChatMessage.
+ * @param {ChatMessage} message The message to embded.
+ * @returns {Discord.MessageEmbed}
+ */
 function generateEmbed(message){
     const embed = new Discord.MessageEmbed().setColor('#f1c40f');
     embed.setDescription(message.message)
@@ -115,5 +128,6 @@ module.exports.getChannelById = getChannelById;
 module.exports.getChannel = getChannel;
 module.exports.getUserId = getUserId;
 module.exports.getGuildId = getGuildId;
+module.exports.getOtherBotGuilds = getOtherBotGuilds;
 
 module.exports.generateEmbed = generateEmbed;
