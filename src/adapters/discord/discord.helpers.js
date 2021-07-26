@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const { ChatMessage } = require('../../models/chat.message');
 const owner = '106091790301421568';
 
 function isMessage (subject){
@@ -86,6 +87,11 @@ function getChannel(guild, channelIdentifier){
     getChannelByName(guild, channelIdentifier);
 }
 
+/**
+ * Generates an embed for a given ChatMessage
+ * @param {ChatMessage} message The message to embded
+ * @returns {Discord.MessageEmbed}
+ */
 function generateEmbed(message){
     const embed = new Discord.MessageEmbed().setColor('#f1c40f');
     embed.setDescription(message.message)

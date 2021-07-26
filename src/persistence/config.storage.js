@@ -1,5 +1,4 @@
 const { AppConfig } = require('../../app.config');
-const DiscordHelpers = AppConfig.DISCORD_HELPERS;
 const Enmap = require('enmap');
 
 const schema = new Enmap({
@@ -51,11 +50,11 @@ function getAllProperties(subject){
  * @returns 
  */
 function setProperty(subject, property, value){
-    return schema.set(DiscordHelpers.getGuildId(subject), value, property);
+    return schema.set(AppConfig.DISCORD_HELPERS.getGuildId(subject), value, property);
 }
 
 function getGuildConfig(subject){
-    return schema.get(DiscordHelpers.getGuildId(subject));
+    return schema.get(AppConfig.DISCORD_HELPERS.getGuildId(subject));
 }
 
 /**
@@ -64,7 +63,7 @@ function getGuildConfig(subject){
  * @returns 
  */
 function deleteGuildConfig(subject){
-    return schema.delete(DiscordHelpers.getGuildId(subject))
+    return schema.delete(AppConfig.DISCORD_HELPERS.getGuildId(subject))
 }
 
 module.exports.getProperty = getProperty;

@@ -47,26 +47,7 @@ describe("Help command tests", () => {
                     return '!';
                 }
             },
-            PERMISSIONS(){
-                return {
-                    1: {
-                        check: () => { return true },
-                        decription: "desc"
-                    },
-                    2: {
-                        check: () => { return true },
-                        decription: "desc"
-                    },
-                    3: {
-                        check: () => { return true },
-                        decription: "desc"
-                    },
-                    100: {
-                        check: () => { return true },
-                        decription: "desc"
-                    }
-                }
-            }
+            PERMISSIONS: AppConfig.PERMISSIONS,
         }
         let sent = false;
         const dummyMessage = {

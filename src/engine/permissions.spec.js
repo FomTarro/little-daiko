@@ -30,13 +30,13 @@ describe("Permissions tests", () => {
         // execute test
         const dummyUser = {};
         const permissions = AppConfig.PERMISSIONS(dummyConfig);
-        const anyUser = permissions['1'];
+        const anyUser = permissions.get(1);
         expect(anyUser.check(dummyUser)).toBe(expectedAnyUser);
-        const hasRole = permissions['2'];
+        const hasRole = permissions.get(2);
         expect(hasRole.check(dummyUser)).toBe(expectedHasRole);
-        const guildOwner = permissions['3'];
+        const guildOwner = permissions.get(3);
         expect(guildOwner.check(dummyUser)).toBe(expectedGuildOwner);
-        const botOwner = permissions['100'];
+        const botOwner = permissions.get(100);
         expect(botOwner.check(dummyUser)).toBe(expectedBotOwner);
     });
 });

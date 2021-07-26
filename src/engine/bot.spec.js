@@ -1,4 +1,5 @@
-const { AppConfig } = require("../app.config");
+const { AppConfig } = require("../../app.config");
+const { Command } = require("../models/command");
 
 describe("Error handling tests", () => {
     test("Basic error in command", async() => {
@@ -37,13 +38,13 @@ describe("Error handling tests", () => {
             EVENTS: AppConfig.EVENTS,
             COMMANDS(){
                 return [
-                {
-                    aliases: ['help'],
-                    async callback(){
+                new Command(
+                    ['help'],
+                    1,
+                    async () => {
                         throw "here's a special new error!"
                     },
-                    permissions: 1
-                }
+                )
             ]},
             PERMISSIONS: AppConfig.PERMISSIONS
         }
@@ -57,7 +58,7 @@ describe("Error handling tests", () => {
             }
         }
         // execute test
-        const bot = await AppConfig.BOT.initialize(dummyConfig, 'test');
+        const bot = await AppConfig.BOT.startBot(dummyConfig, 'test');
         expect(sent).toBe(undefined);
         bot.client.emit('message', dummyMessage);
         await new Promise((r) => setTimeout(r, 1000));

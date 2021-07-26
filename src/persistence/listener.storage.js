@@ -7,7 +7,7 @@ const storage = new Map();
  * Stores the given listener for the given originating event
  * @param {*} subject The originating event
  * @param {ChatListener} listener The listener to store
- * @returns 
+ * @returns {string} The key of the deleted entry
  */
 function setListener(subject, listener){
     const key = deleteListener(subject);
@@ -18,7 +18,7 @@ function setListener(subject, listener){
 /**
  * Gets the listener for the originating event
  * @param {*} subject The originating event
- * @returns {ChatListener}
+ * @returns {ChatListener} The stored Chat Listener
  */
 function getListener(subject){
     const key = AppConfig.DISCORD_HELPERS.getGuildId(subject);
@@ -30,7 +30,7 @@ function getListener(subject){
 /**
  * Deletes and shuts down the listener for the given originating event
  * @param {*} subject The originating event
- * @returns 
+ * @returns {string} The key of the deleted entry
  */
 function deleteListener(subject){
     const key = AppConfig.DISCORD_HELPERS.getGuildId(subject);

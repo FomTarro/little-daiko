@@ -1,18 +1,36 @@
 const Discord = require('discord.js');
 
+// TODO: importing docs from another file feels weird
+
+/**
+ * The callback for an event
+ *
+ * @callback LoginCallback
+ * @param {Discord.Client} client
+ */
+
+/**
+ * The callback for an error
+ *
+ * @callback ErrorCallback
+ * @param {Message} message
+ * @param {*} Exception
+ */
+
+
 /**
  * Creates a discord client
- * @param {function} onLogin Callback to execute on login
- * @param {function} onException Callback to execute on error
- * @param {*} events List of other events to listen for
+ * @param {LoginCallback} onLogin Callback to execute on login
+ * @param {ErrorCallback} onError Callback to execute on error
+ * @param {Map<String, import('../../engine/event').EventCallback} events List of other events to listen for
  * @param {console} logger Logging implementation
  * @returns {DiscordClient}
  */
-async function startClient(onLogin, onException, events, logger){
+async function startClient(onLogin, onError, events, logger){
     const client = new Discord.Client();
     for(let [event, callback] of events){
         client.on(event, (input) => {
-            callback(input, onException);
+            callback(input, onError);
         });
     }
 
@@ -62,19 +80,6 @@ class DiscordClient{
     emit(event, input){
         if(this.client){
             this.client.emit(event, input)
-        }
-    }
-    
-    /**
-     * Wrapper for replying to a given message
-     * @param {Discord.Message} message The message to respond to
-     * @param {String} content The body of the message
-     */
-    respondToMessage(message, content){
-        try{
-            message.channel.send(content);
-        }catch(e){
-            this.logger.error(e);
         }
     }
 }

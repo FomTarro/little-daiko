@@ -1,3 +1,4 @@
+const { ChatMessage } = require('../../models/chat.message');
 const { v4 } = require('uuid');
 const https = require('https');
 const WebSocket = require('ws');
@@ -103,13 +104,13 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                         logger.log(`Connected to chat for roomId: ${roomId}!`);
                         break;
                     case "onChat":
-                        onChatMessage({
-                            authorName: dataStruct.userName,
-                            authorId: dataStruct.userId,
-                            authorImage: dataStruct.userImg,
-                            message: dataStruct.msg,
-                            time: dataStruct.time,
-                        });
+                        onChatMessage(new ChatMessage(
+                            dataStruct.userName,
+                            dataStruct.userId,
+                            dataStruct.userImg,
+                            dataStruct.msg,
+                            dataStruct.time,
+                        ));
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
@@ -139,6 +140,12 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
  * A listener to the mildom channel of the given ID
  */
 class ChatListener{
+    /**
+     * 
+     * @param {number} roomId 
+     * @param {WebSocket} webSocket 
+     * @param {console} logger 
+     */
     constructor(roomId, webSocket, logger){
         this.roomId = roomId;
         this.webSocket = webSocket;
