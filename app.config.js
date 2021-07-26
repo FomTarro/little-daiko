@@ -1,5 +1,8 @@
 require('dotenv').config();
 
+/**
+ * A dependency injection configuration.
+ */
 class AppConfig{
     get ENV(){ return process.env.NODE_ENV || 'local'; };
     get PORT(){ return process.env.PORT || 8080; };
@@ -15,7 +18,7 @@ class AppConfig{
     get LISTENER_STORAGE(){ return require('./src/persistence/listener.storage')};
 
     get BOT(){ return require('./src/engine/bot')};
-    get EVENTS(){ return require('./src/engine/event')};
+    get EVENTS(){ return require('./src/engine/events')};
     get COMMANDS(){ return require('./src/engine/commands')};
     get PERMISSIONS(){ return require('./src/engine/permissions')};
 }

@@ -3,7 +3,14 @@ const { AppConfig } = require('../../app.config');
 // cache write streams to prevent thread lock on the same file
 const streams = new Map();
 
+/**
+ * Logging implementation that writes to disk.
+ */
 class Logger{
+    /**
+     * 
+     * @param {string} guildId File name and server identifier.
+     */
     constructor(guildId){
         this.console = streams.has(guildId) ? streams.get(guildId) : 
         streams.set(guildId, AppConfig.ENV == "test" ? 
@@ -27,4 +34,4 @@ const testLogger = {
     error(){}
 }
 
-module.exports = Logger;
+module.exports.Logger = Logger;

@@ -7,9 +7,9 @@ const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstud
 const serverUrl = "https://im.mildom.com/"
 
 /**
- * Gets info from mildom including the websocket address for the given channel
- * @param {Number} roomId Channel ID, must be numeric
- * @param {console} logger Logging implementation
+ * Gets info from mildom including the websocket address for the given channel.
+ * @param {Number} roomId Channel ID, must be numeric.
+ * @param {console} logger Logging implementation.
  * @returns 
  */
 async function getServerInfo(roomId, logger){
@@ -39,14 +39,14 @@ async function getServerInfo(roomId, logger){
 }
 
 /**
- * Creates and starts a listener to the mildom channel of the given ID
- * @param {Number} roomId Channel ID, must be numeric
- * @param {function} onChatMessage Callback to execute upon recieving a chat message
- * @param {function} onLiveStart Callback to execute upon the channel going live
- * @param {function} onOpen Callback to execute upon successful connection to the channel
- * @param {function} onClose Callback to execute upon disconnect from the channel
- * @param {console} logger Logging implementation
- * @returns {ChatListener} The listener to the channel 
+ * Creates and starts a listener to the mildom channel of the given ID.
+ * @param {Number} roomId Channel ID, must be numeric.
+ * @param {function} onChatMessage Callback to execute upon recieving a chat message.
+ * @param {function} onLiveStart Callback to execute upon the channel going live.
+ * @param {function} onOpen Callback to execute upon successful connection to the channel.
+ * @param {function} onClose Callback to execute upon disconnect from the channel.
+ * @param {console} logger Logging implementation.
+ * @returns {ChatListener} The listener to the channel.
  */
 async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose, logger){
     const uuId = v4();
@@ -77,6 +77,14 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
         return new ChatListener(roomId, ws, logger);
     }
 
+    /**
+     * 
+     * @param {URL} wsUrl Websocket URL.
+     * @param {number} roomId Channel ID.
+     * @param {string} guestId User ID
+     * @param {console} logger Logging implementation.
+     * @returns {WebSocket}
+     */
     function generateWebSocket(wsUrl, roomId, guestId, logger){
         const ws = new WebSocket(wsUrl);
         ws.on('open', () => {
@@ -97,25 +105,25 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
         });   
         ws.on('message', (data) => {
             if(data){
-                const dataStruct = JSON.parse(data);
-                switch(dataStruct.cmd)
+                const message = JSON.parse(data);
+                switch(message.cmd)
                 {
                     case "enterRoom":
                         logger.log(`Connected to chat for roomId: ${roomId}!`);
                         break;
                     case "onChat":
                         onChatMessage(new ChatMessage(
-                            dataStruct.userName,
-                            dataStruct.userId,
-                            dataStruct.userImg,
-                            dataStruct.msg,
-                            dataStruct.time,
+                            message.userName,
+                            message.userId,
+                            message.userImg,
+                            message.msg,
+                            message.time,
                         ));
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
                         onLiveStart({
-                            roomId: dataStruct.roomId,
+                            roomId: message.roomId,
                         });
                         break;
                     case "onLiveEnd":
@@ -137,7 +145,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
 }
 
 /**
- * A listener to the mildom channel of the given ID
+ * A listener to the mildom channel of the given ID.
  */
 class ChatListener{
     /**
@@ -150,11 +158,12 @@ class ChatListener{
         this.roomId = roomId;
         this.webSocket = webSocket;
         this.logger = logger ? logger : console;
+        // start pinging
         this.ping();
     }
 
     /**
-     * Gracefully disconnects the listener and stops automatic reconnect attempts
+     * Gracefully disconnects the listener and stops automatic reconnect attempts.
      */
     stopListener(){
         if(this.pingTimer){
@@ -166,7 +175,7 @@ class ChatListener{
     }
 
     /**
-     * Checks if the listener is actively connected to the channel
+     * Checks if the listener is actively connected to the channel.
      * @returns {Boolean}
      */
     isListening(){
@@ -174,7 +183,7 @@ class ChatListener{
     }
 
     /**
-     * Recursively pings the channel to keep the listener alive
+     * Recursively pings the channel to keep the listener alive.
      */
     async ping(){
         try{

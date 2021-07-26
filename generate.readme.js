@@ -26,8 +26,10 @@ async function main(){
     }
     let template = String(fs.readFileSync('./readme.template.md'));
     let output = '';
-    const commands = AppConfig.COMMANDS(dummyConfig);
-    const help = commands.filter(c => { return c.aliases.includes('help')})[0];
+    const commands = AppConfig.COMMANDS(dummyConfig).sort((a, b) => { 
+        return a.aliases[0].localeCompare(b.aliases[0]);
+    });
+    const help = commands.find(c => { return c.aliases.includes('help')});
     for(command of commands){
         await help.callback(dummyMessage, [command.aliases[0]]);
         output = output + `### \`[${command.aliases.join(', ')}]\`\n\n`

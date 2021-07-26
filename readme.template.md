@@ -2,7 +2,7 @@
 A Discord bot for integrating with the [mildom.com](https://www.mildom.com) streaming platform.
  
 ## About
-Named after the digital persona of beloved mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her western fans. 
+Named after the digital persona of beloved mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her fans abroad. 
  
 To that end, this bot seeks to achieve two primary goals:
 1) To provide go-live alerts for a designated streamer by pinging a designated role, and posting the alert in a designated Discord channel.

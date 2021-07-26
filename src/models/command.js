@@ -1,11 +1,11 @@
 const { Message } = require('discord.js');
 
 /**
- * A command for the bot to respond to
+ * A command for the bot to respond to.
  */
 class Command{
     /**
-     * The callback for a command
+     * The callback for a command.
      *
      * @callback CommandCallback
      * @param {Message} message
@@ -30,7 +30,7 @@ class Command{
 }
 
 /**
- *  A tooltip about a usage of the command
+ *  A tooltip about a usage of the command.
  */
 class HelpTip{
     /**

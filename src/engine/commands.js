@@ -1,14 +1,14 @@
 const { AppConfig } = require("../../app.config");
 const { Command, HelpTip } = require('../models/command');
-const { Constants } = require('../models/constants');
-const Logger = require('../utils/logger');
+const { LiteralConstants } = require('../models/literal.constants');
+const { Logger } = require('../utils/logger');
 const oneline = require('oneline');
 
 /**
  * A list of command definitions for the bot to listen to, 
  * including permission levels, the callback function, and help tooltips.
- * @param {AppConfig} appConfig The dependency injection config 
- * @returns {Command[]} The list of commands
+ * @param {AppConfig} appConfig The dependency injection config.
+ * @returns {Command[]} The list of commands.
  */
 function commands(appConfig){
     const discordHelpers = appConfig.DISCORD_HELPERS;
@@ -43,9 +43,9 @@ function commands(appConfig){
                 const configKey = override ? override : message;
                 if(args && args.length > 0){
                     appConfig.CONFIG_STORAGE.setProperty(configKey, "prefix", args[0]);
-                    return Constants.REACT_OK_EMOJI;
+                    return LiteralConstants.REACT_OK_EMOJI;
                 }
-                return Constants.REACT_ERROR_EMOJI;
+                return LiteralConstants.REACT_ERROR_EMOJI;
             },
             [
                 new HelpTip(
@@ -65,15 +65,15 @@ function commands(appConfig){
                     if(type === 'ops'){
                         roles.ops = args[1];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
-                        return Constants.REACT_OK_EMOJI;
+                        return LiteralConstants.REACT_OK_EMOJI;
                     }
                     if(type === 'alert'){
                         roles.alert = args[1];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
-                        return Constants.REACT_OK_EMOJI;
+                        return LiteralConstants.REACT_OK_EMOJI;
                     }
                 }
-                return Constants.REACT_ERROR_EMOJI;
+                return LiteralConstants.REACT_ERROR_EMOJI;
             }, 
             [
                 new HelpTip(
@@ -97,10 +97,10 @@ function commands(appConfig){
                     const argId = Number(args[0]);
                     if(!isNaN(argId)){
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "streamer", argId);
-                        return Constants.REACT_OK_EMOJI;
+                        return LiteralConstants.REACT_OK_EMOJI;
                     }
                 }
-                return Constants.REACT_ERROR_EMOJI;
+                return LiteralConstants.REACT_ERROR_EMOJI;
             },
             [
                 new HelpTip(
@@ -124,7 +124,7 @@ function commands(appConfig){
                         return !isNaN(user) 
                     }))];
                     if(argIds.length <= 0){
-                        return Constants.REACT_ERROR_EMOJI;
+                        return LiteralConstants.REACT_ERROR_EMOJI;
                     }
                     if("remove" === action){
                         const updatedUsers = users.filter((user) => { 
@@ -132,17 +132,17 @@ function commands(appConfig){
                         });
                         if(updatedUsers.length === users.length){
                             // no users removed
-                            return Constants.REACT_ERROR_EMOJI;
+                            return LiteralConstants.REACT_ERROR_EMOJI;
                         }
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "users", updatedUsers);
-                        return Constants.REACT_OK_EMOJI;
+                        return LiteralConstants.REACT_OK_EMOJI;
                     }else if("add" === action){
                         const updatedUsers = [...new Set(users.concat(argIds))];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "users", updatedUsers);
-                        return Constants.REACT_OK_EMOJI;
+                        return LiteralConstants.REACT_OK_EMOJI;
                     }
                 }
-                return Constants.REACT_ERROR_EMOJI;
+                return LiteralConstants.REACT_ERROR_EMOJI;
             },
             [
                 new HelpTip(
@@ -173,21 +173,21 @@ function commands(appConfig){
                             if(operation === 'add' && args.length > 3){
                                 channels.chat[language] = args[3];
                                 appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
-                                return Constants.REACT_OK_EMOJI;
+                                return LiteralConstants.REACT_OK_EMOJI;
                             }else if(operation === 'remove'){
                                 delete channels.chat[language];
                                 appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
-                                return Constants.REACT_OK_EMOJI;
+                                return LiteralConstants.REACT_OK_EMOJI;
                             }
                         }
                     }
                     if(type === 'alert'){
                         channels.alert = args[1];
                         appConfig.CONFIG_STORAGE.setProperty(configKey, "output", channels);
-                        return Constants.REACT_OK_EMOJI;
+                        return LiteralConstants.REACT_OK_EMOJI;
                     }
                 }
-                return Constants.REACT_ERROR_EMOJI;
+                return LiteralConstants.REACT_ERROR_EMOJI;
             }, 
             [
                 new HelpTip(
@@ -248,13 +248,13 @@ function commands(appConfig){
                 // on open
                 () => {
                     if(guild && guild.me){
-                        guild.me.setNickname(Constants.BOT_NAME_ONLINE);
+                        guild.me.setNickname(LiteralConstants.BOT_NAME_ONLINE);
                     }
                 },
                 // on close
                 () => {
                     if(guild && guild.me){
-                        guild.me.setNickname(Constants.BOT_NAME_OFFLINE);
+                        guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
                     }
                 },
                 logger);
@@ -295,7 +295,7 @@ function commands(appConfig){
                 const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
                 const isListening = listener && listener.isListening();
                 if(guild && guild.me){
-                    guild.me.setNickname(isListening == true ? Constants.BOT_NAME_ONLINE : Constants.BOT_NAME_OFFLINE);
+                    guild.me.setNickname(isListening == true ? LiteralConstants.BOT_NAME_ONLINE : LiteralConstants.BOT_NAME_OFFLINE);
                 }
                 const status = isListening ? "listening" : "stopped";
                 message.channel.send(`Current status: \`${status}\`.`);
@@ -323,9 +323,9 @@ function commands(appConfig){
                     new Logger(origin).log(`Remote execution of command: [${args[1]}] on server: ${args[0]}`);
                     new Logger(args[0]).log(`Remote execution of command: [${args[1]}] from server: ${origin}`);
                     await command.callback(message, args.slice(2), newOverride);
-                    return Constants.REACT_OK_EMOJI;
+                    return LiteralConstants.REACT_OK_EMOJI;
                 }
-                return Constants.REACT_ERROR_EMOJI;
+                return LiteralConstants.REACT_ERROR_EMOJI;
             }, 
             [
                 new HelpTip(
@@ -377,10 +377,10 @@ function commands(appConfig){
                                 message: 'Command Information:',
                                 fields: fields
                             }));
-                            return Constants.REACT_OK_EMOJI;
+                            return LiteralConstants.REACT_OK_EMOJI;
                         }
                     }
-                    return Constants.REACT_ERROR_EMOJI;
+                    return LiteralConstants.REACT_ERROR_EMOJI;
                 }
                 const fields = commands(appConfig).map((value) => {
                     return `\`${value.aliases.join(', ')}\``;

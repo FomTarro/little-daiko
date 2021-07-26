@@ -1,29 +1,19 @@
 const Discord = require('discord.js');
-
-// TODO: importing docs from another file feels weird
+const { ErrorCallback, EventCallback } = require('../../engine/events');
 
 /**
- * The callback for an event
+ * The callback for an event.
  *
  * @callback LoginCallback
  * @param {Discord.Client} client
  */
 
 /**
- * The callback for an error
- *
- * @callback ErrorCallback
- * @param {Message} message
- * @param {*} Exception
- */
-
-
-/**
- * Creates a discord client
- * @param {LoginCallback} onLogin Callback to execute on login
- * @param {ErrorCallback} onError Callback to execute on error
- * @param {Map<String, import('../../engine/event').EventCallback} events List of other events to listen for
- * @param {console} logger Logging implementation
+ * Creates a Discord client.
+ * @param {LoginCallback} onLogin Callback to execute on login.
+ * @param {ErrorCallback} onError Callback to execute on error.
+ * @param {Map<String, EventCallback} events List of other events to listen for.
+ * @param {console} logger Logging implementation.
  * @returns {DiscordClient}
  */
 async function startClient(onLogin, onError, events, logger){
@@ -43,7 +33,7 @@ async function startClient(onLogin, onError, events, logger){
 }
 
 /**
- * A client for a Discord bot
+ * A client for a Discord bot.
  */
 class DiscordClient{
     constructor(client, logger){
@@ -51,8 +41,8 @@ class DiscordClient{
         this.logger = logger;
     }
     /**
-     * Logs in to the bot account
-     * @param {string} token The login token
+     * Logs in to the bot account.
+     * @param {string} token The login token.
      */
     login(token){
         if(this.client){
@@ -61,7 +51,7 @@ class DiscordClient{
     }
     
     /**
-     * Logs out and shuts down the bot
+     * Logs out and shuts down the bot.
      */
     shutdown(){
         if(this.client){
@@ -71,11 +61,11 @@ class DiscordClient{
     }
     
     /**
-     * Spoofs a message to intercept
+     * Spoofs a message to intercept.
      * 
-     * Mostly useful for testing
-     * @param {string} event The event name to emit
-     * @param {any} input The event payload
+     * Mostly useful for testing.
+     * @param {string} event The event name to emit.
+     * @param {any} input The event payload.
      */
     emit(event, input){
         if(this.client){

@@ -1,9 +1,9 @@
 const { AppConfig } = require("../../app.config");
 
 /**
- * Map of permission levels and their corresonding check functions
- * @param {AppConfig} appConfig The dependency injection config 
- * @returns {Map<number, PermissionLevel>} Map of permissions
+ * Map of permission levels and their corresonding check functions.
+ * @param {AppConfig} appConfig The dependency injection config.
+ * @returns {Map<number, PermissionLevel>} Map of permissions.
  */
 function permissions(appConfig){
     const discordHelpers = appConfig.DISCORD_HELPERS;
@@ -39,7 +39,7 @@ function permissions(appConfig){
 }
 
 /**
- * The callback for a command
+ * The callback for a command.
  *
  * @callback PermissionCheck
  * @param {*} user
@@ -48,13 +48,13 @@ function permissions(appConfig){
  */
 
 /**
- * A permission level for commands to be checked against
+ * A permission level for commands to be checked against.
  */
 class PermissionLevel{
     /**
      * 
-     * @param {PermissionCheck} check 
-     * @param {string} description 
+     * @param {PermissionCheck} check A function which checks if the given user has this permission level.
+     * @param {string} description A written summary of the permission level.
      */
     constructor(check, description){
         this.check = check;

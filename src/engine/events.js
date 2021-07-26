@@ -2,7 +2,7 @@ const { AppConfig } = require("../../app.config");
 const { Message } = require('discord.js');
 
 /**
- * The callback for an event
+ * The callback for an event.
  *
  * @callback EventCallback
  * @param {Message} message
@@ -10,7 +10,7 @@ const { Message } = require('discord.js');
  */
 
 /**
- * The callback for an error
+ * The callback for an error.
  *
  * @callback ErrorCallback
  * @param {Message} message
@@ -18,9 +18,9 @@ const { Message } = require('discord.js');
  */
 
 /**
- * List of events for the discord client to listen for
- * @param {AppConfig} appConfig The dependency injection config 
- * @returns {Map<string, EventCallback>} Map of events indexed by name
+ * List of events for the discord client to listen for.
+ * @param {AppConfig} appConfig The dependency injection config.
+ * @returns {Map<string, EventCallback>} Map of events indexed by name.
  */
 function events(appConfig) { 
     const discordHelpers = appConfig.DISCORD_HELPERS;

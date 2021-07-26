@@ -1,15 +1,15 @@
 const { AppConfig } = require("../../app.config");
 const { DiscordClient } = require("../adapters/discord/discord.client");
-const { Constants } = require("../models/constants");
-const Logger = require('../utils/logger');
+const { LiteralConstants } = require("../models/literal.constants");
+const { Logger } = require('../utils/logger');
 
 const sessionStart = `------- SESSION START -------`
 
 /**
- * Starts an instance of the bot
- * @param {AppConfig} appConfig The dependency injection config
- * @param {string} logId Log file name for system logs
- * @returns {Bot} An instance of the bot
+ * Starts an instance of the bot.
+ * @param {AppConfig} appConfig The dependency injection config.
+ * @param {string} logId Log file name for system logs.
+ * @returns {Bot} An instance of the bot.
  */
 async function startBot(appConfig, logId){
     const logger = new Logger(logId);
@@ -18,7 +18,7 @@ async function startBot(appConfig, logId){
         (c) => { 
             for(let guild of c.guilds.cache.array()){
                 if(guild && guild.me){
-                    guild.me.setNickname(Constants.BOT_NAME_OFFLINE);
+                    guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
                     // TODO: notify servers of changes since last login
                 }
                 logger.log(`${guild.name} | ${guild.id}`);
@@ -43,7 +43,7 @@ async function startBot(appConfig, logId){
 
 class Bot{
     /**
-     * A bot for interacting with discord
+     * A bot for interacting with Discord.
      * @param {AppConfig} appConfig 
      * @param {DiscordClient} client 
      */

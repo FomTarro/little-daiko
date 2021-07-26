@@ -1,4 +1,7 @@
-class Constants{
+/**
+ * Several useful constant literal values for use throughout the bot.
+ */
+class LiteralConstants{
     get BOT_NAME(){ return `little-daiko`};
     get ONLINE_EMOJI(){ return `🟢`};
     get OFFLINE_EMOJI(){ return `🔴`};
@@ -8,6 +11,6 @@ class Constants{
     get REACT_ERROR_EMOJI(){ return '❌'};
 }
 
-const constants = new Constants();
+const constants = new LiteralConstants();
 
-module.exports.Constants = constants;
+module.exports.LiteralConstants = constants;
