@@ -42,13 +42,13 @@ function getGuildId(subject){
     return dm                   ? '0'
         : isMessage(subject)    ? subject.guild.id
         : isGuild(subject)      ? subject.id
-                                : subject.guild.id;
+        : subject.guild         ? subject.guild.id : subject.id;
 }
 
 function getOtherBotGuilds(subject){
     return  isMessage(subject) ? subject.guild.me.client.guilds.cache.array() :
             isGuild(subject) ? subject.me.client.guilds.cache.array() :
-            [];
+            subject.guild.me.client.guilds.cache.array();
 }
 
 function hasRole(subject, role){

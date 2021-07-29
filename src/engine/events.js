@@ -55,6 +55,9 @@ function events(appConfig) {
                     return;
                 }
             }
+        }],
+        ["error", async (input, onError) => {
+            onError(input);
         }]
     ]);
 }

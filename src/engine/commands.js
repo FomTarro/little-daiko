@@ -105,7 +105,8 @@ function commands(appConfig){
             [
                 new HelpTip(
                     `streamer <streamer id>`,
-                    `Sets the streamer to listen to. The streamer id must be a number.`
+                    oneline`Sets the streamer to listen to. The streamer id must be a number. 
+                    If this is changed while the listener is currently active, the listener will need to be restarted.`
                 ),
             ]
         ),
@@ -214,7 +215,6 @@ function commands(appConfig){
                 const guild = discordHelpers.getOtherBotGuilds(message).find(g => g.id == configKey.guild.id);
                 const startEpoch = Date.parse(new Date());
                 const streamer = Number(appConfig.CONFIG_STORAGE.getProperty(configKey, 'streamer'));
-                await message.channel.send(`Starting listener.`);
                 logger.log(`Starting listener for streamer: ${streamer}!`)
                 const listener = await appConfig.MILDOM_CLIENT.startListener(streamer, 
                 // on message
@@ -258,7 +258,9 @@ function commands(appConfig){
                     }
                 },
                 logger);
+                await message.channel.send(`Starting listener.`);
                 appConfig.LISTENER_STORAGE.setListener(configKey, listener);
+                appConfig.CONFIG_STORAGE.setProperty(configKey, 'listening', true);
                 logger.log(`Listener instantiated.`);
             }, 
             [
@@ -277,6 +279,7 @@ function commands(appConfig){
                 const logger = new Logger(discordHelpers.getGuildId(configKey));
                 await message.channel.send("Stopping listener.");
                 appConfig.LISTENER_STORAGE.deleteListener(configKey);
+                appConfig.CONFIG_STORAGE.setProperty(configKey, 'listening', false);
                 logger.log(`Stopping listener.`);
             },
             [
@@ -297,6 +300,8 @@ function commands(appConfig){
                 if(guild && guild.me){
                     guild.me.setNickname(isListening == true ? LiteralConstants.BOT_NAME_ONLINE : LiteralConstants.BOT_NAME_OFFLINE);
                 }
+                appConfig.CONFIG_STORAGE.setProperty(configKey, 'listening', Boolean(isListening));
+
                 const status = isListening ? "listening" : "stopped";
                 message.channel.send(`Current status: \`${status}\`.`);
             },

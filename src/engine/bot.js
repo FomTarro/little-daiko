@@ -23,6 +23,15 @@ async function startBot(appConfig, logId){
                 }
                 logger.log(`${guild.name} | ${guild.id}`);
                 new Logger(appConfig.DISCORD_HELPERS.getGuildId(guild)).log(sessionStart);
+                const listening = appConfig.CONFIG_STORAGE.getProperty(guild, 'listening');
+                // TODO: break this out into a common function called from both Commands and here
+                const dummyMessage = {
+                    guild: guild,
+                    channel:{send(){}}
+                }
+                if(listening == true){
+                    appConfig.COMMANDS(appConfig).find(c => c.aliases.includes('start')).callback(dummyMessage);
+                }
             } 
         }, 
         (input, e) => {
