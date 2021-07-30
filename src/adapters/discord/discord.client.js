@@ -28,6 +28,7 @@ async function startClient(onLogin, onError, events, logger){
         logger.log(`Logged in as ${client.user.tag}!`);
         onLogin(client);
     });
+    
     logger.log(`Client instantiated, awaiting login...`);
     return new DiscordClient(client, logger);
 }

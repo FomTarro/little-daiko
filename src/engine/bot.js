@@ -23,16 +23,8 @@ async function startBot(appConfig, logId){
                 }
                 logger.log(`${guild.name} | ${guild.id}`);
                 new Logger(appConfig.DISCORD_HELPERS.getGuildId(guild)).log(sessionStart);
-                const listening = appConfig.CONFIG_STORAGE.getProperty(guild, 'listening');
-                // TODO: break this out into a common function called from both Commands and here
-                const dummyMessage = {
-                    guild: guild,
-                    channel:{send(){}}
-                }
-                if(listening == true){
-                    appConfig.COMMANDS(appConfig).find(c => c.aliases.includes('start')).callback(dummyMessage);
-                }
-            } 
+                checkListenerStatus(appConfig, guild, logger);
+            }
         }, 
         (input, e) => {
             const logger = new Logger(appConfig.DISCORD_HELPERS.getGuildId(input));
@@ -48,6 +40,29 @@ async function startBot(appConfig, logId){
         logger
     );
     return new Bot(appConfig, client);
+}
+
+/**
+ * Checks the status of the listener for the given server from the prior boot.
+ * 
+ * If the listener was perviously active, it will be rebooted automatically.
+ * @param {AppConfig} appConfig 
+ * @param {*} guild 
+ * @param {Logger} logger
+ */
+async function checkListenerStatus(appConfig, guild, logger){
+    try{
+        const listening = appConfig.CONFIG_STORAGE.getProperty(guild, 'listening');
+        const dummyMessage = {
+            guild: guild,
+            channel:{send(){}}
+        }
+        if(listening == true){
+            await appConfig.COMMANDS(appConfig).find(c => c.aliases.includes('start')).callback(dummyMessage);
+        }
+    }catch(e){
+        logger.error(`Error staring listener for Guild: ${appConfig.DISCORD_HELPERS.getGuildId(guild)}: ${e.stack ? e.stack : e}`);
+    }
 }
 
 class Bot{
