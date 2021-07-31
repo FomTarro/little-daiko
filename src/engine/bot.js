@@ -3,8 +3,6 @@ const { DiscordClient } = require("../adapters/discord/discord.client");
 const { LiteralConstants } = require("../models/literal.constants");
 const { Logger } = require('../utils/logger');
 
-const sessionStart = `------- SESSION START -------`
-
 /**
  * Starts an instance of the bot.
  * @param {AppConfig} appConfig The dependency injection config.
@@ -13,19 +11,8 @@ const sessionStart = `------- SESSION START -------`
  */
 async function startBot(appConfig, logId){
     const logger = new Logger(logId);
-    logger.log(sessionStart)
-    const client = await appConfig.DISCORD_CLIENT.startClient(
-        (c) => { 
-            for(let guild of c.guilds.cache.array()){
-                if(guild && guild.me){
-                    guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
-                    // TODO: notify servers of changes since last login
-                }
-                logger.log(`${guild.name} | ${guild.id}`);
-                new Logger(appConfig.DISCORD_HELPERS.getGuildId(guild)).log(sessionStart);
-                checkListenerStatus(appConfig, guild, logger);
-            }
-        }, 
+    logger.log(LiteralConstants.LOG_SESSION_START);
+    const client = await appConfig.DISCORD_CLIENT.startClient( 
         (input, e) => {
             const logger = new Logger(appConfig.DISCORD_HELPERS.getGuildId(input));
             logger.error(`${e.stack ? e.stack : e}`);
@@ -40,29 +27,6 @@ async function startBot(appConfig, logId){
         logger
     );
     return new Bot(appConfig, client);
-}
-
-/**
- * Checks the status of the listener for the given server from the prior boot.
- * 
- * If the listener was perviously active, it will be rebooted automatically.
- * @param {AppConfig} appConfig 
- * @param {*} guild 
- * @param {Logger} logger
- */
-async function checkListenerStatus(appConfig, guild, logger){
-    try{
-        const listening = appConfig.CONFIG_STORAGE.getProperty(guild, 'listening');
-        const dummyMessage = {
-            guild: guild,
-            channel:{send(){}}
-        }
-        if(listening == true){
-            await appConfig.COMMANDS(appConfig).find(c => c.aliases.includes('start')).callback(dummyMessage);
-        }
-    }catch(e){
-        logger.error(`Error staring listener for Guild: ${appConfig.DISCORD_HELPERS.getGuildId(guild)}: ${e.stack ? e.stack : e}`);
-    }
 }
 
 class Bot{

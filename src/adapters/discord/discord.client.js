@@ -10,24 +10,18 @@ const { ErrorCallback, EventCallback } = require('../../engine/events');
 
 /**
  * Creates a Discord client.
- * @param {LoginCallback} onLogin Callback to execute on login.
  * @param {ErrorCallback} onError Callback to execute on error.
  * @param {Map<String, EventCallback} events List of other events to listen for.
  * @param {console} logger Logging implementation.
  * @returns {DiscordClient}
  */
-async function startClient(onLogin, onError, events, logger){
+async function startClient(onError, events, logger){
     const client = new Discord.Client();
     for(let [event, callback] of events){
         client.on(event, (input) => {
-            callback(input, onError);
+            callback(client, input, onError);
         });
     }
-
-    client.on('ready', () => {
-        logger.log(`Logged in as ${client.user.tag}!`);
-        onLogin(client);
-    });
     
     logger.log(`Client instantiated, awaiting login...`);
     return new DiscordClient(client, logger);

@@ -87,22 +87,7 @@ describe("Other bot functions", () => {
                     }
                 }
             },
-            DISCORD_CLIENT: {
-                startClient(onLogin){
-                    const dummyClient = {
-                        guilds:{
-                            cache:{
-                                array(){
-                                    return [{
-                                        id: 'test'
-                                    }]
-                                }
-                            }
-                        }
-                    }
-                    onLogin(dummyClient);
-                }
-            },
+            DISCORD_CLIENT: AppConfig.DISCORD_CLIENT,
             DISCORD_HELPERS: {
                 isDm(){
                     return false;
@@ -152,12 +137,12 @@ describe("Other bot functions", () => {
         // start listener
         dummyConfig.CONFIG_STORAGE.deleteGuildConfig(dummyMessage);
         let bot = await AppConfig.BOT.startBot(dummyConfig, 'test');
-        dummyConfig.EVENTS(dummyConfig).get('message')(dummyMessage);
+        await dummyConfig.EVENTS(dummyConfig).get('message')({}, dummyMessage);
         await new Promise((r) => setTimeout(r, 500));
         
         // check status
         dummyMessage.content = '!status';
-        dummyConfig.EVENTS(dummyConfig).get('message')(dummyMessage);
+        await dummyConfig.EVENTS(dummyConfig).get('message')({}, dummyMessage);
         await new Promise((r) => setTimeout(r, 500));
         expect(sent).toContain('listening');
         bot.shutdown();
@@ -166,8 +151,17 @@ describe("Other bot functions", () => {
         // check status again on reboot
         await new Promise((r) => setTimeout(r, 500));
         bot = await AppConfig.BOT.startBot(dummyConfig, 'test');
-        await new Promise((r) => setTimeout(r, 500));
-        dummyConfig.EVENTS(dummyConfig).get('message')(dummyMessage);
+        bot.client.guilds = {
+            cache:{
+                array(){
+                    return [{
+                        id: 'test'
+                    }]
+                }
+            }
+        };
+        await dummyConfig.EVENTS(dummyConfig).get('ready')(bot.client, dummyMessage);
+        await dummyConfig.EVENTS(dummyConfig).get('message')({}, dummyMessage);
         await new Promise((r) => setTimeout(r, 500));
         bot.shutdown();
         dummyConfig.CONFIG_STORAGE.deleteGuildConfig(dummyMessage);
