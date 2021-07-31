@@ -15,7 +15,7 @@ function commands(appConfig){
     return [
         new Command(
             ['config', 'conf', 'c'],
-            1,
+            2,
             async (message, args, override) => { 
                 const configKey = override ? override : message;
                 const fields = appConfig.CONFIG_STORAGE.getAllProperties(configKey).map(prop => {
@@ -346,9 +346,11 @@ function commands(appConfig){
             async (message, args, override) => { 
                 const configKey = override ? override : message;
                 const guilds = discordHelpers.getOtherBotGuilds(message).map((guild) => {
+                    const listener = appConfig.LISTENER_STORAGE.getListener(guild);
+                    const isListening = listener && listener.isListening();
                     return {
                         name: `${guild.name}`,
-                        value: `\`${guild.id}\``
+                        value: `\`${guild.id}\` ${isListening == true ? LiteralConstants.ONLINE_EMOJI : LiteralConstants.OFFLINE_EMOJI}`
                     }
                 });
                 message.channel.send(discordHelpers.generateEmbed({
@@ -382,7 +384,7 @@ function commands(appConfig){
                                 message: 'Command Information:',
                                 fields: fields
                             }));
-                            return LiteralConstants.REACT_OK_EMOJI;
+                            return;
                         }
                     }
                     return LiteralConstants.REACT_ERROR_EMOJI;

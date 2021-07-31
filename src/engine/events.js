@@ -7,9 +7,9 @@ const { Logger } = require('../utils/logger');
  * The callback for an event.
  *
  * @callback EventCallback
- * @param {Client} client
- * @param {Message} message
- * @param {ErrorCallback} onError
+ * @param {Client} client The Discord bot client
+ * @param {Message} message The message which triggered the event
+ * @param {ErrorCallback} onError Function for handling errors
  */
 
 /**
@@ -37,6 +37,8 @@ function events(appConfig) {
                 }
                 logger.log(`${guild.name} | ${guild.id}`);
                 new Logger(appConfig.DISCORD_HELPERS.getGuildId(guild)).log(LiteralConstants.LOG_SESSION_START);
+
+                // check for prior listener status on reboot
                 const dummyMessage = {
                     guild: guild,
                     channel:{send(){}}
@@ -56,7 +58,9 @@ function events(appConfig) {
             }
         }],
         ["guildDelete", async (client, input, onError) => {
-            return appConfig.CONFIG_STORAGE.deleteGuildConfig(input);
+            appConfig.CONFIG_STORAGE.deleteGuildConfig(input);
+            appConfig.LISTENER_STORAGE.deleteListener(input);
+            return;
         }],
         ["message", async (client, message, onError) => { 
             if(discordHelpers.isDm(message) || discordHelpers.isBot(message)){
@@ -69,26 +73,28 @@ function events(appConfig) {
             const [...args] = message.content.split(/\s+/g);
             const command = args.shift().slice(prefix.length).toLowerCase();
             const role = appConfig.CONFIG_STORAGE.getProperty(message, 'role');
-            for(let entry of appConfig.COMMANDS(appConfig)){
-                if(entry.aliases.includes(command)){
-                    if(appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).check(message, role.ops)){
-                        entry.callback(message, args).then((out) => { 
-                            if(out){
-                                message.react(out);
-                            }
-                        }).catch((e) => { 
-                            onError(message, e);
-                        });
-                    }else{
-                        message.channel.send('You do not have permission to use that command.');
-                    }
-                    return;
+            const entry = appConfig.COMMANDS(appConfig).find(c => c.aliases.includes(command));
+            if(entry){
+                if(appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).check(message, role.ops)){
+                    entry.callback(message, args).then((out) => { 
+                        if(out){
+                            message.react(out);
+                        }
+                    }).catch((e) => { 
+                        onError(message, e);
+                    });
+                }else{
+                    message.channel.send('You do not have permission to use that command.');
                 }
+                return;
             }
         }],
-        ["error", async (input, onError) => {
+        ["error", async (client, input, onError) => {
             onError(input);
-        }]
+        }],
+        ["warn", async (client, input, onError) => {
+            onError(input);
+        }],
     ]);
 }
 
