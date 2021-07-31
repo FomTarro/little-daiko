@@ -465,6 +465,9 @@ describe("Start command tests", () => {
                         return ['en']
                     }
                     return 11629553; // My channel ID
+                },
+                setProperty(){
+
                 }
             },
             MILDOM_CLIENT: AppConfig.MILDOM_CLIENT,
@@ -518,6 +521,11 @@ describe("Stop command tests", () => {
             LISTENER_STORAGE: {
                 deleteListener(message){
                     deleted = true;
+                }
+            },
+            CONFIG_STORAGE:{
+                setProperty(){
+                    
                 }
             },
             DISCORD_HELPERS:{
@@ -593,6 +601,11 @@ describe("Status command tests", () => {
     test("Status up", async() => {
         // set up mock dependencies
         const dummyConfig = {
+            CONFIG_STORAGE: {
+                setProperty(){
+
+                }
+            },
             LISTENER_STORAGE: {
                 getListener(){
                     return {
@@ -640,6 +653,11 @@ describe("Status command tests", () => {
     test("Status down", async() => {
         // set up mock dependencies
         const dummyConfig = {
+            CONFIG_STORAGE: {
+                setProperty(){
+
+                }
+            },
             LISTENER_STORAGE: {
                 getListener(){
                     return {

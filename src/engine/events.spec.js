@@ -42,7 +42,7 @@ describe("Events tests", () => {
         // execute test
         const events = AppConfig.EVENTS(dummyConfig);
         const onMessage = events.get('message');
-        await onMessage(dummyMessage, () => {});
+        await onMessage({}, dummyMessage, () => {});
         expect(sent).toBe(true);
     });
 });

@@ -11,7 +11,7 @@ class Command{
      * @param {Message} message
      * @param {string[]} args
      * @param {Message} override
-     * @returns {string} 
+     * @returns {Promise<string>} 
      */
     
     /**

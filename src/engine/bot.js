@@ -3,28 +3,15 @@ const { DiscordClient } = require("../adapters/discord/discord.client");
 const { LiteralConstants } = require("../models/literal.constants");
 const { Logger } = require('../utils/logger');
 
-const sessionStart = `------- SESSION START -------`
-
 /**
  * Starts an instance of the bot.
  * @param {AppConfig} appConfig The dependency injection config.
- * @param {string} logId Log file name for system logs.
  * @returns {Bot} An instance of the bot.
  */
-async function startBot(appConfig, logId){
-    const logger = new Logger(logId);
-    logger.log(sessionStart)
-    const client = await appConfig.DISCORD_CLIENT.startClient(
-        (c) => { 
-            for(let guild of c.guilds.cache.array()){
-                if(guild && guild.me){
-                    guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
-                    // TODO: notify servers of changes since last login
-                }
-                logger.log(`${guild.name} | ${guild.id}`);
-                new Logger(appConfig.DISCORD_HELPERS.getGuildId(guild)).log(sessionStart);
-            } 
-        }, 
+async function startBot(appConfig){
+    const logger = new Logger(LiteralConstants.LOG_SYSTEM_ID);
+    logger.log(LiteralConstants.LOG_SESSION_START);
+    const client = await appConfig.DISCORD_CLIENT.startClient( 
         (input, e) => {
             const logger = new Logger(appConfig.DISCORD_HELPERS.getGuildId(input));
             logger.error(`${e.stack ? e.stack : e}`);
