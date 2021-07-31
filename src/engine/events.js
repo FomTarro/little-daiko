@@ -29,25 +29,29 @@ function events(appConfig) {
     const discordHelpers = appConfig.DISCORD_HELPERS;
         return new Map([
         ["ready", async (client, input, onError) => {
+            const logger = new Logger(LiteralConstants.LOG_SYSTEM_ID)
             for(let guild of client.guilds.cache.array()){
                 if(guild && guild.me){
                     guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
                     // TODO: notify servers of changes since last login
                 }
-                // logger.log(`${guild.name} | ${guild.id}`);
+                logger.log(`${guild.name} | ${guild.id}`);
                 new Logger(appConfig.DISCORD_HELPERS.getGuildId(guild)).log(LiteralConstants.LOG_SESSION_START);
                 const dummyMessage = {
                     guild: guild,
                     channel:{send(){}}
                 }
                 try{
+                    logger.log(`Checking listener status for Guild: ${guild.id}...`)
                     const listening = appConfig.CONFIG_STORAGE.getProperty(guild, 'listening');
                     if(listening == true){
+                        logger.log(`Rebooting listener for Guild: ${guild.id}!`)
                         await appConfig.COMMANDS(appConfig).find(c => c.aliases.includes('start')).callback(dummyMessage);
                     }
                 }catch(e){
-                    console.log(e);
-                    onError(dummyMessage, `Error staring listener for Guild: ${appConfig.DISCORD_HELPERS.getGuildId(guild)}: ${e.stack ? e.stack : e}`);
+                    const error = `Error staring listener for Guild: ${guild.id}: ${e.stack ? e.stack : e}`
+                    logger.error(error);
+                    onError(dummyMessage, error);
                 }
             }
         }],

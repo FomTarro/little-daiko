@@ -2,13 +2,6 @@ const Discord = require('discord.js');
 const { ErrorCallback, EventCallback } = require('../../engine/events');
 
 /**
- * The callback for an event.
- *
- * @callback LoginCallback
- * @param {Discord.Client} client
- */
-
-/**
  * Creates a Discord client.
  * @param {ErrorCallback} onError Callback to execute on error.
  * @param {Map<String, EventCallback} events List of other events to listen for.

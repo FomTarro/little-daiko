@@ -9,6 +9,7 @@ class LiteralConstants{
     get BOT_NAME_OFFLINE(){ return `${this.BOT_NAME} ${this.OFFLINE_EMOJI}`};
     get REACT_OK_EMOJI(){ return '✔️'};
     get REACT_ERROR_EMOJI(){ return '❌'};
+    get LOG_SYSTEM_ID(){ return `system` };
     get LOG_SESSION_START(){ return `------- SESSION START -------` };
 }
 

@@ -20,6 +20,7 @@ const schema = new Enmap({
             },
             alert: "general"
         },
+        listening: false,
     }
 });
 

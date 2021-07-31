@@ -59,10 +59,10 @@ describe("Error handling tests", () => {
             }
         }
         // execute test
-        const bot = await AppConfig.BOT.startBot(dummyConfig, 'test');
+        const bot = await AppConfig.BOT.startBot(dummyConfig);
         expect(sent).toBe(undefined);
         bot.client.emit('message', dummyMessage);
-        await new Promise((r) => setTimeout(r, 500));
+        await delay();
         bot.shutdown();
         expect(sent).toContain("here's a special new error!");
         expect(sent).toContain("We hit an error!");
@@ -136,35 +136,38 @@ describe("Other bot functions", () => {
         // execute test
         // start listener
         dummyConfig.CONFIG_STORAGE.deleteGuildConfig(dummyMessage);
-        let bot = await AppConfig.BOT.startBot(dummyConfig, 'test');
-        await dummyConfig.EVENTS(dummyConfig).get('message')({}, dummyMessage);
-        await new Promise((r) => setTimeout(r, 500));
+        let bot = await AppConfig.BOT.startBot(dummyConfig);
+        bot.client.emit('message', dummyMessage);
+        await delay();
         
         // check status
         dummyMessage.content = '!status';
-        await dummyConfig.EVENTS(dummyConfig).get('message')({}, dummyMessage);
-        await new Promise((r) => setTimeout(r, 500));
+        bot.client.emit('message', dummyMessage);
+        await delay();
         expect(sent).toContain('listening');
         bot.shutdown();
         dummyConfig.LISTENER_STORAGE.deleteListener(dummyMessage);
 
         // check status again on reboot
-        await new Promise((r) => setTimeout(r, 500));
-        bot = await AppConfig.BOT.startBot(dummyConfig, 'test');
-        bot.client.guilds = {
-            cache:{
-                array(){
-                    return [{
-                        id: 'test'
-                    }]
-                }
+        await delay();
+        bot = await AppConfig.BOT.startBot(dummyConfig);
+        bot.client.client.guilds.cache = {
+            array(){
+                return [{
+                    id: 'test'
+                }]
             }
         };
-        await dummyConfig.EVENTS(dummyConfig).get('ready')(bot.client, dummyMessage);
-        await dummyConfig.EVENTS(dummyConfig).get('message')({}, dummyMessage);
-        await new Promise((r) => setTimeout(r, 500));
+        bot.client.emit('ready', dummyMessage);
+        await delay();
+        bot.client.emit('message', dummyMessage);
+        await delay();
         bot.shutdown();
         dummyConfig.CONFIG_STORAGE.deleteGuildConfig(dummyMessage);
         expect(sent).toContain('listening');
     });
-})
+});
+
+async function delay(){
+    return await new Promise((r) => setTimeout(r, 100));
+}

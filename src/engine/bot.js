@@ -6,11 +6,10 @@ const { Logger } = require('../utils/logger');
 /**
  * Starts an instance of the bot.
  * @param {AppConfig} appConfig The dependency injection config.
- * @param {string} logId Log file name for system logs.
  * @returns {Bot} An instance of the bot.
  */
-async function startBot(appConfig, logId){
-    const logger = new Logger(logId);
+async function startBot(appConfig){
+    const logger = new Logger(LiteralConstants.LOG_SYSTEM_ID);
     logger.log(LiteralConstants.LOG_SESSION_START);
     const client = await appConfig.DISCORD_CLIENT.startClient( 
         (input, e) => {
