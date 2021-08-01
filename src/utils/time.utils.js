@@ -8,10 +8,10 @@ hoursInMiliseconds = 60 * minutesInMiliseconds;
  * @returns {FormattedTime}
  */
 function formatTime(millis){
-    const hours = Math.floor(millis / hoursInMiliseconds);
-    const minutes = Math.floor(hours % 1 * 60)
-    const seconds = Math.floor(minutes % 1 * 60)
-    return new FormattedTime(hours, minutes, seconds);
+    const hours = millis / hoursInMiliseconds;
+    const minutes = hours % 1 * 60;
+    const seconds = minutes % 1 * 60;
+    return new FormattedTime(Math.floor(hours), Math.floor(minutes), Math.floor(seconds));
 }
 
 class FormattedTime{
@@ -23,8 +23,8 @@ class FormattedTime{
      */
     constructor(hours, minutes, seconds){
         this.hours = hours;
-        this.seconds = seconds;
         this.minutes = minutes;
+        this.seconds = seconds;
     }
 
     /**
@@ -32,7 +32,7 @@ class FormattedTime{
      * @returns {String}
      */
     print(){
-        return `${this.hours}:${pad(this.minutes)}:${pad(this.minutes)}`;
+        return `${this.hours}:${pad(this.minutes)}:${pad(this.seconds)}`;
     }
 }
 
