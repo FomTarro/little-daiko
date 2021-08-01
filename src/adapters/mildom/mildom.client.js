@@ -1,4 +1,5 @@
 const { ChatMessage } = require('../../models/chat.message');
+const { LiveInfo } = require('../../models/live.info');
 const { v4 } = require('uuid');
 const https = require('https');
 const WebSocket = require('ws');
@@ -6,15 +7,7 @@ const WebSocket = require('ws');
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
 
-/**
- * Gets info from mildom including the websocket address for the given channel.
- * @param {Number} roomId Channel ID, must be numeric.
- * @param {console} logger Logging implementation.
- * @returns 
- */
-async function getServerInfo(roomId, logger){
-    const url = new URL(serverUrl);
-    url.searchParams.append("room_id", roomId);
+async function getRequest(url, logger){
     const promise = new Promise(function(resolve, reject){
         const req = https.get(url, res => {
             logger.log(`GET Server Info status code: ${res.statusCode}`)
@@ -39,6 +32,43 @@ async function getServerInfo(roomId, logger){
 }
 
 /**
+ * Gets info from mildom including the websocket address for the given channel.
+ * @param {Number} roomId Channel ID, must be numeric.
+ * @param {console} logger Logging implementation.
+ * @returns 
+ */
+async function getServerInfo(roomId, logger){
+    const url = new URL(serverUrl);
+    url.searchParams.append("room_id", roomId);
+    return getRequest(url, logger);
+}
+
+/**
+ * 
+ * @param {Number} roomId Channel ID, must be numeric.
+ * @param {string} guestId Guest ID fort he client.
+ * @param {console} logger Logging implementation.
+ * @returns 
+ */
+async function getLiveInfo(roomId, guestId, logger){
+    const url = new URL(liveInfoURL);
+    url.searchParams.append("user_id", roomId);
+    url.searchParams.append("timestamp", Date.parse(new Date()))
+    url.searchParams.append("__guest_id", guestId)
+    url.searchParams.append("__location", "Japan|Tokyo")
+    url.searchParams.append("__country", "Japan")
+    url.searchParams.append("__cluster", "aws_japan")
+    url.searchParams.append("__platform", "web")
+    url.searchParams.append("__la", "ja")
+    url.searchParams.append("__sfr", "pc")
+    const liveInfo = await getRequest(url, logger);
+    if(liveInfo && liveInfo.body){        
+        return new LiveInfo(liveInfo.body['live_start_ms'], liveInfo.body['live_mode']);
+    }
+    return new LiveInfo(0, 0);
+}
+
+/**
  * Creates and starts a listener to the mildom channel of the given ID.
  * @param {Number} roomId Channel ID, must be numeric.
  * @param {function} onChatMessage Callback to execute upon recieving a chat message.
@@ -52,29 +82,16 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
 
-    /*
-    const url = new URL(liveInfoURL);
-    url.searchParams.append("user_id", roomId);
-    url.searchParams.append("timestamp", Date.parse(new Date()))
-    url.searchParams.append("__guest_id", guestId)
-    url.searchParams.append("__location", "Japan|Tokyo")
-    url.searchParams.append("__country", "Japan")
-    url.searchParams.append("__cluster", "aws_japan")
-    url.searchParams.append("__platform", "web")
-    url.searchParams.append("__la", "ja")
-    url.searchParams.append("__sfr", "pc")
-
-    const liveStatus = await getLiveInfo(url);
-    if(liveStatus.body && liveStatus.body['live_type'] === 2)
-    console.log(liveStatus)
-    */
+    // const liveStatus = await getLiveInfo(roomId, guestId, logger);
+    // if(liveStatus.body && liveStatus.body['live_type'] === 2)
+    // console.log(liveStatus)
 
     const serverInfo = await getServerInfo(roomId, logger);
     if(serverInfo['wss_server']){
         const wsUrl = `wss://${serverInfo['wss_server']}?roomId=${roomId}`;
         logger.log(`Obtained websocket URL: ${wsUrl}`);
         const ws = generateWebSocket(wsUrl, roomId, guestId, logger);
-        return new ChatListener(roomId, ws, logger);
+        return new ChatListener(roomId, guestId, ws, logger);
     }
 
     /**
@@ -154,8 +171,9 @@ class ChatListener{
      * @param {WebSocket} webSocket 
      * @param {console} logger 
      */
-    constructor(roomId, webSocket, logger){
+    constructor(roomId, guestId, webSocket, logger){
         this.roomId = roomId;
+        this.guestId = guestId
         this.webSocket = webSocket;
         this.logger = logger ? logger : console;
         // start pinging
@@ -172,6 +190,10 @@ class ChatListener{
         if(this.webSocket){
             this.webSocket.close();
         }
+    }
+
+    async getLiveStatus(){
+        return await getLiveInfo(this.roomId, this.guestId, this.logger);
     }
 
     /**

@@ -2,6 +2,7 @@ const { AppConfig } = require("../../app.config");
 const { Command, HelpTip } = require('../models/command');
 const { LiteralConstants } = require('../models/literal.constants');
 const { Logger } = require('../utils/logger');
+const { formatTime } = require('../utils/time.utils');
 const oneline = require('oneline');
 
 /**
@@ -286,6 +287,35 @@ function commands(appConfig){
                 new HelpTip(
                     `stop`,
                     `Stops listening to the chat of the selected streamer.`
+                ),
+            ]
+        ),
+        new Command(
+            ['timestamp', 'ts'],
+            1,
+            async(message, args, override) => {
+                const configKey = override ? override : message;
+                const logger = new Logger(discordHelpers.getGuildId(configKey));
+                const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
+                const liveStatus = await listener.getLiveStatus();
+                if(liveStatus.isLive() == true && args.length > 0){
+                    const now = Date.parse(new Date());
+                    const stamp = await message.channel.send(discordHelpers.generateEmbed({
+                        message: `Timestamp:`,
+                        fields: [{
+                            name: `${formatTime((now - 10000) - liveStatus.startTime).print()}`,
+                            value: `"${args.join(' ')}"`
+                        }]
+                    }));
+                }else{
+                    message.channel.send(`Stream is not currently live!`);
+                }
+            },
+            [
+                new HelpTip(
+                    `timestamp <text description>`,
+                    oneline`Creates a timestamp ten seconds before invocation, with the given description. 
+                    A summary list of all timestamps will be posted at the conclusion of the stream.`
                 ),
             ]
         ),
