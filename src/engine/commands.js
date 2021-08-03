@@ -295,34 +295,42 @@ function commands(appConfig){
             ['timestamp', 'ts'],
             1,
             async(message, args, override) => {
-                // const configKey = override ? override : message;
-                // const logger = new Logger(discordHelpers.getGuildId(configKey));
-                // const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
-                // if(args.length > 0){
-                //     const guild = discordHelpers.getOtherBotGuilds(message).find(g => g.id == configKey.guild.id);
-                //     const language = [...Object.entries(appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat)].find(c => { 
-                //         return discordHelpers.getChannel(guild, c[1]) == message.channel
-                //     });
-                //     if(language){
-                //         const timestamp = listener.writeTimestamp(args.join(' '), language[0], discordHelpers.getGuildId(guild))
-                //         if(timestamp){
-                //             const embed = await message.channel.send(discordHelpers.generateEmbed(
-                //                 {
-                //                     message: `Timestamp:`,
-                //                     fields: [{
-                //                         name: `${timestamp.time.print()}`,
-                //                         value: `"${timestamp.description}"`
-                //                     }]
-                //                 }
-                //             ));
-                //             return;
-                //         }
-                //         message.channel.send(`Stream is not currently live!`);
-                //         return;
-                //     }
-                //     return;
-                // }
-                // return LiteralConstants.REACT_ERROR_EMOJI;
+                const configKey = override ? override : message;
+                const logger = new Logger(discordHelpers.getGuildId(configKey));
+                const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
+                if(args.length > 0){
+                    const guild = discordHelpers.getOtherBotGuilds(message).find(g => g.id == configKey.guild.id);
+                    const languages = [...Object.entries(appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat)].filter(c => { 
+                        return discordHelpers.getChannel(guild, c[1]) == message.channel
+                    });
+                    if(language.length > 0){
+                        const liveInfo = await listener.getLiveStatus();
+                        if(liveInfo.isLive()){
+                            const now = Date.parse(new Date()) - 10000;
+                            const timestamp = new Timestamp(formatTime(now - liveInfo.startTime), args.join(' '));
+                            const embed = await message.channel.send(discordHelpers.generateEmbed(
+                                {
+                                    message: `Timestamp:`,
+                                    fields: [{
+                                        name: `\`${timestamp.time.print()}\``,
+                                        value: `"${timestamp.description}"`
+                                    }]
+                                }
+                            ));
+                            for(language of languages){
+                                appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, `${timestamp.time.print()}: ${timestamp.description}`);
+                            }
+                            await embed.react(LiteralConstants.REACT_UPVOTE_EMOJI);
+                            await embed.react(LiteralConstants.REACT_DOWNVOTE_EMOJI);
+                            //console.log(message.channel.messages.cache.find(m => { return m.id == embed.id }).reactions.cache.get(LiteralConstants.REACT_UPVOTE_EMOJI).count);
+                            return;
+                        }
+                        message.channel.send(`Stream is not currently live!`);
+                        return;
+                    }
+                    return LiteralConstants.REACT_ERROR_EMOJI;
+                }
+                return LiteralConstants.REACT_ERROR_EMOJI;
             },
             [
                 new HelpTip(

@@ -16,6 +16,7 @@ class AppConfig{
 
     get CONFIG_STORAGE(){ return require('./src/persistence/config.storage')};
     get LISTENER_STORAGE(){ return require('./src/persistence/listener.storage')};
+    get TIMESTAMP_STORAGE(){ return require('./src/persistence/timestamp.storage')};
 
     get BOT(){ return require('./src/engine/bot')};
     get EVENTS(){ return require('./src/engine/events')};

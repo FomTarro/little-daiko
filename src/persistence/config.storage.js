@@ -24,13 +24,6 @@ const config = new Enmap({
     }
 });
 
-const timestamps = new Enmap({
-    name: "timestamps",
-    fetchAll: false,
-    autoFetch: true,
-    cloneLevel: 'deep',
-});
-
 /**
  * Gets a property with the given name for the given originating event.
  * @param {*} subject The originating event.
