@@ -21,7 +21,6 @@ function getAllTimestamps(subject){
 }
 
 function addTimestamp(subject, language, messageId, timestamp){
-    deleteGuildTimestamps(subject);
     let currentList = getTimestamps(subject, language);
     if(!currentList){
         currentList = [];

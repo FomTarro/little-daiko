@@ -303,7 +303,7 @@ function commands(appConfig){
                     const languages = [...Object.entries(appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat)].filter(c => { 
                         return discordHelpers.getChannel(guild, c[1]) == message.channel
                     });
-                    if(language.length > 0){
+                    if(languages.length > 0){
                         const liveInfo = await listener.getLiveStatus();
                         if(liveInfo.isLive()){
                             const now = Date.parse(new Date()) - 10000;
@@ -318,7 +318,7 @@ function commands(appConfig){
                                 }
                             ));
                             for(language of languages){
-                                appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, `${timestamp.time.print()}: ${timestamp.description}`);
+                                appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language[0], embed.id, `${timestamp.time.print()}: ${timestamp.description}`);
                             }
                             await embed.react(LiteralConstants.REACT_UPVOTE_EMOJI);
                             await embed.react(LiteralConstants.REACT_DOWNVOTE_EMOJI);
