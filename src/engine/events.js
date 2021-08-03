@@ -1,6 +1,6 @@
 const { AppConfig } = require("../../app.config");
 const { Message, Client } = require('discord.js');
-const { LiteralConstants } = require("../models/literal.constants");
+const { LiteralConstants } = require("../utils/literal.constants");
 const { Logger } = require('../utils/logger');
 
 /**

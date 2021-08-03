@@ -1,7 +1,7 @@
 const { AppConfig } = require('../../app.config');
 const Enmap = require('enmap');
 
-const schema = new Enmap({
+const config = new Enmap({
     name: "config",
     fetchAll: false,
     autoFetch: true,
@@ -22,6 +22,13 @@ const schema = new Enmap({
         },
         listening: false,
     }
+});
+
+const timestamps = new Enmap({
+    name: "timestamps",
+    fetchAll: false,
+    autoFetch: true,
+    cloneLevel: 'deep',
 });
 
 /**
@@ -51,11 +58,11 @@ function getAllProperties(subject){
  * @returns 
  */
 function setProperty(subject, property, value){
-    return schema.set(AppConfig.DISCORD_HELPERS.getGuildId(subject), value, property);
+    return config.set(AppConfig.DISCORD_HELPERS.getGuildId(subject), value, property);
 }
 
 function getGuildConfig(subject){
-    return schema.get(AppConfig.DISCORD_HELPERS.getGuildId(subject));
+    return config.get(AppConfig.DISCORD_HELPERS.getGuildId(subject));
 }
 
 /**
@@ -64,7 +71,7 @@ function getGuildConfig(subject){
  * @returns 
  */
 function deleteGuildConfig(subject){
-    return schema.delete(AppConfig.DISCORD_HELPERS.getGuildId(subject))
+    return config.delete(AppConfig.DISCORD_HELPERS.getGuildId(subject))
 }
 
 module.exports.getProperty = getProperty;

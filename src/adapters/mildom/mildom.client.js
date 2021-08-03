@@ -191,11 +191,6 @@ class ChatListener{
             this.webSocket.close();
         }
     }
-
-    async getLiveStatus(){
-        return await getLiveInfo(this.roomId, this.guestId, this.logger);
-    }
-
     /**
      * Checks if the listener is actively connected to the channel.
      * @returns {Boolean}
@@ -203,6 +198,24 @@ class ChatListener{
     isListening(){
         return this.webSocket ? this.webSocket.readyState === 1 : false;
     }
+
+    /**
+     * Fetches the live info of the stream.
+     * @returns {LiveInfo}
+     */
+    async getLiveStatus(){
+        return await getLiveInfo(this.roomId, this.guestId, this.logger);
+    }
+
+    // async writeTimestamp(description, language, id){
+    //     // TODO: Timestamps are no longer the concern of the listener
+    //     const liveStatus = await this.getLiveStatus();
+    //     if(liveStatus.isLive() == true){
+    //         const now = Date.parse(new Date()) - 10000;
+    //         const writePath = `./timestamps/${id}-${language}.log`;
+    //         return new Timestamp(formatTime(now - liveStatus.startTime), description);
+    //     }
+    // }
 
     /**
      * Recursively pings the channel to keep the listener alive.

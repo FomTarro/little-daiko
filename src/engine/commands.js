@@ -1,6 +1,6 @@
 const { AppConfig } = require("../../app.config");
 const { Command, HelpTip } = require('../models/command');
-const { LiteralConstants } = require('../models/literal.constants');
+const { LiteralConstants } = require('../utils/literal.constants');
 const { Logger } = require('../utils/logger');
 const { formatTime } = require('../utils/time.utils');
 const oneline = require('oneline');
@@ -295,31 +295,34 @@ function commands(appConfig){
             ['timestamp', 'ts'],
             1,
             async(message, args, override) => {
-                const configKey = override ? override : message;
-                const logger = new Logger(discordHelpers.getGuildId(configKey));
-                const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
-                const liveStatus = await listener.getLiveStatus();
-                if(args.length > 0){
-                    if(liveStatus.isLive() == true){
-                        const now = Date.parse(new Date());
-                        const timestamp = new Timestamp(formatTime(Math.max(0, (now - 10000) - liveStatus.startTime)), args.join(' '));
-                        const embed = await message.channel.send(discordHelpers.generateEmbed(
-                            {
-                                message: `Timestamp:`,
-                                time: now,
-                                fields: [{
-                                    name: `${timestamp.time.print()}`,
-                                    value: `"${timestamp.description}"`
-                                }]
-                            }
-                        ));
-                        return;
-                    }else{
-                        message.channel.send(`Stream is not currently live!`);
-                        return;
-                    }
-                }
-                return LiteralConstants.REACT_ERROR_EMOJI;
+                // const configKey = override ? override : message;
+                // const logger = new Logger(discordHelpers.getGuildId(configKey));
+                // const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
+                // if(args.length > 0){
+                //     const guild = discordHelpers.getOtherBotGuilds(message).find(g => g.id == configKey.guild.id);
+                //     const language = [...Object.entries(appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat)].find(c => { 
+                //         return discordHelpers.getChannel(guild, c[1]) == message.channel
+                //     });
+                //     if(language){
+                //         const timestamp = listener.writeTimestamp(args.join(' '), language[0], discordHelpers.getGuildId(guild))
+                //         if(timestamp){
+                //             const embed = await message.channel.send(discordHelpers.generateEmbed(
+                //                 {
+                //                     message: `Timestamp:`,
+                //                     fields: [{
+                //                         name: `${timestamp.time.print()}`,
+                //                         value: `"${timestamp.description}"`
+                //                     }]
+                //                 }
+                //             ));
+                //             return;
+                //         }
+                //         message.channel.send(`Stream is not currently live!`);
+                //         return;
+                //     }
+                //     return;
+                // }
+                // return LiteralConstants.REACT_ERROR_EMOJI;
             },
             [
                 new HelpTip(
