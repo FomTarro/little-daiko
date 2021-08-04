@@ -1,4 +1,4 @@
-const { AppConfig } = require('../../app.config');
+const { AppConfig } = require('../../../app.config');
 
 describe("Help command tests", () => {
     test("Help with no args", async() => {
@@ -14,7 +14,8 @@ describe("Help command tests", () => {
                 getProperty(){
                     return '!';
                 }
-            }
+            },
+            COMMANDS: AppConfig.COMMANDS,
         }
         let sent = false;
         const dummyMessage = {
@@ -48,6 +49,7 @@ describe("Help command tests", () => {
                 }
             },
             PERMISSIONS: AppConfig.PERMISSIONS,
+            COMMANDS: AppConfig.COMMANDS,
         }
         let sent = false;
         const dummyMessage = {
@@ -474,6 +476,11 @@ describe("Start command tests", () => {
             LISTENER_STORAGE: {
                 setListener(message, l){
                     listener = l;
+                }
+            },
+            TIMESTAMP_STORAGE: {
+                getAllTimestamps(){
+                    return [];
                 }
             },
             DISCORD_HELPERS:{

@@ -14,7 +14,7 @@ class LiveInfo{
      * @returns {Boolean}
      */
     isLive(){
-        return Boolean(this.isLive);
+        return Boolean(this.live == true);
     }
 }
 

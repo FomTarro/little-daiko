@@ -2,6 +2,7 @@ const { AppConfig } = require("../../app.config");
 const { Message, Client } = require('discord.js');
 const { LiteralConstants } = require("../utils/literal.constants");
 const { Logger } = require('../utils/logger');
+const { StartCommand } = require("./commands/start.command");
 
 /**
  * The callback for an event.
@@ -26,7 +27,6 @@ const { Logger } = require('../utils/logger');
  * @returns {Map<string, EventCallback>} Map of events indexed by name.
  */
 function events(appConfig) { 
-    const discordHelpers = appConfig.DISCORD_HELPERS;
         return new Map([
         ["ready", async (client, input, onError) => {
             const logger = new Logger(LiteralConstants.LOG_SYSTEM_ID)
@@ -48,7 +48,7 @@ function events(appConfig) {
                     const listening = appConfig.CONFIG_STORAGE.getProperty(guild, 'listening');
                     if(listening == true){
                         logger.log(`Rebooting listener for Guild: ${guild.id}!`)
-                        await appConfig.COMMANDS(appConfig).find(c => c.aliases.includes('start')).callback(dummyMessage);
+                        await StartCommand(appConfig).callback(dummyMessage);
                     }
                 }catch(e){
                     const error = `Error staring listener for Guild: ${guild.id}: ${e.stack ? e.stack : e}`
@@ -63,7 +63,7 @@ function events(appConfig) {
             return;
         }],
         ["message", async (client, message, onError) => { 
-            if(discordHelpers.isDm(message) || discordHelpers.isBot(message)){
+            if(appConfig.DISCORD_HELPERS.isDm(message) || appConfig.DISCORD_HELPERS.isBot(message)){
                 return;
             }
             const prefix = appConfig.CONFIG_STORAGE.getProperty(message, 'prefix');
