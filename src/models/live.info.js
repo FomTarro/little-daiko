@@ -2,11 +2,11 @@ class LiveInfo{
     /**
      * 
      * @param {Number} startTime 
-     * @param {Number} liveType
+     * @param {Boolean} live
      */
-    constructor(startTime, liveType){
+    constructor(startTime, live){
         this.startTime = startTime;
-        this.liveType = liveType;
+        this.live = live;
     }
 
     /**
@@ -14,7 +14,7 @@ class LiveInfo{
      * @returns {Boolean}
      */
     isLive(){
-        return true; //Boolean(this.liveType == 1);
+        return Boolean(this.isLive);
     }
 }
 

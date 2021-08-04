@@ -22,9 +22,9 @@ class FormattedTime{
      * @param {Number} seconds 
      */
     constructor(hours, minutes, seconds){
-        this.hours = hours;
-        this.minutes = minutes;
-        this.seconds = seconds;
+        this.hours = Math.max(0, hours);
+        this.minutes = Math.max(0, minutes);
+        this.seconds = Math.max(0, seconds);
     }
 
     /**

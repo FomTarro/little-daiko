@@ -78,10 +78,22 @@ function getChannelByName(guild, channel){
     return isGuild(guild) ? guild.channels.cache.find((r) => r.name === channel) : undefined;
 }
 
+/**
+ * 
+ * @param {Discord.Guild} guild 
+ * @param {Number} channel 
+ * @returns {Discord.TextChannel}
+ */
 function getChannelById(guild, channel){
     return isGuild(guild) ? guild.channels.cache.find((r) => r.id == channel) : undefined;
 }
 
+/**
+ * 
+ * @param {Discord.Guild} guild 
+ * @param {Number|String} channelIdentifier 
+ * @returns {Discord.TextChannel}
+ */
 function getChannel(guild, channelIdentifier){
     return !isNaN(Number(channelIdentifier)) ? 
     getChannelById(guild, Number(channelIdentifier)) : 
@@ -112,6 +124,16 @@ function generateEmbed(message){
     return embed;
 }
 
+/**
+ * 
+ * @param {String} content 
+ * @param {String} name 
+ * @returns {Discord.MessageAttachment}
+ */
+function generateAttachment(content, name){
+    return new Discord.MessageAttachment(Buffer.from(content, 'utf-8'), name);
+}
+
 module.exports.isMessage = isMessage;
 module.exports.isGuild = isGuild;
 module.exports.isDm = isDm;
@@ -131,3 +153,4 @@ module.exports.getGuildId = getGuildId;
 module.exports.getOtherBotGuilds = getOtherBotGuilds;
 
 module.exports.generateEmbed = generateEmbed;
+module.exports.generateAttachment = generateAttachment;

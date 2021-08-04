@@ -63,28 +63,33 @@ async function getLiveInfo(roomId, guestId, logger){
     url.searchParams.append("__sfr", "pc")
     const liveInfo = await getRequest(url, logger);
     if(liveInfo && liveInfo.body){        
-        return new LiveInfo(liveInfo.body['live_start_ms'], liveInfo.body['live_mode']);
+        return new LiveInfo(liveInfo.body['live_start_ms'], Boolean(liveInfo.body['live_mode'] == 1));
     }
-    return new LiveInfo(0, 0);
+    return new LiveInfo(0, false);
 }
+
+/**
+ * The callback for an receiving a chat message.
+ *
+ * @callback ChatMessageCallback
+ * @param {ChatMessage} client The message.
+ */
+
 
 /**
  * Creates and starts a listener to the mildom channel of the given ID.
  * @param {Number} roomId Channel ID, must be numeric.
- * @param {function} onChatMessage Callback to execute upon recieving a chat message.
+ * @param {ChatMessageCallback} onChatMessage Callback to execute upon recieving a chat message.
  * @param {function} onLiveStart Callback to execute upon the channel going live.
  * @param {function} onOpen Callback to execute upon successful connection to the channel.
  * @param {function} onClose Callback to execute upon disconnect from the channel.
  * @param {console} logger Logging implementation.
  * @returns {ChatListener} The listener to the channel.
  */
-async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose, logger){
+async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOpen, onClose, logger){
+    
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
-
-    // const liveStatus = await getLiveInfo(roomId, guestId, logger);
-    // if(liveStatus.body && liveStatus.body['live_type'] === 2)
-    // console.log(liveStatus)
 
     const serverInfo = await getServerInfo(roomId, logger);
     if(serverInfo['wss_server']){
@@ -104,7 +109,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
      */
     function generateWebSocket(wsUrl, roomId, guestId, logger){
         const ws = new WebSocket(wsUrl);
-        ws.on('open', () => {
+        ws.on('open', async () => {
             logger.log(`Connecting to chat for roomId: ${roomId}...`);
             ws.send(JSON.stringify(
             {
@@ -117,10 +122,10 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                 cmd: "enterRoom",
             }));
             if(onOpen){
-                onOpen();
+                await onOpen();
             }
         });   
-        ws.on('message', (data) => {
+        ws.on('message', async (data) => {
             if(data){
                 const message = JSON.parse(data);
                 switch(message.cmd)
@@ -129,7 +134,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                         logger.log(`Connected to chat for roomId: ${roomId}!`);
                         break;
                     case "onChat":
-                        onChatMessage(new ChatMessage(
+                        await onChatMessage(new ChatMessage(
                             message.userName,
                             message.userId,
                             message.userImg,
@@ -139,20 +144,23 @@ async function startListener(roomId, onChatMessage, onLiveStart, onOpen, onClose
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
-                        onLiveStart({
+                        await onLiveStart({
                             roomId: message.roomId,
                         });
                         break;
                     case "onLiveEnd":
                         logger.log(`Live has ended, thank you for watching!`);
+                        await onLiveEnd({
+                            roomId: message.roomId,
+                        });
                         break;
                 }
             }
         });
-        ws.on('close', (data) => {
+        ws.on('close', async (data) => {
             logger.log(`Closing connection to chat for roomId: ${roomId}!`);
             if(onClose){
-                onClose();
+                await onClose();
             }
         })
         // Stored function configuration to allow the websocket to recreate itself later.
@@ -206,16 +214,6 @@ class ChatListener{
     async getLiveStatus(){
         return await getLiveInfo(this.roomId, this.guestId, this.logger);
     }
-
-    // async writeTimestamp(description, language, id){
-    //     // TODO: Timestamps are no longer the concern of the listener
-    //     const liveStatus = await this.getLiveStatus();
-    //     if(liveStatus.isLive() == true){
-    //         const now = Date.parse(new Date()) - 10000;
-    //         const writePath = `./timestamps/${id}-${language}.log`;
-    //         return new Timestamp(formatTime(now - liveStatus.startTime), description);
-    //     }
-    // }
 
     /**
      * Recursively pings the channel to keep the listener alive.

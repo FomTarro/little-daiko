@@ -52,6 +52,6 @@ function deleteGuildTimestamps(subject){
     return timestamps.delete(AppConfig.DISCORD_HELPERS.getGuildId(subject))
 }
 
-module.exports.getAllProperties = getAllTimestamps;
+module.exports.getAllTimestamps = getAllTimestamps;
 module.exports.addTimestamp = addTimestamp;
 module.exports.deleteGuildTimestamps = deleteGuildTimestamps;
