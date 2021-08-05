@@ -16,10 +16,10 @@ class Command{
     
     /**
      * 
-     * @param {string[]} aliases 
-     * @param {number} permissionLevel 
-     * @param {CommandCallback} callback 
-     * @param {HelpTip[]} helpTips 
+     * @param {string[]} aliases A list of aliases for calling the command.
+     * @param {number} permissionLevel The permission level required to use the command.
+     * @param {CommandCallback} callback The actual functionality of the command.
+     * @param {HelpTip[]} helpTips The tooltips about the command's usages.
      */
     constructor(aliases, permissionLevel, callback, helpTips){
         this.aliases = aliases;
@@ -35,8 +35,8 @@ class Command{
 class HelpTip{
     /**
      *
-     * @param {string} usage 
-     * @param {string} description 
+     * @param {string} usage The way the command can be invoked.
+     * @param {string} description A description about what this method of invocation does.
      */
     constructor(usage, description){
         this.usage = usage;

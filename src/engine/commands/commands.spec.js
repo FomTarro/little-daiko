@@ -1,4 +1,20 @@
-const { AppConfig } = require('../../app.config');
+const { AppConfig } = require('../../../app.config');
+
+describe("General command tests", () => {
+    test("All aliases are unique", async() => {
+        const commands = AppConfig.COMMANDS(AppConfig);
+        let count = 0;
+        for(let command of commands){
+            for(let otherCommand of commands){
+                if(!(command === otherCommand)){
+                    expect(command.aliases.some(a => otherCommand.aliases.includes(a))).toBe(false);
+                    count = count + 1;
+                }
+            }
+        }
+        expect(count).toEqual(commands.length * (commands.length - 1));
+    });
+});
 
 describe("Help command tests", () => {
     test("Help with no args", async() => {
@@ -14,7 +30,8 @@ describe("Help command tests", () => {
                 getProperty(){
                     return '!';
                 }
-            }
+            },
+            COMMANDS: AppConfig.COMMANDS,
         }
         let sent = false;
         const dummyMessage = {
@@ -48,6 +65,7 @@ describe("Help command tests", () => {
                 }
             },
             PERMISSIONS: AppConfig.PERMISSIONS,
+            COMMANDS: AppConfig.COMMANDS,
         }
         let sent = false;
         const dummyMessage = {
@@ -474,6 +492,11 @@ describe("Start command tests", () => {
             LISTENER_STORAGE: {
                 setListener(message, l){
                     listener = l;
+                }
+            },
+            TIMESTAMP_STORAGE: {
+                getAllTimestamps(){
+                    return [];
                 }
             },
             DISCORD_HELPERS:{

@@ -1,6 +1,6 @@
 const { AppConfig } = require("../../app.config");
 const { DiscordClient } = require("../adapters/discord/discord.client");
-const { LiteralConstants } = require("../models/literal.constants");
+const { LiteralConstants } = require("../utils/literal.constants");
 const { Logger } = require('../utils/logger');
 
 /**
