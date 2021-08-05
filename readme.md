@@ -23,7 +23,7 @@ In addition, there is no limit to the number of `[language : Discord channel]` p
 
 `!config`
 
-Usable by: Any user.
+Usable by: Bot Operator, Server Owner or Bot Owner.
 
 Displays a list of all configurable properties for the server.
 
@@ -129,7 +129,15 @@ Stops listening to the chat of the selected streamer.
 
 Usable by: Bot Operator, Server Owner or Bot Owner.
 
-Sets the streamer to listen to. The streamer id must be a number.
+Sets the streamer to listen to. The streamer id must be a number.  If this is changed while the listener is currently active, the listener will need to be restarted.
+
+### `[timestamp, ts]`
+
+`!timestamp <text description>`
+
+Usable by: Any user.
+
+Creates a timestamp ten seconds before invocation, with the given description.  Timestamps can be upvoted or downvoted with the assigned reacts.  If the number of downvotes is greater than the number of upvotes, the timestamp will be discarded. A summary list of all remaining timestamps will be posted at the conclusion of the stream.
 
 ### `[users, u]`
 
