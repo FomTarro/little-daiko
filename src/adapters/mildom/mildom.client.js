@@ -7,6 +7,12 @@ const WebSocket = require('ws');
 const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
 
+/**
+ * Performs a basic GET request to the given URL.
+ * @param {URL} url The URL to GET.
+ * @param {console} logger Logging implementation.
+ * @returns 
+ */
 async function getRequest(url, logger){
     const promise = new Promise(function(resolve, reject){
         const req = https.get(url, res => {
@@ -44,11 +50,11 @@ async function getServerInfo(roomId, logger){
 }
 
 /**
- * 
+ * Gets live info status about the given channel.
  * @param {Number} roomId Channel ID, must be numeric.
  * @param {string} guestId Guest ID fort he client.
  * @param {console} logger Logging implementation.
- * @returns 
+ * @returns {LiveInfo} The live info.
  */
 async function getLiveInfo(roomId, guestId, logger){
     const url = new URL(liveInfoURL);
@@ -72,7 +78,14 @@ async function getLiveInfo(roomId, guestId, logger){
  * The callback for an receiving a chat message.
  *
  * @callback ChatMessageCallback
- * @param {ChatMessage} client The message.
+ * @param {ChatMessage} message The message.
+ */
+
+/**
+ * The callback for an receiving liveInfo.
+ *
+ * @callback LiveInfoCallback
+ * @param {LiveInfo} live The live Info.
  */
 
 
@@ -80,9 +93,10 @@ async function getLiveInfo(roomId, guestId, logger){
  * Creates and starts a listener to the mildom channel of the given ID.
  * @param {Number} roomId Channel ID, must be numeric.
  * @param {ChatMessageCallback} onChatMessage Callback to execute upon recieving a chat message.
- * @param {function} onLiveStart Callback to execute upon the channel going live.
- * @param {function} onOpen Callback to execute upon successful connection to the channel.
- * @param {function} onClose Callback to execute upon disconnect from the channel.
+ * @param {LiveInfoCallback} onLiveStart Callback to execute upon the channel going live.
+ * @param {LiveInfoCallback} onLiveEnd Callback to execute upon the channel ending the live.
+ * @param {VoidFunction} onOpen Callback to execute upon successful connection to the channel.
+ * @param {VoidFunction} onClose Callback to execute upon disconnect from the channel.
  * @param {console} logger Logging implementation.
  * @returns {ChatListener} The listener to the channel.
  */
@@ -102,7 +116,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
     /**
      * 
      * @param {URL} wsUrl Websocket URL.
-     * @param {number} roomId Channel ID.
+     * @param {Number} roomId Channel ID.
      * @param {string} guestId User ID
      * @param {console} logger Logging implementation.
      * @returns {WebSocket}
@@ -144,15 +158,11 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
-                        await onLiveStart({
-                            roomId: message.roomId,
-                        });
+                        await onLiveStart(new LiveInfo(Date.parse(new Date()), true));
                         break;
                     case "onLiveEnd":
                         logger.log(`Live has ended, thank you for watching!`);
-                        await onLiveEnd({
-                            roomId: message.roomId,
-                        });
+                        await onLiveEnd(new LiveInfo(0, false));
                         break;
                 }
             }

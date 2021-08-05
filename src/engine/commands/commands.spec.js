@@ -1,5 +1,21 @@
 const { AppConfig } = require('../../../app.config');
 
+describe("General command tests", () => {
+    test("All aliases are unique", async() => {
+        const commands = AppConfig.COMMANDS(AppConfig);
+        let count = 0;
+        for(let command of commands){
+            for(let otherCommand of commands){
+                if(!(command === otherCommand)){
+                    expect(command.aliases.some(a => otherCommand.aliases.includes(a))).toBe(false);
+                    count = count + 1;
+                }
+            }
+        }
+        expect(count).toEqual(commands.length * (commands.length - 1));
+    });
+});
+
 describe("Help command tests", () => {
     test("Help with no args", async() => {
         // set up mock dependencies

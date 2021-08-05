@@ -1,8 +1,8 @@
 class LiveInfo{
     /**
-     * 
-     * @param {Number} startTime 
-     * @param {Boolean} live
+     * A struct for carrying live info status about a stream.
+     * @param {Number} startTime The start time of the stream, in ms.
+     * @param {Boolean} live A boolean determining of the stream is currently live.
      */
     constructor(startTime, live){
         this.startTime = startTime;

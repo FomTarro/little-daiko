@@ -80,7 +80,7 @@ function getUserId(subject){
 
 /**
  * 
- * @param {*Discord.Message|Discord.Guild} subject 
+ * @param {Discord.Message|Discord.Guild} subject 
  * @returns {Number}
  */
 function getGuildId(subject){

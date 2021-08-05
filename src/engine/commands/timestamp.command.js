@@ -38,7 +38,7 @@ function command(appConfig){
                                 }]
                             }
                         ));
-                        for(language of languages){
+                        for(let language of languages){
                             const timestampEntry = `${timestamp.time.print()} - ${timestamp.description}`
                             logger.log(`Writing timestamp: $timestampEntry}`);
                             appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language[0], embed.id, timestampEntry);

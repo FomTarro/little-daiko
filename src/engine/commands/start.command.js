@@ -5,6 +5,7 @@ const { LiteralConstants } = require('../../utils/literal.constants');
 const { Logger } = require('../../utils/logger');
 const { formatTime } = require('../../utils/time.utils');
 const oneline = require('oneline');
+const { Guild } = require("discord.js");
 
 /**
  * 
@@ -101,7 +102,8 @@ function command(appConfig){
  * 
  * @param {AppConfig} appConfig 
  * @param {*} configKey 
- * @param {*} guild 
+ * @param {Guild} guild 
+ * @param {console} logger 
  */
  async function generateTimestampSummary(appConfig, configKey, guild, logger){
     logger.log(`Generating stream-end summary...`);
