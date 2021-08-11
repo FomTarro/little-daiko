@@ -215,6 +215,7 @@ function generateAttachment(content, name){
     return new Discord.MessageAttachment(Buffer.from(content, 'utf-8'), name);
 }
 
+module.exports.ownerId = owner;
 module.exports.isMessage = isMessage;
 module.exports.isGuild = isGuild;
 module.exports.isDm = isDm;

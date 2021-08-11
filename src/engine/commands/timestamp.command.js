@@ -13,7 +13,7 @@ const oneline = require('oneline');
  */
 function command(appConfig){
     return new Command(
-        ['timestamp', 'ts'],
+        ['timestamp', 'ts', 't'],
         1,
         async(message, args, override) => {
             const configKey = override ? override : message;
