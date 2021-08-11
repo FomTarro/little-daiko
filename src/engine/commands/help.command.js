@@ -20,11 +20,13 @@ function command(appConfig){
                         const fields = entry.helpTips.map(value => {
                             return {
                                 name: `\`${prefix}${value.usage}\``,
-                                value: `Usable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.\n\n${value.description}`,
+                                value: `${value.description}`,
                             };
                         });
                         message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
-                            message: 'Command Information:',
+                            message: `Command Information:\n
+                                Aliases: \`${entry.aliases}\`
+                                Usable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.\n\n`,
                             fields: fields
                         }));
                         return;
