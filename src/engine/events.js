@@ -66,9 +66,9 @@ function events(appConfig) {
             if(appConfig.DISCORD_HELPERS.isDm(message) || appConfig.DISCORD_HELPERS.isBot(message)){
                 return;
             }
-            
+
             const prefix = appConfig.CONFIG_STORAGE.getProperty(message, 'prefix');
-            const mention = `<@!${client.user.id}>`;
+            const mention = `<@!${client && client.user ? client.user.id : 0}>`;
 
             const [...args] = message.content.split(/\s+/g);
             const firstArg = args.shift();
