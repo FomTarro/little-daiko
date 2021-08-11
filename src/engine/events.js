@@ -70,6 +70,9 @@ function events(appConfig) {
             if(message.content.indexOf(prefix) !== 0){ 
                 return; 
             }
+            // TODO: figure out cases for mention with space, and mention with no space
+            // message.mentions.has(client.user.id)
+            // const mention = `<@!${client.user.id}>`;
             const [...args] = message.content.split(/\s+/g);
             const command = args.shift().slice(prefix.length).toLowerCase();
             const role = appConfig.CONFIG_STORAGE.getProperty(message, 'role');
