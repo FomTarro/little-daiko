@@ -19,4 +19,9 @@ While it was built with kson in mind, it can be configured by server operators t
 In addition, there is no limit to the number of `[language : Discord channel]` pairs for translation message transmission. This means that you can have seperate output channels for `[EN]`, `[ES]`, `[JP]`, `[ITA]`, etc.
  
 ## Commands
+
+Commands can be invoked by prefixing a message with a designated prefix (`!` by default), or by mentioning the bot with the desired command.
+
+You can learn more about them by typing `!help <command>`.
+
 ${COMMANDS}

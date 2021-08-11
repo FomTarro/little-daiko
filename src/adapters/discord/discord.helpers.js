@@ -188,7 +188,9 @@ function getChannel(guild, channelIdentifier){
  */
 function generateEmbed(message){
     const embed = new Discord.MessageEmbed().setColor('#f1c40f');
-    embed.setDescription(message.message)
+    if(message.message){
+        embed.setDescription(message.message)
+    }
     if(message.authorName){
         embed.setAuthor(message.authorName, message.authorImage)
     }
