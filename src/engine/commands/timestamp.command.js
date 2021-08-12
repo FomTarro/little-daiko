@@ -40,7 +40,7 @@ function command(appConfig){
                         ));
                         for(let language of languages){
                             const timestampEntry = `${timestamp.time.print()} - ${timestamp.description}`
-                            logger.log(`Writing timestamp: $timestampEntry}`);
+                            logger.log(`Writing timestamp: ${timestampEntry}`);
                             appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language[0], embed.id, timestampEntry);
                         }
                         await embed.react(LiteralConstants.REACT_UPVOTE_EMOJI);
