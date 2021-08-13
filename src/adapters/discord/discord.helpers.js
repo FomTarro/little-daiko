@@ -194,11 +194,12 @@ function generateEmbed(message){
     if(message.authorName){
         embed.setAuthor(message.authorName, message.authorImage)
     }
-    if(message.time){
-        // 0 sets the date to epoch
-        const date = new Date(0).setUTCMilliseconds(message.time); 
-        embed.setTimestamp(date);
-    }
+    // for now, no need to print the timestamp, as messages are already logged with a time
+    // if(message.time){
+    //     // 0 sets the date to epoch
+    //     const date = new Date(0).setUTCMilliseconds(message.time); 
+    //     embed.setTimestamp(date);
+    // }
     if(message.fields){
         for(let field of message.fields){
             embed.addField(field.name, field.value, field.inline)

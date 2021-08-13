@@ -25,6 +25,7 @@ function command(appConfig){
                     // if timestamp log has content
                     if(entry.length > 1){
                         const language = entry[0];
+                        const summary = [];
                         // find corresponding output channel
                         const channel = appConfig.DISCORD_HELPERS.getChannel(guild, channels.find(c => c[0] == language)[1]);
                         for(timestamp of entry[1]){
@@ -40,7 +41,7 @@ function command(appConfig){
                                         const downvoteCount = downvotes ? downvotes.count : 0;
                                         if(upvoteCount >= downvoteCount){
                                             // write to summary log if upvoted
-                                            summary = summary.concat(timestamp[1], '\n');
+                                            summary.push(timestamp[1]);
                                             // console.log(`${guild.id} - ${language} - ${JSON.stringify(timestamp)} - ${summary}`);
                                         }
                                     }
@@ -50,9 +51,10 @@ function command(appConfig){
                             }
                         }
                         if(summary.length > 0){
-                            logger.log(`Posting ${language} summary:\n${summary}`);
-                            const attachment = appConfig.DISCORD_HELPERS.generateAttachment(summary, `${language}-summary.txt`);
-                            channel.send(`The stream has ended. Here's a summary:`, attachment);
+                            const content = summary.sort().join('\n');
+                            logger.log(`Posting ${language} summary:\n${content}`);
+                            const attachment = appConfig.DISCORD_HELPERS.generateAttachment(content, `${language}-summary.txt`);
+                            await channel.send(`The stream has ended. Here's a summary:`, attachment);
                         }
                     }
                 }
@@ -63,7 +65,7 @@ function command(appConfig){
         [
             new HelpTip(
                 `flush`,
-                `Flushes all timestamps to a log file immediately. 
+                `Flushes all timestamps to log files immediately, and posts them to their respective channels. 
                 Flushing happens automatically on stream end, so you will probably never need to invoke this command manually.`
             ),
         ]

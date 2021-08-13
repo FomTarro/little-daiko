@@ -28,12 +28,12 @@ function command(appConfig){
             async (comment) => {
                 const channels = appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat;
                 const users = appConfig.CONFIG_STORAGE.getProperty(configKey, "users");
-                for(let prefix in channels){
+                for(let language in channels){
                     if(comment.authorId == streamer
                     || (users.includes(comment.authorId) 
-                    && comment.message.toLowerCase().startsWith(`[${prefix.toLowerCase()}]`))){
+                    && comment.message.toLowerCase().startsWith(`[${language.toLowerCase()}]`))){
                         if(comment.time > startEpoch){
-                            const chatChannel = appConfig.DISCORD_HELPERS.getChannel(guild, channels[prefix]);
+                            const chatChannel = appConfig.DISCORD_HELPERS.getChannel(guild, channels[language]);
                             if(chatChannel){
                                 logger.log(`Posting: ${JSON.stringify(comment)}`);
                                 const embed = await chatChannel.send(appConfig.DISCORD_HELPERS.generateEmbed(comment));
@@ -42,7 +42,7 @@ function command(appConfig){
                                 if(liveInfo.isLive()){
                                     const now = Date.parse(new Date())
                                     const timestamp = new Timestamp(formatTime(now - liveInfo.startTime), `${comment.authorName}: ${comment.message}`);
-                                    appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, prefix, embed.id, `${timestamp.time.print()} - ${timestamp.description}`);
+                                    appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, `${timestamp.time.print()} - ${timestamp.description}`);
                                 }
                             }
                         }
