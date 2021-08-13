@@ -24,6 +24,11 @@ async function startClient(onError, events, logger){
  * A client for a Discord bot.
  */
 class DiscordClient{
+    /**
+     * 
+     * @param {Discord.Client} client 
+     * @param {console} logger 
+     */
     constructor(client, logger){
         this.client = client;
         this.logger = logger;

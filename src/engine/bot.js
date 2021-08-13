@@ -13,11 +13,15 @@ async function startBot(appConfig){
     logger.log(LiteralConstants.LOG_SESSION_START);
     const client = await appConfig.DISCORD_CLIENT.startClient( 
         (input, e) => {
-            const logger = new Logger(appConfig.DISCORD_HELPERS.getGuildId(input));
+            const guildId = appConfig.DISCORD_HELPERS.getGuildId(input);
+            const logger = new Logger(guildId);
             logger.error(`${e.stack ? e.stack : e}`);
             const error = `Sorry! We hit an error! The stupid mother fucker who wrote this bot doesn't know how to fucking program: \`\`\`${e}\`\`\``;
             try{
                 input.channel.send(error);
+                client.client.users.fetch(appConfig.DISCORD_HELPERS.ownerId)
+                .then(u => u.send(`Error on server \`${guildId}\`:\n\`\`\`${e.stack ? e.stack : e}\`\`\``))
+                .catch(e => {logger.error(`${e.stack ? e.stack : e}`)});
             }catch(e){
                 logger.error(`${e.stack ? e.stack : e}`);
             }

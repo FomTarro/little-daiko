@@ -13,7 +13,7 @@ const oneline = require('oneline');
  */
 function command(appConfig){
     return new Command(
-        ['timestamp', 'ts'],
+        ['timestamp', 'ts', 't'],
         1,
         async(message, args, override) => {
             const configKey = override ? override : message;
@@ -40,7 +40,7 @@ function command(appConfig){
                         ));
                         for(let language of languages){
                             const timestampEntry = `${timestamp.time.print()} - ${timestamp.description}`
-                            logger.log(`Writing timestamp: $timestampEntry}`);
+                            logger.log(`Writing timestamp: ${timestampEntry}`);
                             appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language[0], embed.id, timestampEntry);
                         }
                         await embed.react(LiteralConstants.REACT_UPVOTE_EMOJI);

@@ -188,15 +188,18 @@ function getChannel(guild, channelIdentifier){
  */
 function generateEmbed(message){
     const embed = new Discord.MessageEmbed().setColor('#f1c40f');
-    embed.setDescription(message.message)
+    if(message.message){
+        embed.setDescription(message.message)
+    }
     if(message.authorName){
         embed.setAuthor(message.authorName, message.authorImage)
     }
-    if(message.time){
-        // 0 sets the date to epoch
-        const date = new Date(0).setUTCMilliseconds(message.time); 
-        embed.setTimestamp(date);
-    }
+    // for now, no need to print the timestamp, as messages are already logged with a time
+    // if(message.time){
+    //     // 0 sets the date to epoch
+    //     const date = new Date(0).setUTCMilliseconds(message.time); 
+    //     embed.setTimestamp(date);
+    // }
     if(message.fields){
         for(let field of message.fields){
             embed.addField(field.name, field.value, field.inline)
@@ -215,6 +218,7 @@ function generateAttachment(content, name){
     return new Discord.MessageAttachment(Buffer.from(content, 'utf-8'), name);
 }
 
+module.exports.ownerId = owner;
 module.exports.isMessage = isMessage;
 module.exports.isGuild = isGuild;
 module.exports.isDm = isDm;

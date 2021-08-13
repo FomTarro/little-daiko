@@ -20,11 +20,15 @@ function command(appConfig){
                         const fields = entry.helpTips.map(value => {
                             return {
                                 name: `\`${prefix}${value.usage}\``,
-                                value: `Usable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.\n\n${value.description}`,
+                                value: `${value.description}`,
                             };
                         });
+                        fields.unshift({
+                            name:  `Command Information:`,
+                            value: `Aliases: \`[${entry.aliases.join(', ')}]\`\nUsable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.`
+                        });
+
                         message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
-                            message: 'Command Information:',
                             fields: fields
                         }));
                         return;
@@ -33,15 +37,21 @@ function command(appConfig){
                 return LiteralConstants.REACT_ERROR_EMOJI;
             }
             const fields = appConfig.COMMANDS(appConfig).map((value) => {
-                return `\`${value.aliases.join(', ')}\``;
+                return `\`[${value.aliases.join(', ')}]\``;
             }).sort((a, b) => { 
                 return a.localeCompare(b);
             });
 
             await message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
-                message: `Here's a list of possible commands and their aliases. 
-                You can learn more about them by typing \`${prefix}help <command>\`.
-                ${fields.join('\n')}`,
+                fields: [{
+                    name: `General Help:`,
+                    value: `Commands can be invoked by prefixing a message with \`${prefix}\`, or by mentioning the bot with the desired command.
+                You can learn more about commands and their usages by typing \`${prefix}help <command>\`.`
+                },
+                {
+                    name: `Command and Alias List:`,
+                    value:  `${fields.join('\n')}`
+                }],
             }));
         },
         [

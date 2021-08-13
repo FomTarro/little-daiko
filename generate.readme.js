@@ -1,5 +1,6 @@
 const { AppConfig } = require('./app.config');
 const fs = require('fs');
+const { HelpCommand } = require('./src/engine/commands/help.command');
 
 async function main(){
     const dummyConfig = {
@@ -29,12 +30,12 @@ async function main(){
     const commands = AppConfig.COMMANDS(dummyConfig).sort((a, b) => { 
         return a.aliases[0].localeCompare(b.aliases[0]);
     });
-    const help = commands.find(c => { return c.aliases.includes('help')});
+    const help = HelpCommand(dummyConfig);
     for(command of commands){
         await help.callback(dummyMessage, [command.aliases[0]]);
-        output = output + `### \`[${command.aliases.join(', ')}]\`\n\n`
+        output = output + `### \`${command.aliases[0]}\`\n\n`
         for(field of helpText.fields){
-            output = output + `${field.name}\n\n${field.value.trim()}\n\n`;
+            output = output + `${field.name}\n\n${field.value.replace('\n', '\n\n').trim()}\n\n`;
         }
     }
     template = template.replace('${COMMANDS}', output);

@@ -66,12 +66,31 @@ function events(appConfig) {
             if(appConfig.DISCORD_HELPERS.isDm(message) || appConfig.DISCORD_HELPERS.isBot(message)){
                 return;
             }
+
             const prefix = appConfig.CONFIG_STORAGE.getProperty(message, 'prefix');
-            if(message.content.indexOf(prefix) !== 0){ 
-                return; 
-            }
+            const mention = `<@!${client && client.user ? client.user.id : 0}>`;
+
             const [...args] = message.content.split(/\s+/g);
-            const command = args.shift().slice(prefix.length).toLowerCase();
+            const firstArg = args.shift();
+            let command = undefined;
+            if(mention == firstArg){
+                // mention[space]command
+                command = args.shift();
+            }else if(firstArg.indexOf(mention) == 0){
+                // mention[no space]command
+                command = firstArg.slice(mention.length);
+            }else if(firstArg.indexOf(prefix) == 0){
+                //prefix[no space]command
+                command = firstArg.slice(prefix.length);
+            }else{
+                return;
+            }
+
+            if(!command || command.length <= 0){
+                return;
+            }
+
+            command = command.toLowerCase();
             const role = appConfig.CONFIG_STORAGE.getProperty(message, 'role');
             const entry = appConfig.COMMANDS(appConfig).find(c => c.aliases.includes(command));
             if(entry){

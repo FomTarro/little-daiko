@@ -1,4 +1,5 @@
 const { AppConfig } = require('../../../app.config');
+const { HelpCommand } = require('./help.command');
 
 describe("General command tests", () => {
     test("All aliases are unique", async() => {
@@ -43,11 +44,10 @@ describe("Help command tests", () => {
         }
         // execute test
         expect(sent).toBe(false);
-        const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.find(c => { return c.aliases.includes('help')});
+        const help = HelpCommand(dummyConfig)
         const result = await help.callback(dummyMessage, undefined);
-        expect(sent).toBe(true);
-        expect(embed.message).toContain('streamer');
+        expect(sent).toBe(true);;
+        expect(embed.fields.length).toBe(2);
     });
 
     test("Help with 'users' arg", async() => {
@@ -77,11 +77,10 @@ describe("Help command tests", () => {
         }
         // execute test
         expect(sent).toBe(false);
-        const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.find(c => { return c.aliases.includes('help')});
+        const help = HelpCommand(dummyConfig)
         const result = await help.callback(dummyMessage, 'users');
         expect(sent).toBe(true);
-        expect(embed.fields.length).toBe(2);
+        expect(embed.fields.length).toBe(3);
     });
 });
 
@@ -115,8 +114,8 @@ describe("Config command tests", () => {
         // execute test
         expect(sent).toBe(false);
         const commands = AppConfig.COMMANDS(dummyConfig);
-        const help = commands.find(c => { return c.aliases.includes('config')});
-        const result = await help.callback(dummyMessage, undefined);
+        const config = commands.find(c => { return c.aliases.includes('config')});
+        const result = await config.callback(dummyMessage, undefined);
         expect(sent).toBe(true);
         expect(embed.fields.length).toBe(2);
         expect(embed.message).toBeDefined();
