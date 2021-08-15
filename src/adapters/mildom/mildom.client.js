@@ -275,16 +275,31 @@ const platformEmotes = [
     [1010, '😤'],
     [1011, '😲'],
     [1012, '😏'],
+    [1013, '😏'],
+    [1014, '🍚'], // TODO: better representation for these three?
+    [1015, '🍚'],
+    [1016, '🍚'],
+    [1017, '😈'],
+    [1018, '🐱'],
+    [1018, '🙋‍♂️'],
+    [1019, '👩‍🎤'],
+    [1020, '🐸'],
+    [1021, '🐸♥'],
 ];
 
+/**
+ * Performs necessary sanitization, such as emote replacement
+ * @param {string} str input string
+ * @returns 
+ */
 function sanitize(str){
     let sanitized = str;
     const matches = str.match(regex);
-    for(let match of matches){
-        for(let pair of platformEmotes){
-            if(match == `[/${pair[0]}]`){
-                sanitized = sanitized.replace(match, pair[1]);
-            }
+    if(matches){
+        for(let match of matches){
+            const emote = platformEmotes.find(pair => { return match == `[/${pair[0]}]`})
+            const replacement = emote ? emote[1] : `[❓]`
+            sanitized = sanitized.replace(match, replacement);
         }
     }
     return sanitized;
