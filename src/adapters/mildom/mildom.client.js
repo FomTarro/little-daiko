@@ -152,7 +152,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
                             message.userName,
                             message.userId,
                             message.userImg,
-                            message.msg,
+                            sanitize(message.msg),
                             message.time,
                         ));
                         break;
@@ -261,5 +261,35 @@ class ChatListener{
     }
 }
 
+const regex = new RegExp(/\[\/([0-9]+)\]/g);
+const platformEmotes = [
+    [1001, '🔰'],
+    [1002, '😨'],
+    [1003, '🚩'],
+    [1004, '😆'],
+    [1005, '😳'],
+    [1006, '😡'],
+    [1007, '😴'],
+    [1008, '😘'],
+    [1009, '😍'],
+    [1010, '😤'],
+    [1011, '😲'],
+    [1012, '😏'],
+];
+
+function sanitize(str){
+    let sanitized = str;
+    const matches = str.match(regex);
+    for(let match of matches){
+        for(let pair of platformEmotes){
+            if(match == `[/${pair[0]}]`){
+                sanitized = sanitized.replace(match, pair[1]);
+            }
+        }
+    }
+    return sanitized;
+}
+
 module.exports.startListener = startListener;
 module.exports.ChatListener = ChatListener;
+module.exports.sanitize = sanitize;
