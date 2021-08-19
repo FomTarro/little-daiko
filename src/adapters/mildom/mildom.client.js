@@ -114,7 +114,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
     }
 
     /**
-     * 
+     * Generates a websocket with the provided callbacks for various events.
      * @param {URL} wsUrl Websocket URL.
      * @param {Number} roomId Channel ID.
      * @param {string} guestId User ID
@@ -275,12 +275,11 @@ const platformEmotes = [
     [1010, '😤'],
     [1011, '😲'],
     [1012, '😏'],
-    [1013, '😏'],
-    [1014, '🍚'], // TODO: better representation for these three?
+    [1013, '🍚'], // TODO: better representation for these three?
+    [1014, '🍚'],
     [1015, '🍚'],
-    [1016, '🍚'],
-    [1017, '😈'],
-    [1018, '🐱'],
+    [1016, '😈'],
+    [1017, '🐱'],
     [1018, '🙋‍♂️'],
     [1019, '👩‍🎤'],
     [1020, '🐸'],
@@ -288,17 +287,17 @@ const platformEmotes = [
 ];
 
 /**
- * Performs necessary sanitization, such as emote replacement
- * @param {string} str input string
- * @returns 
+ * Performs necessary sanitization, such as emote replacement.
+ * @param {string} str The input string.
+ * @returns {string} The sanitized string.
  */
 function sanitize(str){
     let sanitized = str;
     const matches = str.match(regex);
     if(matches){
         for(let match of matches){
-            const emote = platformEmotes.find(pair => { return match == `[/${pair[0]}]`})
-            const replacement = emote ? emote[1] : `[❓]`
+            const emote = platformEmotes.find(pair => { return match == `[/${pair[0]}]`});
+            const replacement = emote ? emote[1] : `[❓]`;
             sanitized = sanitized.replace(match, replacement);
         }
     }
