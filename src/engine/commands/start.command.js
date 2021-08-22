@@ -94,7 +94,8 @@ function command(appConfig){
                 oneline`Starts listening to the chat of the selected streamer, 
                 for messages tagged with the designated language tag that are posted by users on the designated users list.`
             ),
-        ]
+        ],
+        `Starts listening to the designated stream.`
     );
 }
 

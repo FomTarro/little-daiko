@@ -68,7 +68,8 @@ function command(appConfig){
                 `Flushes all timestamps to log files immediately, and posts them to their respective channels. 
                 Flushing happens automatically on stream end, so you will probably never need to invoke this command manually.`
             ),
-        ]
+        ],
+        `Dumps current timestamps to a log.`
     );
 }
 

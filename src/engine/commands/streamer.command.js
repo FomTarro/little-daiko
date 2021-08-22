@@ -29,7 +29,8 @@ function command(appConfig){
                 oneline`Sets the streamer to listen to. The streamer id must be a number. 
                 If this is changed while the listener is currently active, the listener will need to be restarted.`
             ),
-        ]
+        ],
+        `Designates the stream for the bot to listen to.`
     );
 }
 

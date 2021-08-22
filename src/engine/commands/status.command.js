@@ -29,7 +29,8 @@ function command(appConfig){
                 `status`,
                 `Lists the status of the chat listener for the server.`
             ),
-        ]
+        ],
+        `Displays the listener status.`
     );
 }
 

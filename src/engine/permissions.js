@@ -20,20 +20,20 @@ function permissions(appConfig){
                 || discordHelpers.isGuildOwner(user) 
                 || discordHelpers.isAdmin(user, role) 
             },
-            `Bot Operator, Server Owner or Bot Owner`
+            `Operator Role, Server Owner or Developer`
         )],
         [3, new PermissionLevel(
             (user, role) => { 
                 return discordHelpers.isBotOwner(user) 
                 || discordHelpers.isGuildOwner(user) 
             },
-            `Server Owner or Bot Owner`
+            `Server Owner or Developer`
         )],
         [100, new PermissionLevel(
             (user, role) => { 
                 return discordHelpers.isBotOwner(user) 
             },
-            `Bot Owner`
+            `Developer`
         )]
     ])
 }

@@ -29,7 +29,8 @@ function command(appConfig){
                 `config`,
                 oneline`Displays a list of all configurable properties for the server.`
             ),
-        ]
+        ],
+        `Displays configruable properties.`
     );
 }
 

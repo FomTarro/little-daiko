@@ -54,7 +54,8 @@ function command(appConfig){
                 `output alert <channel name or id>`,
                 `Sets the server channel which stream go-live alerts will be posted to.`
             ),
-        ]
+        ],
+        `Designates which channels various messages output to.`
     );
 }
 

@@ -56,7 +56,8 @@ function command(appConfig){
                 oneline`Removes all listed user ids from the list of users to listen for. 
                 The list must be space-separated. The user ids must be numbers.`
             ),
-        ]
+        ],
+        `Designates which users can have their messages transmitted.`
     );
 }
 

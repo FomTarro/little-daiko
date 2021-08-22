@@ -24,7 +24,8 @@ function command(appConfig){
                 `prefix <prefix string>`,
                 `Sets the prefix to denote bot commands.`
             ),
-        ]
+        ],
+        `Assigns the prefix for using commands.`
     );
 }
 

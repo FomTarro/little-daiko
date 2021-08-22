@@ -20,11 +20,13 @@ class Command{
      * @param {number} permissionLevel The permission level required to use the command.
      * @param {CommandCallback} callback The actual functionality of the command.
      * @param {HelpTip[]} helpTips The tooltips about the command's usages.
+     * @param {String} summary A high-level summary of the command.
      */
-    constructor(aliases, permissionLevel, callback, helpTips){
+    constructor(aliases, permissionLevel, callback, helpTips, summary){
         this.aliases = aliases;
         this.permissionLevel = permissionLevel;
         this.callback = callback;
+        this.summary = summary;
         this.helpTips = helpTips;
     }
 }
