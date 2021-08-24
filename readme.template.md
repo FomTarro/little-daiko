@@ -17,8 +17,6 @@ This bot is built and managed by Tom "Skeletom" Farro. If you need to contact hi
  
 While it was built with kson in mind, it can be configured by server operators to work with any Mildom streamer's channel. 
 
-## The Basics
-
 Like most Discord bots, this one is controlled via commands.
 
 Commands can be invoked by starting a message with a designated prefix (`!` by default), or by mentioning the bot with the desired command.
