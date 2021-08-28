@@ -62,7 +62,8 @@ function command(appConfig){
                 If the number of downvotes is greater than the number of upvotes, the timestamp will be discarded.
                 A summary list of all remaining timestamps will be posted at the conclusion of the stream.`
             ),
-        ]
+        ],
+        `Creates a note about a moment from the stream.`
     );
 }
 

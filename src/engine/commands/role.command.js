@@ -33,15 +33,16 @@ function command(appConfig){
         [
             new HelpTip(
                 `role ops <role name or id>`,
-                oneline`Sets the role name of permitted bot operators for this server.
-                The server owner and the bot owner are granted these permissions without needing the role.`
+                oneline`Sets the role of permitted operators of the bot for this server.
+                The server owner and the developer are granted these permissions without needing the role.`
             ),
             new HelpTip(
                 `role alert <role name or id>`,
                 oneline`Sets the role to ping when the designated streamer goes live. 
                 The alert will be posted in the designated alert channel.`
             ),
-        ]
+        ],
+        `Designates which Discord roles are used for various features.`
     );
 }
 

@@ -32,7 +32,8 @@ function command(appConfig){
                 `servers`,
                 oneline`Lists all servers that the bot is currently connected to.`
             ),
-        ]
+        ],
+        `Displays active servers.`
     );
 }
 

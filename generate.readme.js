@@ -1,6 +1,7 @@
 const { AppConfig } = require('./app.config');
 const fs = require('fs');
 const { HelpCommand } = require('./src/engine/commands/help.command');
+const { LiteralConstants } = require('./src/utils/literal.constants');
 
 async function main(){
     const dummyConfig = {
@@ -39,6 +40,8 @@ async function main(){
         }
     }
     template = template.replace('${COMMANDS}', output);
+    template = template.replace('${OFFLINE}', LiteralConstants.OFFLINE_EMOJI);
+    template = template.replace('${ONLINE}', LiteralConstants.ONLINE_EMOJI);
     fs.writeFileSync('./readme.md', template);
 }
 main();

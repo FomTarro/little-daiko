@@ -2,11 +2,12 @@
 A Discord bot for integrating with the [mildom.com](https://www.mildom.com) streaming platform.
  
 ## About
-Named after the digital persona of beloved mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her fans abroad. 
+Named after the digital persona of beloved Mildom streamer [kson](https://www.mildom.com/10882672), this bot was built to help facilitate the enjoyment of her streams by her fans abroad. 
  
-To that end, this bot seeks to achieve two primary goals:
+To that end, this bot seeks to achieve three primary goals:
 1) To provide go-live alerts for a designated streamer by pinging a designated role, and posting the alert in a designated Discord channel.
 2) To transmit translation messages from designated "trusted chat members" that are prefixed with a translation indicator (such as `[EN]`) into a designated Discord channel. 
+3) To allow users to mark timestamps for noteworthy moments during a stream, which will be summarized in a log file at the end of the stream.
  
 ## Contact
  
@@ -14,13 +15,44 @@ This bot is built and managed by Tom "Skeletom" Farro. If you need to contact hi
  
 # Usage
  
-While it was built with kson in mind, it can be configured by server operators to work with any mildom streamer's channel. 
+While it was built with kson in mind, it can be configured by server operators to work with any Mildom streamer's channel. 
+
+Like most Discord bots, this one is controlled via commands.
+
+Commands can be invoked by starting a message with a designated prefix (`!` by default), or by mentioning the bot with the desired command.
  
-In addition, there is no limit to the number of `[language : Discord channel]` pairs for translation message transmission. This means that you can have seperate output channels for `[EN]`, `[ES]`, `[JP]`, `[ITA]`, etc.
- 
+## Live Translation / Message Transmission
+
+The bot can handle the transmission of translated messages for as many languages as are desired. Each language can be configured to transmit into a designated channel using the `output` command.
+
+For example, let's run the following command:
+```
+!output chat add en stream-chat-en
+```
+This will configure the bot to transmit messages from [specified chat members](#users) that are prefixed with `[en]` (case does not matter) into the Discord channel named `stream-chat-en`.
+
+You can then repeat this process for as many languages as you see fit.
+
+## Listening
+
+To get the bot to start listening for chat messages and go-live notifications for a stream, first designate the stream to listen to with the following command:
+```
+!streamer 123456
+```
+This will have the bot listen to the Mildom channel ID `123456`, when the bot is active. Next, let's activate the bot with the following command: 
+```
+!start
+```
+The bot should now be set to listen to the channel forever. If for some reason you wish to stop listening, simply stop it with the following command:
+```
+!stop
+```
+
+If the bot is currently listening, it will include `🟢` in its display name. If it is not listening, it will instead include `🔴`.
+
 ## Commands
 
-Commands can be invoked by prefixing a message with a designated prefix (`!` by default), or by mentioning the bot with the desired command.
+Here is a list of every command the bot currently supports.
 
 You can learn more about them by typing `!help <command>`.
 
@@ -28,9 +60,9 @@ You can learn more about them by typing `!help <command>`.
 
 Command Information:
 
-Aliases: `[config, conf, c]`
+Alternate Names: `[config, conf, c]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!config`
 
@@ -40,13 +72,13 @@ Displays a list of all configurable properties for the server.
 
 Command Information:
 
-Aliases: `[help, h]`
+Alternate Names: `[help, h]`
 
 Usable by: Any user.
 
 `!help`
 
-Displays a list of all commands and their aliases.
+Displays a list of all commands and their alternate names.
 
 `!help <command>`
 
@@ -56,9 +88,9 @@ Displays usage information about a specific command.
 
 Command Information:
 
-Aliases: `[output, out, o]`
+Alternate Names: `[output, out, o]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!output chat add <language prefix> <channel name or id>`
 
@@ -76,9 +108,9 @@ Sets the server channel which stream go-live alerts will be posted to.
 
 Command Information:
 
-Aliases: `[prefix, p]`
+Alternate Names: `[prefix, p]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!prefix <prefix string>`
 
@@ -88,9 +120,9 @@ Sets the prefix to denote bot commands.
 
 Command Information:
 
-Aliases: `[remote, rem]`
+Alternate Names: `[remote, rem]`
 
-Usable by: Bot Owner.
+Usable by: Developer.
 
 `!remote <server id> <command> <command args>`
 
@@ -100,13 +132,13 @@ Allows remote execution of commands on deployed servers by the bot owner,  for c
 
 Command Information:
 
-Aliases: `[role, r]`
+Alternate Names: `[role, r]`
 
-Usable by: Server Owner or Bot Owner.
+Usable by: Server Owner or Developer.
 
 `!role ops <role name or id>`
 
-Sets the role name of permitted bot operators for this server. The server owner and the bot owner are granted these permissions without needing the role.
+Sets the role of permitted operators of the bot for this server. The server owner and the developer are granted these permissions without needing the role.
 
 `!role alert <role name or id>`
 
@@ -116,9 +148,9 @@ Sets the role to ping when the designated streamer goes live.  The alert will be
 
 Command Information:
 
-Aliases: `[servers, sv, guilds]`
+Alternate Names: `[servers, sv, guilds]`
 
-Usable by: Bot Owner.
+Usable by: Developer.
 
 `!servers`
 
@@ -128,9 +160,9 @@ Lists all servers that the bot is currently connected to.
 
 Command Information:
 
-Aliases: `[start, listen, l]`
+Alternate Names: `[start, listen, l]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!start`
 
@@ -140,9 +172,9 @@ Starts listening to the chat of the selected streamer,  for messages tagged with
 
 Command Information:
 
-Aliases: `[status]`
+Alternate Names: `[status]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!status`
 
@@ -152,9 +184,9 @@ Lists the status of the chat listener for the server.
 
 Command Information:
 
-Aliases: `[stop, x]`
+Alternate Names: `[stop, x]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!stop`
 
@@ -164,9 +196,9 @@ Stops listening to the chat of the selected streamer.
 
 Command Information:
 
-Aliases: `[streamer, s]`
+Alternate Names: `[streamer, s]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!streamer <streamer id>`
 
@@ -176,7 +208,7 @@ Sets the streamer to listen to. The streamer id must be a number.  If this is ch
 
 Command Information:
 
-Aliases: `[timestamp, ts, t]`
+Alternate Names: `[timestamp, ts, t]`
 
 Usable by: Any user.
 
@@ -188,9 +220,9 @@ Creates a timestamp ten seconds before invocation, with the given description.  
 
 Command Information:
 
-Aliases: `[users, u]`
+Alternate Names: `[users, u]`
 
-Usable by: Bot Operator, Server Owner or Bot Owner.
+Usable by: Operator Role, Server Owner or Developer.
 
 `!users add <list of numeric user ids>`
 

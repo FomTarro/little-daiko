@@ -106,6 +106,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
     const guestId = `pc-gp-${uuId}`;
 
     const serverInfo = await getServerInfo(roomId, logger);
+    console.log(serverInfo);
     if(serverInfo['wss_server']){
         const wsUrl = `wss://${serverInfo['wss_server']}?roomId=${roomId}`;
         logger.log(`Obtained websocket URL: ${wsUrl}`);

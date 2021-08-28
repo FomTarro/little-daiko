@@ -25,7 +25,7 @@ function command(appConfig){
                         });
                         fields.unshift({
                             name:  `Command Information:`,
-                            value: `Aliases: \`[${entry.aliases.join(', ')}]\`\nUsable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.`
+                            value: `Alternate Names: \`[${entry.aliases.join(', ')}]\`\nUsable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.`
                         });
 
                         message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
@@ -37,7 +37,7 @@ function command(appConfig){
                 return LiteralConstants.REACT_ERROR_EMOJI;
             }
             const fields = appConfig.COMMANDS(appConfig).map((value) => {
-                return `\`[${value.aliases.join(', ')}]\``;
+                return `\`[${value.aliases.join(', ')}]\` - ${value.summary}`;
             }).sort((a, b) => { 
                 return a.localeCompare(b);
             });
@@ -45,11 +45,11 @@ function command(appConfig){
             await message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
                 fields: [{
                     name: `General Help:`,
-                    value: `Commands can be invoked by prefixing a message with \`${prefix}\`, or by mentioning the bot with the desired command.
+                    value: `Commands can be invoked by starting a message with \`${prefix}\`, or by mentioning the bot with the desired command.
                 You can learn more about commands and their usages by typing \`${prefix}help <command>\`.`
                 },
                 {
-                    name: `Command and Alias List:`,
+                    name: `Command and Alternate Name List:`,
                     value:  `${fields.join('\n')}`
                 }],
             }));
@@ -57,13 +57,14 @@ function command(appConfig){
         [
             new HelpTip(
                 `help`,
-                `Displays a list of all commands and their aliases.`
+                `Displays a list of all commands and their alternate names.`
             ),
             new HelpTip(
                 `help <command>`,
                 `Displays usage information about a specific command.`
             ),
-        ]
+        ],
+        `Provides guidance for how to use commands.`,
     );
 }
 

@@ -24,7 +24,8 @@ function command(appConfig){
                 `stop`,
                 `Stops listening to the chat of the selected streamer.`
             ),
-        ]
+        ],
+        `Stops listening to the designated stream.`
     );
 }
 

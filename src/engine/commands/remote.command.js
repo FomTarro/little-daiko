@@ -36,7 +36,8 @@ function command(appConfig){
                 oneline`Allows remote execution of commands on deployed servers by the bot owner, 
                 for checking on bot status and assisting with setup.`
             ),
-        ]
+        ],
+        `Allows remote execution of commands by the bot developer.`
     );
 }
 
