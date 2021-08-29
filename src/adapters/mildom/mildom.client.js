@@ -153,7 +153,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
                             message.userName,
                             message.userId,
                             message.userImg,
-                            sanitize(message.msg),
+                            message.msg,
                             message.time,
                         ));
                         break;
@@ -290,14 +290,16 @@ const platformEmotes = [
 /**
  * Performs necessary sanitization, such as emote replacement.
  * @param {string} str The input string.
+ * @param {Map<number,string>} additionalEmotes A map of additional emotes to replace.
  * @returns {string} The sanitized string.
  */
-function sanitize(str){
+function sanitize(str, additionalEmotes){
     let sanitized = str;
     const matches = str.match(regex);
+    const fullEmoteMap = additionalEmotes ? platformEmotes.concat(additionalEmotes) : platformEmotes;
     if(matches){
         for(let match of matches){
-            const emote = platformEmotes.find(pair => { return match == `[/${pair[0]}]`});
+            const emote = fullEmoteMap.find(pair => { return match == `[/${pair[0]}]`});
             const replacement = emote ? emote[1] : `[❓]`;
             sanitized = sanitized.replace(match, replacement);
         }
@@ -305,6 +307,17 @@ function sanitize(str){
     return sanitized;
 }
 
+/**
+ * Checks to see if a string is a Mildom-formatted emote.
+ * @param {string} str The string to check.
+ * @returns {boolean} Is the string an emote?
+ */
+function isEmote(str){
+    const matches = str.match(regex);
+    return matches && matches.length > 0 && str.length == matches[0].length;
+}
+
 module.exports.startListener = startListener;
 module.exports.ChatListener = ChatListener;
 module.exports.sanitize = sanitize;
+module.exports.isEmote = isEmote;
