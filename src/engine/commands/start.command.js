@@ -1,4 +1,5 @@
 const { AppConfig } = require("../../../app.config");
+const { sanitize } = require("../../adapters/mildom/mildom.client");
 const { FlushCommand } = require("./flush.command");
 const { Command, HelpTip } = require('../../models/command');
 const { Timestamp } = require("../../models/timestamp");
@@ -33,8 +34,13 @@ function command(appConfig){
                     || (users.includes(comment.authorId) 
                     && comment.message.toLowerCase().startsWith(`[${language.toLowerCase()}]`))){
                         if(comment.time > startEpoch){
+                            
                             const chatChannel = appConfig.DISCORD_HELPERS.getChannel(guild, channels[language]);
                             if(chatChannel){
+                                const emotes = appConfig.CONFIG_STORAGE.getProperty(configKey, "emotes");
+                                // TODO: handle when there are 0 properties on the object
+                                const emotePairs = emotes ? [...Object.entries(emotes)] : [];
+                                comment.message = sanitize(comment.message, emotePairs);
                                 logger.log(`Posting: ${JSON.stringify(comment)}`);
                                 const embed = await chatChannel.send(appConfig.DISCORD_HELPERS.generateEmbed(comment));
                                 // post message to timestamps log if we're live

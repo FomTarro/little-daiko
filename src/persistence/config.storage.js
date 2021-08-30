@@ -20,6 +20,7 @@ const config = new Enmap({
             },
             alert: "general"
         },
+        emotes: {},
         listening: false,
     }
 });

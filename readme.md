@@ -68,6 +68,22 @@ Usable by: Operator Role, Server Owner or Developer.
 
 Displays a list of all configurable properties for the server.
 
+### `emote`
+
+Command Information:
+
+Alternate Names: `[emote, em, e]`
+
+Usable by: Operator Role, Server Owner or Developer.
+
+`!emote add <mildom emote number> <discord emote>`
+
+Sets the Discord emote equivalent of a Mildom emote that is contained in a transmitted message.
+
+`!emote remove <mildom emote number>`
+
+Removes the Discord emote equivalent of a Mildom emote.
+
 ### `help`
 
 Command Information:
