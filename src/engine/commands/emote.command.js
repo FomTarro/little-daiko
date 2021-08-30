@@ -42,11 +42,11 @@ function command(appConfig){
         [
             new HelpTip(
                 `emote add <mildom emote number> <discord emote>`,
-                oneline`Sets the Discord emote equivalent of a Mildomemote that is contained in a transmitted message.`
+                oneline`Sets the Discord emote equivalent of a Mildom emote that is contained in a transmitted message.`
             ),
             new HelpTip(
-                `emote remove <mildom emote number> <discord emote>`,
-                oneline`Removes the Discord emote equivlanet of a Mildm emote.`
+                `emote remove <mildom emote number>`,
+                oneline`Removes the Discord emote equivalent of a Mildom emote.`
             ),
         ],
         `Sets how Mildom emotes are displayed in Discord.`

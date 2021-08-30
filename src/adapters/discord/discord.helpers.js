@@ -41,6 +41,19 @@ function isBot(subject){
     : subject.bot;
 }
 
+const emoteRegex = new RegExp(/(:[^:\s]+:|<:[^:\s]+:[0-9]+>|<a:[^:\s]+:[0-9]+>)/g);
+/**
+ * 
+ * @param {string} str
+ */
+function isEmote(str){
+    if(str){
+        const matches = str.match(emoteRegex);
+        return matches && matches.length > 0 && matches[0].length == str.length;
+    }
+    return false;
+}
+
 /**
  * 
  * @param {Discord.Message|Discord.User} subject 
@@ -223,6 +236,7 @@ module.exports.isMessage = isMessage;
 module.exports.isGuild = isGuild;
 module.exports.isDm = isDm;
 module.exports.isBot = isBot;
+module.exports.isEmote = isEmote;
 module.exports.isAdmin = isAdmin;
 module.exports.isGuildOwner = isGuildOwner;
 module.exports.isBotOwner = isBotOwner;
