@@ -35,7 +35,9 @@ function getListener(subject){
 function deleteListener(subject){
     const key = AppConfig.DISCORD_HELPERS.getGuildId(subject);
     if(storage.has(key)){
-        storage.get(key).stopListener();
+        if(storage.get(key)){
+            storage.get(key).stopListener();
+        }
         storage.delete(key);
     }
     return key;
