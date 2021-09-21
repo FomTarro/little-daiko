@@ -110,9 +110,9 @@ function getGuildId(subject){
  * @returns {Discord.Guild[]}
  */
 function getOtherBotGuilds(subject){
-    return  isMessage(subject) ? subject.guild.me.client.guilds.cache.values() :
-            isGuild(subject) ? subject.me.client.guilds.cache.values() :
-            subject.guild.me.client.guilds.cache.values();
+    return  isMessage(subject) ? [...subject.guild.me.client.guilds.cache.values()] :
+            isGuild(subject) ? [...subject.me.client.guilds.cache.values()] :
+            [...subject.guild.me.client.guilds.cache.values()];
 }
 
 /**

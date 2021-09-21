@@ -30,7 +30,7 @@ function events(appConfig) {
         return new Map([
         ["ready", async (client, input, onError) => {
             const logger = new Logger(LiteralConstants.LOG_SYSTEM_ID)
-            for(let guild of client.guilds.cache.values()){
+            for(let guild of [...client.guilds.cache.values()]){
                 if(guild && guild.me){
                     guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
                     // TODO: notify servers of changes since last login
@@ -62,7 +62,7 @@ function events(appConfig) {
             appConfig.LISTENER_STORAGE.deleteListener(input);
             return;
         }],
-        ["message", async (client, message, onError) => { 
+        ["messageCreate", async (client, message, onError) => { 
             if(appConfig.DISCORD_HELPERS.isDm(message) || appConfig.DISCORD_HELPERS.isBot(message)){
                 return;
             }
