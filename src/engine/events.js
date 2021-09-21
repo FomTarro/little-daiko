@@ -30,7 +30,7 @@ function events(appConfig) {
         return new Map([
         ["ready", async (client, input, onError) => {
             const logger = new Logger(LiteralConstants.LOG_SYSTEM_ID)
-            for(let guild of client.guilds.cache.array()){
+            for(let guild of client.guilds.cache.values()){
                 if(guild && guild.me){
                     guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
                     // TODO: notify servers of changes since last login

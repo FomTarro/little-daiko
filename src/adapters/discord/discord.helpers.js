@@ -70,7 +70,7 @@ function isAdmin(subject, role){
  * @returns {Boolean}
  */
 function isGuildOwner(subject){
-    return getUserId(subject) == subject.guild.ownerID;
+    return getUserId(subject) == subject.guild.ownerId;
 }
 
 /**
@@ -110,9 +110,9 @@ function getGuildId(subject){
  * @returns {Discord.Guild[]}
  */
 function getOtherBotGuilds(subject){
-    return  isMessage(subject) ? subject.guild.me.client.guilds.cache.array() :
-            isGuild(subject) ? subject.me.client.guilds.cache.array() :
-            subject.guild.me.client.guilds.cache.array();
+    return  isMessage(subject) ? subject.guild.me.client.guilds.cache.values() :
+            isGuild(subject) ? subject.me.client.guilds.cache.values() :
+            subject.guild.me.client.guilds.cache.values();
 }
 
 /**

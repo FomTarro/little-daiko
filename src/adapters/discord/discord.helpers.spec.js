@@ -2,8 +2,18 @@ const { AppConfig } = require('../../../app.config');
 const Discord = require('discord.js');
 
 describe("Discord Helpers tests", () => {
-    const message = new Discord.Message(); 
-    const guild = new Discord.Guild();
+    const client = new Discord.Client({ intents: new Discord.Intents(['GUILDS'])});
+    const message = new Discord.Message(client, {
+        channel_id: 1234,
+        id: "absce",
+        type: "TEXT",
+        content: "CONTENT",
+        author: {bot: false, username: "ME"},
+        nonce: "123"
+    }); 
+    const guild = new Discord.Guild(client, {
+        id: "GUILD"
+    });
     test("isMessage", async() => {
         // execute tests
         const result1 = AppConfig.DISCORD_HELPERS.isMessage(message)
@@ -27,10 +37,14 @@ describe("Discord Helpers tests", () => {
     });
     test("isBot", async() => {
         // execute tests
-        const botMessage = new Discord.Message(); 
-        botMessage.author = {
-            bot: true
-        }
+        const botMessage = new Discord.Message(client, {
+            channel_id: 1234,
+            id: "absce",
+            type: "TEXT",
+            content: "CONTENT",
+            author: {bot: true, username: "ME"},
+            nonce: "123"
+        }); 
         const result1 = AppConfig.DISCORD_HELPERS.isBot(guild)
         expect(result1).toBe(undefined);
         const result2 = AppConfig.DISCORD_HELPERS.isBot(botMessage);

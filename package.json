@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/FomTarro/little-daiko#readme",
   "dependencies": {
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.0.0",
     "dotenv": "^10.0.0",
     "enmap": "^5.8.6",
     "oneline": "^1.0.3",
