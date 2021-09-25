@@ -144,7 +144,7 @@ describe("Other bot functions", () => {
         dummyMessage.content = '!status';
         bot.client.emit('messageCreate', dummyMessage);
         await delay();
-        expect(sent).toContain('listening');
+        expect(sent.content).toContain('listening');
         await bot.shutdown();
         dummyConfig.LISTENER_STORAGE.deleteListener(dummyMessage);
 
@@ -159,7 +159,7 @@ describe("Other bot functions", () => {
         await delay();
         await bot.shutdown();
         dummyConfig.CONFIG_STORAGE.deleteGuildConfig(dummyMessage);
-        expect(sent).toContain('listening');
+        expect(sent.content).toContain('listening');
     });
 });
 
