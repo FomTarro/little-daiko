@@ -29,15 +29,19 @@ function command(appConfig){
                     if(liveInfo.isLive() == true){
                         const now = Date.parse(new Date()) - 10000;
                         const timestamp = new Timestamp(formatTime(now - liveInfo.startTime), args.join(' '));
-                        const embed = await message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed(
-                            {
-                                message: `Timestamp:`,
-                                fields: [{
-                                    name: `\`${timestamp.time.print()}\``,
-                                    value: `"${timestamp.description}"`
-                                }]
-                            }
-                        ));
+                        const embed = await message.channel.send({
+                            embeds: [
+                                appConfig.DISCORD_HELPERS.generateEmbed(
+                                    {
+                                        message: `Timestamp:`,
+                                        fields: [{
+                                            name: `\`${timestamp.time.print()}\``,
+                                            value: `"${timestamp.description}"`
+                                        }]
+                                    }
+                                )
+                            ]
+                        });
                         for(let language of languages){
                             const timestampEntry = `${timestamp.time.print()} - ${timestamp.description}`
                             logger.log(`Writing timestamp: ${timestampEntry}`);
@@ -47,7 +51,7 @@ function command(appConfig){
                         await embed.react(LiteralConstants.REACT_DOWNVOTE_EMOJI);
                         return;
                     }
-                    message.channel.send(`Stream is not currently live!`);
+                    message.channel.send({content: `Stream is not currently live!`});
                     return;
                 }
                 return LiteralConstants.REACT_ERROR_EMOJI;

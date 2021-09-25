@@ -28,9 +28,11 @@ function command(appConfig){
                             value: `Alternate Names: \`[${entry.aliases.join(', ')}]\`\nUsable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.`
                         });
 
-                        message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
-                            fields: fields
-                        }));
+                        message.channel.send({
+                            embeds: [
+                                appConfig.DISCORD_HELPERS.generateEmbed({ fields: fields })
+                            ]
+                        });
                         return;
                     }
                 }
@@ -42,17 +44,21 @@ function command(appConfig){
                 return a.localeCompare(b);
             });
 
-            await message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
-                fields: [{
-                    name: `General Help:`,
-                    value: `Commands can be invoked by starting a message with \`${prefix}\`, or by mentioning the bot with the desired command.
-                You can learn more about commands and their usages by typing \`${prefix}help <command>\`.`
-                },
-                {
-                    name: `Command and Alternate Name List:`,
-                    value:  `${fields.join('\n')}`
-                }],
-            }));
+            await message.channel.send({
+                embeds: [
+                    appConfig.DISCORD_HELPERS.generateEmbed({
+                        fields: [{
+                            name: `General Help:`,
+                            value: `Commands can be invoked by starting a message with \`${prefix}\`, or by mentioning the bot with the desired command.
+                        You can learn more about commands and their usages by typing \`${prefix}help <command>\`.`
+                        },
+                        {
+                            name: `Command and Alternate Name List:`,
+                            value:  `${fields.join('\n')}`
+                        }],
+                    })
+                ]
+            });
         },
         [
             new HelpTip(

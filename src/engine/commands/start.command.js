@@ -42,7 +42,7 @@ function command(appConfig){
                                 const emotePairs = emotes ? [...Object.entries(emotes)] : [];
                                 comment.message = sanitize(comment.message, emotePairs);
                                 logger.log(`Posting: ${JSON.stringify(comment)}`);
-                                const embed = await chatChannel.send(appConfig.DISCORD_HELPERS.generateEmbed(comment));
+                                const embed = await chatChannel.send({ embeds: [appConfig.DISCORD_HELPERS.generateEmbed(comment)]});
                                 // post message to timestamps log if we're live
                                 const liveInfo = await listener.getLiveStatus();
                                 if(liveInfo.isLive()){
@@ -62,7 +62,7 @@ function command(appConfig){
                 if(alertChannel){
                     const post = `${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`;
                     logger.log(`Posting: ${post}`);
-                    alertChannel.send(post);
+                    alertChannel.send({content: post });
                 }
             },
             // on live end
@@ -83,7 +83,7 @@ function command(appConfig){
             },
             logger);
 
-            await message.channel.send(`Starting listener.`);
+            await message.channel.send({content: `Starting listener.`});
             appConfig.LISTENER_STORAGE.setListener(configKey, listener);
             appConfig.CONFIG_STORAGE.setProperty(configKey, 'listening', true);
             logger.log(`Listener instantiated.`);

@@ -103,7 +103,7 @@ function events(appConfig) {
                         onError(message, e);
                     });
                 }else{
-                    message.channel.send('You do not have permission to use that command.');
+                    message.channel.send({content: 'You do not have permission to use that command.'});
                 }
                 return;
             }

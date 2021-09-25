@@ -54,7 +54,7 @@ function command(appConfig){
                             const content = summary.sort().join('\n');
                             logger.log(`Posting ${language} summary:\n${content}`);
                             const attachment = appConfig.DISCORD_HELPERS.generateAttachment(content, `${language}-summary.txt`);
-                            await channel.send(`The stream has ended. Here's a summary:`, attachment);
+                            await channel.send({ content: `The stream has ended. Here's a summary:`, files: [ attachment ]});
                         }
                     }
                 }

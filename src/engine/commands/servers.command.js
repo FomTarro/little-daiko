@@ -22,10 +22,14 @@ function command(appConfig){
                     value: `\`${guild.id}\` ${isListening == true ? LiteralConstants.ONLINE_EMOJI : LiteralConstants.OFFLINE_EMOJI}`
                 }
             });
-            message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
-                message: 'Connected Servers:',
-                fields: guilds
-            }));
+            message.channel.send({
+                embeds: [
+                    appConfig.DISCORD_HELPERS.generateEmbed({
+                        message: 'Connected Servers:',
+                        fields: guilds
+                    })
+                ]
+            });
         },
         [
             new HelpTip(

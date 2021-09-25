@@ -19,10 +19,14 @@ function command(appConfig){
                     value: `\`${JSON.stringify(prop[1], undefined, 2)}\``,
                 }
             });
-            await message.channel.send(appConfig.DISCORD_HELPERS.generateEmbed({
-                message: `Here is the current configuration of this server:`,
-                fields: fields,
-            }));
+            await message.channel.send({
+                embeds: [
+                    appConfig.DISCORD_HELPERS.generateEmbed({
+                        message: `Here is the current configuration of this server:`,
+                        fields: fields,
+                    })
+                ]
+            });
         },      
         [
             new HelpTip(
