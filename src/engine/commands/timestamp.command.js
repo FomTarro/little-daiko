@@ -4,7 +4,6 @@ const { Timestamp } = require("../../models/timestamp");
 const { LiteralConstants } = require('../../utils/literal.constants');
 const { Logger } = require('../../utils/logger');
 const { formatTime } = require('../../utils/time.utils');
-const oneline = require('oneline');
 
 /**
  * 
@@ -27,24 +26,16 @@ function command(appConfig){
                 if(languages.length > 0){
                     const liveInfo = await listener.getLiveStatus();
                     if(liveInfo.isLive() == true){
-                        const now = Date.parse(new Date()) - 10000;
-                        const timestamp = new Timestamp(liveInfo.startTime, now, args.join(' '));
+                        const now = Date.parse(new Date());
+                        const timestamp = new Timestamp(liveInfo.startTime, now, -(10 * 1000), args.join(' '));
                         const embed = await message.channel.send({
                             embeds: [
-                                appConfig.DISCORD_HELPERS.generateEmbed(
-                                    {
-                                        message: `Timestamp:`,
-                                        fields: [{
-                                            name: `\`${formatTime(timestamp.stampTime - timestamp.startTime).print()}\``,
-                                            value: `"${timestamp.description}"`
-                                        }]
-                                    }
-                                )
+                                renderTimestamp(appConfig, timestamp)
                             ],
                             components: [
                                 appConfig.DISCORD_HELPERS.generateButtonRow([
-                                    { label: '-10s', customId: 'subtract_ten', style: 2 },
-                                    { label: '+10s', customId: 'add_ten', style: 2 },
+                                    { label: '-5s', customId: 'timestamp_subtract', style: 2 },
+                                    { label: '+5s', customId: 'timestamp_add', style: 2 },
                                 ])
                             ],
                         });
@@ -69,14 +60,35 @@ function command(appConfig){
         [
             new HelpTip(
                 `timestamp <text description>`,
-                oneline`Creates a timestamp ten seconds before invocation, with the given description. 
+                `Creates a timestamp at ten seconds prior to invocation, with the given description. 
+
+                Timestamps can be manually adjusted with the correpsonding buttons.
+
                 Timestamps can be upvoted or downvoted with the assigned reacts. 
                 If the number of downvotes is greater than the number of upvotes, the timestamp will be discarded.
+
                 A summary list of all remaining timestamps will be posted at the conclusion of the stream.`
             ),
         ],
         `Creates a note about a moment from the stream.`
     );
 }
+/**
+ * 
+ * @param {AppConfig} appConfig 
+ * @param {Timestamp} timestamp 
+ */
+function renderTimestamp(appConfig, timestamp){
+    return appConfig.DISCORD_HELPERS.generateEmbed(
+        {
+            message: `Timestamp:`,
+            fields: [{
+                name: `\`${formatTime(timestamp.stampTime - timestamp.startTime).print()} (${timestamp.adjustment/1000}s)\``,
+                value: `"${timestamp.description}"`
+            }]
+        }
+    )
+}
 
 module.exports.TimestampCommand = command;
+module.exports.renderTimestamp = renderTimestamp;

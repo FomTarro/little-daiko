@@ -21,6 +21,7 @@ class AppConfig{
     get BOT(){ return require('./src/engine/bot')};
     get EVENTS(){ return require('./src/engine/events')};
     get COMMANDS(){ return require('./src/engine/commands/commands')};
+    get BUTTONS(){ return require('./src/engine/buttons/buttons')};
     get PERMISSIONS(){ return require('./src/engine/permissions')};
 }
 

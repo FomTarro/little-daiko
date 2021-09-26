@@ -3,7 +3,6 @@ const { Message, Client } = require('discord.js');
 const { LiteralConstants } = require("../utils/literal.constants");
 const { Logger } = require('../utils/logger');
 const { StartCommand } = require("./commands/start.command");
-const { formatTime } = require('../utils/time.utils');
 
 /**
  * The callback for an event.
@@ -110,45 +109,23 @@ function events(appConfig) {
             }
         }],
         ["interactionCreate", async (client, interaction, onError) => {
-            if(!interaction.isButton()){ 
+            if(appConfig.DISCORD_HELPERS.isBot(interaction.member)){
                 return;
-            };
-            if(interaction.customId == "subtract_ten" || interaction.customId == "add_ten"){
-                // console.log(interaction);
-                const timestamps = appConfig.TIMESTAMP_STORAGE.getAllTimestamps(interaction.guild);
-                //console.log(JSON.stringify(timestamps));
-                let timestamp;
-                for(let language of timestamps){
-                    for(let entry of language[1]){
-                        const messageId = entry[0];
-                        if(interaction.message.id == messageId){
-                            timestamp = entry[1];
-                            if(interaction.customId == "subtract_ten"){
-                                timestamp.stampTime = timestamp.stampTime - 10 * 1000;
-                            }else{
-                                timestamp.stampTime = timestamp.stampTime + 10 * 1000;
-                            }
-                            console.log(entry);
-                            appConfig.TIMESTAMP_STORAGE.addTimestamp(interaction.guild, language[0], messageId, timestamp);
-                        }
-                    }
-                }
-                if(timestamp){
-                    const embed = appConfig.DISCORD_HELPERS.generateEmbed(
-                        {
-                            message: `Timestamp:`,
-                            fields: [{
-                                name: `\`${formatTime(timestamp.stampTime - timestamp.startTime).print()}\``,
-                                value: `"${timestamp.description}"`
-                            }]
-                        }
-                    )
-                    interaction.update({ embeds: [ embed ] });
-                }else{
-                    interaction.deferUpdate();
+            }
+            const button = interaction.customId.toLowerCase();
+            const role = appConfig.CONFIG_STORAGE.getProperty(interaction.guild, 'role');
+            const entry = interaction.isButton() ? 
+                appConfig.BUTTONS(appConfig).find(b => b.aliases.includes(button)) :
+                undefined; // TODO, slash commands will go here
+            if(entry){
+                if(appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).check(interaction.member, role.ops)){
+                    entry.callback(interaction).then(() => {
+                        // do nothing, it's void
+                    }).catch((e) => { 
+                        onError(interaction, e);
+                    });
                 }
             }
-            //interaction.update({ content: 'A button was clicked!' });
         }],
         ["error", async (client, input, onError) => {
             onError(input);
