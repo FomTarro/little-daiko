@@ -25,7 +25,7 @@ function command(appConfig){
                         message: `Here is the current configuration of this server:`,
                         fields: fields,
                     })
-                ]
+                ],
             });
         },      
         [

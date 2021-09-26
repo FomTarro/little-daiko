@@ -2,6 +2,7 @@ const { AppConfig } = require("../../../app.config");
 const { Command, HelpTip } = require('../../models/command');
 const { Logger } = require('../../utils/logger');
 const { LiteralConstants } = require('../../utils/literal.constants');
+const { formatTime } = require('../../utils/time.utils');
 
 /**
  * 
@@ -41,8 +42,9 @@ function command(appConfig){
                                         const downvoteCount = downvotes ? downvotes.count : 0;
                                         if(upvoteCount >= downvoteCount){
                                             // write to summary log if upvoted
-                                            summary.push(timestamp[1]);
-                                            // console.log(`${guild.id} - ${language} - ${JSON.stringify(timestamp)} - ${summary}`);
+                                            const timestampEntry = `${formatTime(timestamp[1].stampTime - timestamp[1].startTime).print()} - ${timestamp[1].description}`
+                                            summary.push(timestampEntry);
+                                            // console.log(`${guild.id} - ${language} - ${JSON.stringify(timestamp)}`);
                                         }
                                     }
                                 }catch(e){

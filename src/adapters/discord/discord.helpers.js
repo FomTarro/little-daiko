@@ -268,4 +268,4 @@ module.exports.getOtherBotGuilds = getOtherBotGuilds;
 
 module.exports.generateEmbed = generateEmbed;
 module.exports.generateAttachment = generateAttachment;
-module.exports.generateButtomRow = generateButtonRow;
+module.exports.generateButtonRow = generateButtonRow;

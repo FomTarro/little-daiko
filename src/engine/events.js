@@ -108,6 +108,16 @@ function events(appConfig) {
                 return;
             }
         }],
+        ["interactionCreate", async (client, interaction, onError) => {
+            if(!interaction.isButton()){ 
+                return;
+            };
+            if(interaction.customId == "subtract_ten" || interaction.customId == "add_ten"){
+                console.log(interaction);
+                interaction.update({ embeds: interaction.message.embeds });
+            }
+            //interaction.update({ content: 'A button was clicked!' });
+        }],
         ["error", async (client, input, onError) => {
             onError(input);
         }],

@@ -28,30 +28,38 @@ function command(appConfig){
                     const liveInfo = await listener.getLiveStatus();
                     if(liveInfo.isLive() == true){
                         const now = Date.parse(new Date()) - 10000;
-                        const timestamp = new Timestamp(formatTime(now - liveInfo.startTime), args.join(' '));
+                        const timestamp = new Timestamp(liveInfo.startTime, now, args.join(' '));
                         const embed = await message.channel.send({
                             embeds: [
                                 appConfig.DISCORD_HELPERS.generateEmbed(
                                     {
                                         message: `Timestamp:`,
                                         fields: [{
-                                            name: `\`${timestamp.time.print()}\``,
+                                            name: `\`${formatTime(timestamp.stampTime - timestamp.startTime).print()}\``,
                                             value: `"${timestamp.description}"`
                                         }]
                                     }
                                 )
-                            ]
+                            ],
+                            components: [
+                                appConfig.DISCORD_HELPERS.generateButtonRow([
+                                    { label: '-10s', customId: 'add_ten', style: 2 },
+                                    { label: '+10s', customId: 'subtract_ten', style: 2 },
+                                ])
+                            ],
                         });
                         for(let language of languages){
-                            const timestampEntry = `${timestamp.time.print()} - ${timestamp.description}`
-                            logger.log(`Writing timestamp: ${timestampEntry}`);
-                            appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language[0], embed.id, timestampEntry);
+                            //const timestampEntry = `${timestamp.time.print()} - ${timestamp.description}`
+                            logger.log(`Writing timestamp: ${timestamp}`);
+                            appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language[0], embed.id, timestamp);
                         }
                         await embed.react(LiteralConstants.REACT_UPVOTE_EMOJI);
                         await embed.react(LiteralConstants.REACT_DOWNVOTE_EMOJI);
                         return;
                     }
-                    message.channel.send({content: `Stream is not currently live!`});
+                    message.channel.send({
+                        content: `Stream is not currently live!`
+                    });
                     return;
                 }
                 return LiteralConstants.REACT_ERROR_EMOJI;
