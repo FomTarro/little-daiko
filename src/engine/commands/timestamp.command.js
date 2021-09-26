@@ -43,8 +43,8 @@ function command(appConfig){
                             ],
                             components: [
                                 appConfig.DISCORD_HELPERS.generateButtonRow([
-                                    { label: '-10s', customId: 'add_ten', style: 2 },
-                                    { label: '+10s', customId: 'subtract_ten', style: 2 },
+                                    { label: '-10s', customId: 'subtract_ten', style: 2 },
+                                    { label: '+10s', customId: 'add_ten', style: 2 },
                                 ])
                             ],
                         });
