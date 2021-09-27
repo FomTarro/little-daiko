@@ -13,7 +13,7 @@ function button(appConfig){
     return new Button(
         ['timestamp_add', 'timestamp_subtract'],
         1,
-        async (interaction) => { 
+        async (interaction) => {
             const timestamps = appConfig.TIMESTAMP_STORAGE.getAllTimestamps(interaction.guild);
             //console.log(JSON.stringify(timestamps));
             let timestamp;
@@ -22,12 +22,14 @@ function button(appConfig){
                     const messageId = entry[0];
                     if(interaction.message.id == messageId){
                         timestamp = entry[1];
-                        if(interaction.customId.includes("subtract")){
-                            timestamp.adjustment = timestamp.adjustment - offset;
+                        if(timestamp.authorId == interaction.member.id){
+                            timestamp.adjustment = interaction.customId.includes("subtract") ? 
+                            timestamp.adjustment - offset : 
+                            Math.min(0, timestamp.adjustment + offset);
+                            appConfig.TIMESTAMP_STORAGE.addTimestamp(interaction.guild, language[0], messageId, timestamp);
                         }else{
-                            timestamp.adjustment = Math.min(0, timestamp.adjustment + offset);
+                            timestamp = undefined;
                         }
-                        appConfig.TIMESTAMP_STORAGE.addTimestamp(interaction.guild, language[0], messageId, timestamp);
                     }
                 }
             }

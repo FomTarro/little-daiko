@@ -27,7 +27,7 @@ function command(appConfig){
                     const liveInfo = await listener.getLiveStatus();
                     if(liveInfo.isLive() == true){
                         const now = Date.parse(new Date());
-                        const timestamp = new Timestamp(liveInfo.startTime, now, -(10 * 1000), args.join(' '));
+                        const timestamp = new Timestamp(liveInfo.startTime, now, -(10 * 1000), message.member.id, args.join(' '));
                         const embed = await message.channel.send({
                             embeds: [
                                 renderTimestamp(appConfig, timestamp)
@@ -62,7 +62,7 @@ function command(appConfig){
                 `timestamp <text description>`,
                 `Creates a timestamp at ten seconds prior to invocation, with the given description. 
 
-                Timestamps can be manually adjusted with the correpsonding buttons.
+                Timestamps can be manually adjusted by their creator with the correpsonding buttons.
 
                 Timestamps can be upvoted or downvoted with the assigned reacts. 
                 If the number of downvotes is greater than the number of upvotes, the timestamp will be discarded.
