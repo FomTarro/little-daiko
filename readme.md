@@ -230,7 +230,21 @@ Usable by: Any user.
 
 `!timestamp <text description>`
 
-Creates a timestamp ten seconds before invocation, with the given description.  Timestamps can be upvoted or downvoted with the assigned reacts.  If the number of downvotes is greater than the number of upvotes, the timestamp will be discarded. A summary list of all remaining timestamps will be posted at the conclusion of the stream.
+Creates a timestamp at ten seconds prior to invocation, with the given description. 
+
+
+
+Timestamps can be manually adjusted by their creator with the correpsonding buttons.
+
+
+
+Timestamps can be upvoted or downvoted with the assigned reacts. 
+
+If the number of downvotes is greater than the number of upvotes, the timestamp will be discarded.
+
+
+
+A summary list of all remaining timestamps will be posted at the conclusion of the stream.
 
 ### `users`
 

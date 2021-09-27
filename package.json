@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run index",
     "generate-readme": "node generate.readme.js",
-    "start-pm2": "pm2 start index.js",
+    "start-pm2": "pm2 start index.js --interpreter=./node_modules/node/bin/node",
     "stop-pm2": "pm2 stop all",
     "index": "node index.js",
     "check-push": "npm run test",

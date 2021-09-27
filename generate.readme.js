@@ -35,8 +35,8 @@ async function main(){
     for(command of commands){
         await help.callback(dummyMessage, [command.aliases[0]]);
         output = output + `### \`${command.aliases[0]}\`\n\n`
-        for(field of helpText.fields){
-            output = output + `${field.name}\n\n${field.value.replace('\n', '\n\n').trim()}\n\n`;
+        for(field of helpText.embeds[0].fields){
+            output = output + `${field.name}\n\n${field.value.replaceAll('\n', '\n\n').replaceAll('    ', '').trim()}\n\n`;
         }
     }
     template = template.replace('${COMMANDS}', output);
