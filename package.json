@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run index",
     "generate-readme": "node generate.readme.js",
-    "start-pm2": "pm2 start index.js",
+    "start-pm2": "pm2 start index.js --interpreter=./node_modules/node/bin/node",
     "stop-pm2": "pm2 stop all",
     "index": "node index.js",
     "check-push": "npm run test",
@@ -29,9 +29,10 @@
   },
   "homepage": "https://github.com/FomTarro/little-daiko#readme",
   "dependencies": {
-    "discord.js": "^12.5.3",
+    "discord.js": "^13.0.0",
     "dotenv": "^10.0.0",
-    "enmap": "^5.8.6",
+    "enmap": "^5.8.7",
+    "node": "16.6.1",
     "oneline": "^1.0.3",
     "uuid": "^8.3.2",
     "ws": "^7.5.2"

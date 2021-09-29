@@ -41,7 +41,7 @@ describe("Events tests", () => {
         }
         // execute test
         const events = AppConfig.EVENTS(dummyConfig);
-        const onMessage = events.get('message');
+        const onMessage = events.get('messageCreate');
         await onMessage({}, dummyMessage, () => {});
         expect(sent).toBe(true);
     });

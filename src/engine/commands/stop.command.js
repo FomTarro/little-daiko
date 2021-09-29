@@ -14,7 +14,7 @@ function command(appConfig){
         async (message, args, override) => { 
             const configKey = override ? override : message;
             const logger = new Logger(appConfig.DISCORD_HELPERS.getGuildId(configKey));
-            await message.channel.send("Stopping listener.");
+            await message.channel.send({content: "Stopping listener."});
             appConfig.LISTENER_STORAGE.deleteListener(configKey);
             appConfig.CONFIG_STORAGE.setProperty(configKey, 'listening', false);
             logger.log(`Stopping listener.`);

@@ -30,7 +30,7 @@ function events(appConfig) {
         return new Map([
         ["ready", async (client, input, onError) => {
             const logger = new Logger(LiteralConstants.LOG_SYSTEM_ID)
-            for(let guild of client.guilds.cache.array()){
+            for(let guild of [...client.guilds.cache.values()]){
                 if(guild && guild.me){
                     guild.me.setNickname(LiteralConstants.BOT_NAME_OFFLINE);
                     // TODO: notify servers of changes since last login
@@ -62,7 +62,7 @@ function events(appConfig) {
             appConfig.LISTENER_STORAGE.deleteListener(input);
             return;
         }],
-        ["message", async (client, message, onError) => { 
+        ["messageCreate", async (client, message, onError) => { 
             if(appConfig.DISCORD_HELPERS.isDm(message) || appConfig.DISCORD_HELPERS.isBot(message)){
                 return;
             }
@@ -103,9 +103,28 @@ function events(appConfig) {
                         onError(message, e);
                     });
                 }else{
-                    message.channel.send('You do not have permission to use that command.');
+                    message.channel.send({content: 'You do not have permission to use that command.'});
                 }
                 return;
+            }
+        }],
+        ["interactionCreate", async (client, interaction, onError) => {
+            if(appConfig.DISCORD_HELPERS.isBot(interaction.member)){
+                return;
+            }
+            const button = interaction.customId.toLowerCase();
+            const role = appConfig.CONFIG_STORAGE.getProperty(interaction.guild, 'role');
+            const entry = interaction.isButton() ? 
+                appConfig.BUTTONS(appConfig).find(b => b.aliases.includes(button)) :
+                undefined; // TODO, slash commands will go here
+            if(entry){
+                if(appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).check(interaction.member, role.ops)){
+                    entry.callback(interaction).then(() => {
+                        // do nothing, it's void
+                    }).catch((e) => { 
+                        onError(interaction, e);
+                    });
+                }
             }
         }],
         ["error", async (client, input, onError) => {

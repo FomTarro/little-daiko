@@ -70,7 +70,7 @@ function isAdmin(subject, role){
  * @returns {Boolean}
  */
 function isGuildOwner(subject){
-    return getUserId(subject) == subject.guild.ownerID;
+    return getUserId(subject) == subject.guild.ownerId;
 }
 
 /**
@@ -110,9 +110,9 @@ function getGuildId(subject){
  * @returns {Discord.Guild[]}
  */
 function getOtherBotGuilds(subject){
-    return  isMessage(subject) ? subject.guild.me.client.guilds.cache.array() :
-            isGuild(subject) ? subject.me.client.guilds.cache.array() :
-            subject.guild.me.client.guilds.cache.array();
+    return  isMessage(subject) ? [...subject.guild.me.client.guilds.cache.values()] :
+            isGuild(subject) ? [...subject.me.client.guilds.cache.values()] :
+            [...subject.guild.me.client.guilds.cache.values()];
 }
 
 /**
@@ -231,6 +231,21 @@ function generateAttachment(content, name){
     return new Discord.MessageAttachment(Buffer.from(content, 'utf-8'), name);
 }
 
+/**
+ * 
+ * @param {Discord.MessageButtonOptions[]} buttons 
+ */
+function generateButtonRow(buttons){
+    /*
+        Example options: 
+        { label: '-10s', customId: 'add_ten', style: 2 },
+        { label: '+10s', customId: 'subtract_ten', style: 2 },
+    */
+    return new Discord.MessageActionRow ({
+        components: buttons.map(opts => new Discord.MessageButton(opts))
+    });
+}
+
 module.exports.ownerId = owner;
 module.exports.isMessage = isMessage;
 module.exports.isGuild = isGuild;
@@ -253,3 +268,4 @@ module.exports.getOtherBotGuilds = getOtherBotGuilds;
 
 module.exports.generateEmbed = generateEmbed;
 module.exports.generateAttachment = generateAttachment;
+module.exports.generateButtonRow = generateButtonRow;

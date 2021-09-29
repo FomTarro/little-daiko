@@ -25,7 +25,12 @@ function addTimestamp(subject, language, messageId, timestamp){
     if(!currentList){
         currentList = [];
     }
-    currentList.push([messageId, timestamp]);
+    const match = (currentList.find(a => a[0] == messageId));
+    if(match){
+        match[1] = timestamp;
+    }else{
+        currentList.push([messageId, timestamp]);
+    }
     return timestamps.set(AppConfig.DISCORD_HELPERS.getGuildId(subject), currentList, language);
 }
 

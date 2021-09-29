@@ -2,6 +2,7 @@ const { AppConfig } = require("../../../app.config");
 const { Command, HelpTip } = require('../../models/command');
 const { Logger } = require('../../utils/logger');
 const { LiteralConstants } = require('../../utils/literal.constants');
+const { formatTime } = require('../../utils/time.utils');
 
 /**
  * 
@@ -41,9 +42,23 @@ function command(appConfig){
                                         const downvoteCount = downvotes ? downvotes.count : 0;
                                         if(upvoteCount >= downvoteCount){
                                             // write to summary log if upvoted
-                                            summary.push(timestamp[1]);
-                                            // console.log(`${guild.id} - ${language} - ${JSON.stringify(timestamp)} - ${summary}`);
+                                            const timestampEntry = `${formatTime(
+                                                timestamp[1].stampTime + 
+                                                timestamp[1].adjustment - 
+                                                timestamp[1].startTime).print()} - ${timestamp[1].description}`
+                                            summary.push(timestampEntry);
+                                            // console.log(`${guild.id} - ${language} - ${JSON.stringify(timestamp)}`);
                                         }
+                                        // disables the buttons
+                                        await timestampMessage.edit({
+                                            components: timestampMessage.components.map((a) => {
+                                                    a.components.map((b) => {
+                                                    b.setDisabled(true);
+                                                    return b;
+                                                })
+                                                return a;
+                                            })
+                                        })
                                     }
                                 }catch(e){
                                     logger.error(`Unable to find message with ID: ${timestampId}: ${e}`);
@@ -54,7 +69,7 @@ function command(appConfig){
                             const content = summary.sort().join('\n');
                             logger.log(`Posting ${language} summary:\n${content}`);
                             const attachment = appConfig.DISCORD_HELPERS.generateAttachment(content, `${language}-summary.txt`);
-                            await channel.send(`The stream has ended. Here's a summary:`, attachment);
+                            await channel.send({ content: `The stream has ended. Here's a summary:`, files: [ attachment ]});
                         }
                     }
                 }

@@ -61,7 +61,7 @@ describe("Error handling tests", () => {
         // execute test
         const bot = await AppConfig.BOT.startBot(dummyConfig);
         expect(sent).toBe(undefined);
-        bot.client.emit('message', dummyMessage);
+        bot.client.emit('messageCreate', dummyMessage);
         await delay();
         bot.shutdown();
         expect(sent).toContain("here's a special new error!");
@@ -118,7 +118,7 @@ describe("Other bot functions", () => {
             LISTENER_STORAGE: AppConfig.LISTENER_STORAGE,
             EVENTS: AppConfig.EVENTS,
             COMMANDS: AppConfig.COMMANDS,
-            PERMISSIONS: AppConfig.PERMISSIONS
+            PERMISSIONS: AppConfig.PERMISSIONS,
         }
         let sent = undefined;
         const dummyMessage = {
@@ -137,34 +137,29 @@ describe("Other bot functions", () => {
         // start listener
         dummyConfig.CONFIG_STORAGE.deleteGuildConfig(dummyMessage);
         let bot = await AppConfig.BOT.startBot(dummyConfig);
-        bot.client.emit('message', dummyMessage);
+        bot.client.emit('messageCreate', dummyMessage);
         await delay();
         
         // check status
         dummyMessage.content = '!status';
-        bot.client.emit('message', dummyMessage);
+        bot.client.emit('messageCreate', dummyMessage);
         await delay();
-        expect(sent).toContain('listening');
-        bot.shutdown();
+        expect(sent.content).toContain('listening');
+        await bot.shutdown();
         dummyConfig.LISTENER_STORAGE.deleteListener(dummyMessage);
 
         // check status again on reboot
         await delay();
         bot = await AppConfig.BOT.startBot(dummyConfig);
-        bot.client.client.guilds.cache = {
-            array(){
-                return [{
-                    id: 'test'
-                }]
-            }
-        };
+        // cache is empty, this is the error
+        bot.client.client.guilds.cache.values = () => { return [{id: 'test'}]};
         bot.client.emit('ready', dummyMessage);
         await delay();
-        bot.client.emit('message', dummyMessage);
+        bot.client.emit('messageCreate', dummyMessage);
         await delay();
-        bot.shutdown();
+        await bot.shutdown();
         dummyConfig.CONFIG_STORAGE.deleteGuildConfig(dummyMessage);
-        expect(sent).toContain('listening');
+        expect(sent.content).toContain('listening');
     });
 });
 

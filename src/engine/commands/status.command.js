@@ -22,7 +22,7 @@ function command(appConfig){
             appConfig.CONFIG_STORAGE.setProperty(configKey, 'listening', Boolean(isListening));
 
             const status = isListening ? "listening" : "stopped";
-            message.channel.send(`Current status: \`${status}\`.`);
+            message.channel.send({content: `Current status: \`${status}\`.`});
         },
         [
             new HelpTip(
