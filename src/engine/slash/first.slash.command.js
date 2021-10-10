@@ -18,7 +18,7 @@ function command(appConfig){
             interaction.reply(interaction.options.get('input').value);
         },
         new SlashCommandBuilder()
-        .setName('first')
+        .setName()
         .setDescription('Replies with your input!')
         .addStringOption(option =>
             option.setName('input')
