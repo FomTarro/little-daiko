@@ -8,6 +8,7 @@ class AppConfig{
     get PORT(){ return process.env.PORT || 8080; };
     get DOMAIN(){ return process.env.domain || `http://localhost:${this.PORT}` };
     get DISCORD_BOT_TOKEN(){return process.env.discord_bot_token};
+    get DISCORD_BOT_CLIENT_ID(){return process.env.discord_bot_id};
     get DISCORD_BOT_NAME(){return 'little-daiko'};
 
     get MILDOM_CLIENT(){ return require('./src/adapters/mildom/mildom.client')};
@@ -21,6 +22,7 @@ class AppConfig{
     get BOT(){ return require('./src/engine/bot')};
     get EVENTS(){ return require('./src/engine/events')};
     get COMMANDS(){ return require('./src/engine/commands/commands')};
+    get SLASH_COMMANDS(){ return require('./src/engine/slash/slash.commands')};
     get BUTTONS(){ return require('./src/engine/buttons/buttons')};
     get PERMISSIONS(){ return require('./src/engine/permissions')};
 }

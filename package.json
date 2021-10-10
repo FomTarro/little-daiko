@@ -10,7 +10,8 @@
     "stop-pm2": "pm2 stop all",
     "index": "node index.js",
     "check-push": "npm run test",
-    "test": "jest --coverage --collectCoverageFrom=src/**/*.{js,jsx}"
+    "test": "jest --coverage --collectCoverageFrom=src/**/*.{js,jsx}",
+    "register-local": "node slash.command.register.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,8 @@
   },
   "homepage": "https://github.com/FomTarro/little-daiko#readme",
   "dependencies": {
+    "@discordjs/rest": "0.1.0-canary.0",
+    "discord-api-types": "^0.23.1",
     "discord.js": "^13.0.0",
     "dotenv": "^10.0.0",
     "enmap": "^5.8.7",
@@ -38,8 +41,8 @@
     "ws": "^7.5.2"
   },
   "devDependencies": {
-    "jest": "25.2.1",
     "husky": "^3.1.0",
+    "jest": "^27.2.5",
     "pm2": "^5.1.0"
   },
   "husky": {

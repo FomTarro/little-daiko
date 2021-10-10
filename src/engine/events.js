@@ -112,11 +112,10 @@ function events(appConfig) {
             if(appConfig.DISCORD_HELPERS.isBot(interaction.member)){
                 return;
             }
-            const button = interaction.customId.toLowerCase();
             const role = appConfig.CONFIG_STORAGE.getProperty(interaction.guild, 'role');
             const entry = interaction.isButton() ? 
-                appConfig.BUTTONS(appConfig).find(b => b.aliases.includes(button)) :
-                undefined; // TODO, slash commands will go here
+                appConfig.BUTTONS(appConfig).find(b => b.aliases.includes(interaction.customId.toLowerCase())) :
+                appConfig.SLASH_COMMANDS(appConfig).find(b => b.aliases.includes(interaction.commandName.toLowerCase()))
             if(entry){
                 if(appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).check(interaction.member, role.ops)){
                     entry.callback(interaction).then(() => {
