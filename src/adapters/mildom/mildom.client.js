@@ -69,7 +69,12 @@ async function getLiveInfo(roomId, guestId, logger){
     url.searchParams.append("__sfr", "pc")
     const liveInfo = await getRequest(url, logger);
     if(liveInfo && liveInfo.body){        
-        return new LiveInfo(liveInfo.body['live_start_ms'], Boolean(liveInfo.body['live_mode'] == 1));
+        return new LiveInfo(liveInfo.body['live_start_ms'], 
+        Boolean(
+            liveInfo.body['channel_key'] && 
+            liveInfo.body['channel_lang'] && 
+            liveInfo.body['channel_lang'].length > 0)
+        );
     }
     return new LiveInfo(0, false);
 }
