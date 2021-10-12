@@ -48,8 +48,8 @@ function command(appConfig){
                                     // post message to timestamps log if we're live
                                     if(liveInfo.isLive()){
                                         const now = Date.parse(new Date())
-                                        const timestamp = new Timestamp(formatTime(now - liveInfo.startTime), `${comment.authorName}: ${comment.message}`);
-                                        appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, `${timestamp.time.print()} - ${timestamp.description}`);
+                                        const timestamp = new Timestamp(liveInfo.startTime, now, 0, 0, `${comment.authorName}: ${comment.message}`);
+                                        appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, timestamp);
                                     }
                                 }
                             }else{

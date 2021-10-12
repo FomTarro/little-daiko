@@ -9,7 +9,7 @@ const { ErrorCallback, EventCallback } = require('../../engine/events');
  * @returns {DiscordClient}
  */
 async function startClient(onError, events, logger){
-    const client = new Discord.Client({ intents: new Discord.Intents(['GUILDS', 'GUILD_MESSAGES'])});
+    const client = new Discord.Client({ intents: new Discord.Intents(['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'])});
     for(let [event, callback] of events){
         client.on(event, (input) => {
             callback(client, input, onError);
