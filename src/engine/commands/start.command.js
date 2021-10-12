@@ -43,7 +43,7 @@ function command(appConfig){
                                     // TODO: handle when there are 0 properties on the object
                                     const emotePairs = emotes ? [...Object.entries(emotes)] : [];
                                     comment.message = sanitize(comment.message, emotePairs);
-                                    logger.log(`Posting: ${JSON.stringify(comment)}`);
+                                    logger.log(`Posting: ${JSON.stringify(comment)} in channel: ${chatChannel.id}`);
                                     const embed = await chatChannel.send({ embeds: [appConfig.DISCORD_HELPERS.generateEmbed(comment)]});
                                     // post message to timestamps log if we're live
                                     if(liveInfo.isLive()){
@@ -53,8 +53,8 @@ function command(appConfig){
                                     }
                                 }
                             }else{
-                                // bypass all this if it's membership only
                                 logger.log(`Bypassing post because stream is membership-only.`);
+                                logger.log(JSON.stringify(comment));
                                 return;
                             }
                         }
@@ -67,7 +67,7 @@ function command(appConfig){
                 const alertChannel = appConfig.DISCORD_HELPERS.getChannel(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').alert);
                 if(alertChannel){
                     const post = `${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`;
-                    logger.log(`Posting: ${post}`);
+                    logger.log(`Posting: ${post} in channel: ${alertChannel.id}`);
                     alertChannel.send({content: post });
                 }
             },
