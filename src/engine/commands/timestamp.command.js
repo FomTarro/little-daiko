@@ -18,14 +18,14 @@ function command(appConfig){
             const configKey = override ? override : message;
             const logger = new Logger(appConfig.DISCORD_HELPERS.getGuildId(configKey));
             const listener = appConfig.LISTENER_STORAGE.getListener(configKey);
-            if(args.length > 0){
+            if(args.length > 0 && listener){
                 const guild = appConfig.DISCORD_HELPERS.getOtherBotGuilds(message).find(g => g.id == configKey.guild.id);
                 const languages = [...Object.entries(appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat)].filter(c => { 
                     return appConfig.DISCORD_HELPERS.getChannel(guild, c[1]) == message.channel
                 });
                 if(languages.length > 0){
                     const liveInfo = await listener.getLiveStatus();
-                    if(liveInfo.isLive() == true){
+                    if(liveInfo.isLive() == true && liveInfo.isMembership() == false){
                         const now = Date.parse(new Date());
                         const timestamp = new Timestamp(liveInfo.startTime, now, -(10 * 1000), message.member.id, args.join(' '));
                         const embed = await message.channel.send({
@@ -48,8 +48,10 @@ function command(appConfig){
                         await embed.react(LiteralConstants.REACT_DOWNVOTE_EMOJI);
                         return;
                     }
+                    const reason = liveInfo.isMembership() ? `Stream currently is membership-only!` : `Stream is not currently live!`;
+                    logger.log(`Cannot post timestamp because: ${reason}`);
                     message.channel.send({
-                        content: `Stream is not currently live!`
+                        content: reason
                     });
                     return;
                 }

@@ -36,9 +36,9 @@ function command(appConfig){
                                 try{
                                     const timestampMessage = await channel.messages.fetch(timestampId);
                                     if(timestampMessage){
-                                        const upvotes = timestampMessage.reactions.cache.get(LiteralConstants.REACT_UPVOTE_EMOJI);
+                                        const upvotes = timestampMessage.reactions.cache.resolve(LiteralConstants.REACT_DOWNVOTE_EMOJI);
                                         const upvoteCount = upvotes ? upvotes.count : 0;
-                                        const downvotes = timestampMessage.reactions.cache.get(LiteralConstants.REACT_DOWNVOTE_EMOJI);
+                                        const downvotes = timestampMessage.reactions.resolve(LiteralConstants.REACT_DOWNVOTE_EMOJI);
                                         const downvoteCount = downvotes ? downvotes.count : 0;
                                         if(upvoteCount >= downvoteCount){
                                             // write to summary log if upvoted
