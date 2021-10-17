@@ -28,12 +28,11 @@ function command(appConfig){
                             value: `Alternate Names: \`[${entry.aliases.join(', ')}]\`\nUsable by: ${appConfig.PERMISSIONS(appConfig).get(entry.permissionLevel).description}.`
                         });
 
-                        await interaction.reply({
+                        return await interaction.reply({
                             embeds: [
                                 appConfig.DISCORD_HELPERS.generateEmbed({ fields: fields })
                             ]
                         });
-                        return;
                     }
                 }
                 // else do nothing
@@ -44,13 +43,13 @@ function command(appConfig){
                 return a.localeCompare(b);
             });
 
-            await interaction.reply({
+            return await interaction.reply({
                 embeds: [
                     appConfig.DISCORD_HELPERS.generateEmbed({
                         fields: [{
                             name: `General Help:`,
-                            value: `Commands can be invoked by starting a message with \`${prefix}\`, or by mentioning the bot with the desired command.
-                        You can learn more about commands and their usages by typing \`${prefix}help <command>\`.`
+                            value: `Commands can be invoked by starting a message with \`/\`.
+                        You can learn more about commands and their usages by typing \`/help <command>\`.`
                         },
                         {
                             name: `Command and Alternate Name List:`,
@@ -63,8 +62,9 @@ function command(appConfig){
         new SlashCommandBuilder()
         .addStringOption(option =>
             option.setName('command')
-                .setDescription('The command to get help with')
-                .setRequired(false)),
+                .setDescription('The command to get help with.')
+                .setRequired(false)
+        ),
         [
             new HelpTip(
                 `help`,

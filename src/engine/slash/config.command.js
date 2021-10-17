@@ -13,7 +13,6 @@ function command(appConfig){
         ['config', 'conf', 'c'],
         2,
         async (interaction) => { 
-            console.log(interaction.guild + " : " + interaction.guildId);
             const configKey = interaction.guild;
             const fields = appConfig.CONFIG_STORAGE.getAllProperties(configKey).map(prop => {
                 return {

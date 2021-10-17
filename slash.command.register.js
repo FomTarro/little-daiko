@@ -13,6 +13,9 @@ const rest = new REST({ version: '9' }).setToken(AppConfig.DISCORD_BOT_TOKEN);
         const commands = [];
 		for(let c of AppConfig.SLASH_COMMANDS(AppConfig)){
 			for(let alias of c.aliases){
+				console.log(alias);
+				console.log(c.summary);
+				console.log(c.options);
 				const command = c.options.setName(alias).setDescription(c.summary).toJSON();
 				commands.push(command);
 			}
