@@ -10,7 +10,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
  */
 function command(appConfig){
     return new SlashCommand(
-        ['first'],
+        ['first', 'f', '1st'],
         1,
         async (interaction) => {
             console.log("FIRST")
@@ -18,17 +18,17 @@ function command(appConfig){
             interaction.reply(interaction.options.get('input').value);
         },
         new SlashCommandBuilder()
-        .setName()
-        .setDescription('Replies with your input!')
+        // .setName('first')
+        // .setDescription('Replies with your input!')
         .addStringOption(option =>
             option.setName('input')
                 .setDescription('The input to echo back')
                 .setRequired(true)
-        ).toJSON(),
-        `Baby's first command!`,
+        ),
         [
             new HelpTip(`a`, `b`)
-        ]
+        ],
+        `Baby's first command!`,
     );
 }
 

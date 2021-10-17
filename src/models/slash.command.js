@@ -1,4 +1,4 @@
-const { CommandInteraction } = require('discord.js');
+const { CommandInteraction, SharedSlashCommandOptions } = require('discord.js');
 
 /**
  * A command for the bot to respond to.
@@ -17,15 +17,15 @@ class SlashCommand{
      * @param {string[]} aliases A list of aliases for calling the command.
      * @param {number} permissionLevel The permission level required to use the command.
      * @param {CommandCallback} callback The actual functionality of the command.
-     * @param {Object} json The JSON representation of the command. 
+     * @param {SharedSlashCommandOptions} options The options definitions for the command. 
      * @param {HelpTip[]} helpTips The tooltips about the command's usages.
      * @param {String} summary A high-level summary of the command.
      */
-    constructor(aliases, permissionLevel, callback, json, helpTips, summary){
+    constructor(aliases, permissionLevel, callback, options, helpTips, summary){
         this.aliases = aliases;
         this.permissionLevel = permissionLevel;
         this.callback = callback;
-        this.json = json;
+        this.options = options;
         this.summary = summary;
         this.helpTips = helpTips;
     }

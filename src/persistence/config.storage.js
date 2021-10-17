@@ -56,7 +56,8 @@ function setProperty(subject, property, value){
 }
 
 function getGuildConfig(subject){
-    return config.get(AppConfig.DISCORD_HELPERS.getGuildId(subject));
+    return config.get(Number.isInteger(subject) ? 
+    subject : AppConfig.DISCORD_HELPERS.getGuildId(subject));
 }
 
 /**

@@ -10,7 +10,15 @@ const rest = new REST({ version: '9' }).setToken(AppConfig.DISCORD_BOT_TOKEN);
 (async () => {
 	try {
 		console.log('Started refreshing application (/) commands.');
-        const commands = AppConfig.SLASH_COMMANDS(AppConfig).map(a => a.json);
+        const commands = [];
+		for(let c of AppConfig.SLASH_COMMANDS(AppConfig)){
+			for(let alias of c.aliases){
+				const command = c.options.setName(alias).setDescription(c.summary).toJSON();
+				commands.push(command);
+			}
+		}
+		
+		//AppConfig.SLASH_COMMANDS(AppConfig).map(a => a.json);
         console.log(JSON.stringify(commands));
 		await rest.put(
 			Routes.applicationGuildCommands(clientId, guildId),

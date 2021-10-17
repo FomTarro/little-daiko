@@ -1,6 +1,7 @@
 const { AppConfig } = require("../../../app.config");
 const { SlashCommand } = require('../../models/slash.command');
-const { FirstCommand } = require('./first.slash.command');
+const { ConfigCommand } = require("./config.command");
+const { HelpCommand } = require("./help.command");
 
 /**
  * A list of command definitions for the bot to listen to, 
@@ -10,7 +11,8 @@ const { FirstCommand } = require('./first.slash.command');
  */
  function commands(appConfig){
     return [
-        FirstCommand(appConfig),
+        ConfigCommand(appConfig),
+        HelpCommand(appConfig),
     ];
 }
 
