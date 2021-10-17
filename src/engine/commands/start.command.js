@@ -27,6 +27,7 @@ function command(appConfig){
             const listener = await appConfig.MILDOM_CLIENT.startListener(streamer, 
             // on message
             async (comment) => {
+                // console.log(comment);
                 const channels = appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').chat;
                 const users = appConfig.CONFIG_STORAGE.getProperty(configKey, "users");
                 for(let language in channels){
@@ -34,22 +35,27 @@ function command(appConfig){
                     || (users.includes(comment.authorId) 
                     && comment.message.toLowerCase().startsWith(`[${language.toLowerCase()}]`))){
                         if(comment.time > startEpoch){
-                            
-                            const chatChannel = appConfig.DISCORD_HELPERS.getChannel(guild, channels[language]);
-                            if(chatChannel){
-                                const emotes = appConfig.CONFIG_STORAGE.getProperty(configKey, "emotes");
-                                // TODO: handle when there are 0 properties on the object
-                                const emotePairs = emotes ? [...Object.entries(emotes)] : [];
-                                comment.message = sanitize(comment.message, emotePairs);
-                                logger.log(`Posting: ${JSON.stringify(comment)}`);
-                                const embed = await chatChannel.send({ embeds: [appConfig.DISCORD_HELPERS.generateEmbed(comment)]});
-                                // post message to timestamps log if we're live
-                                const liveInfo = await listener.getLiveStatus();
-                                if(liveInfo.isLive()){
-                                    const now = Date.parse(new Date())
-                                    const timestamp = new Timestamp(formatTime(now - liveInfo.startTime), `${comment.authorName}: ${comment.message}`);
-                                    appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, `${timestamp.time.print()} - ${timestamp.description}`);
+                            const liveInfo = await listener.getLiveStatus();
+                            if(liveInfo.isMembership() == false){ // bypass all this if it's membership only
+                                const chatChannel = appConfig.DISCORD_HELPERS.getChannel(guild, channels[language]);
+                                if(chatChannel){
+                                    const emotes = appConfig.CONFIG_STORAGE.getProperty(configKey, "emotes");
+                                    // TODO: handle when there are 0 properties on the object
+                                    const emotePairs = emotes ? [...Object.entries(emotes)] : [];
+                                    comment.message = sanitize(comment.message, emotePairs);
+                                    logger.log(`Posting: ${JSON.stringify(comment)} in channel: ${chatChannel.id}`);
+                                    const embed = await chatChannel.send({ embeds: [appConfig.DISCORD_HELPERS.generateEmbed(comment)]});
+                                    // post message to timestamps log if we're live
+                                    if(liveInfo.isLive()){
+                                        const now = Date.parse(new Date())
+                                        const timestamp = new Timestamp(liveInfo.startTime, now, 0, 0, `${comment.authorName}: ${comment.message}`);
+                                        appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, timestamp);
+                                    }
                                 }
+                            }else{
+                                logger.log(`Bypassing post because stream is membership-only.`);
+                                logger.log(JSON.stringify(comment));
+                                return;
                             }
                         }
                     }
@@ -61,7 +67,7 @@ function command(appConfig){
                 const alertChannel = appConfig.DISCORD_HELPERS.getChannel(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').alert);
                 if(alertChannel){
                     const post = `${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`;
-                    logger.log(`Posting: ${post}`);
+                    logger.log(`Posting: ${post} in channel: ${alertChannel.id}`);
                     alertChannel.send({content: post });
                 }
             },
