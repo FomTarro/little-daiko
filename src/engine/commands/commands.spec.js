@@ -143,7 +143,7 @@ describe("Role command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, ['admin', 'secondary']);
         expect(role).toEqual(undefined);
-        expect(result).toEqual('❌')
+        expect(result).toEqual('🖕')
     });
     test("Role with ops args", async() => {
         // set up mock dependencies
@@ -165,7 +165,7 @@ describe("Role command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, ['ops', 'admin']);
         expect(role).toEqual({ops: 'admin'});
-        expect(result).toEqual('✔️')
+        expect(result).toEqual('👍')
     });
     test("Role with alert args", async() => {
         // set up mock dependencies
@@ -187,7 +187,7 @@ describe("Role command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, ['alert', 'mildom']);
         expect(role).toEqual({alert: 'mildom'});
-        expect(result).toEqual('✔️')
+        expect(result).toEqual('👍')
     });
     test("Role with no args", async() => {
         // set up mock dependencies
@@ -206,7 +206,7 @@ describe("Role command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('role')});
         const result = await help.callback(dummyMessage, undefined);
         expect(role).toEqual(undefined);
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
 });
 
@@ -228,7 +228,7 @@ describe("Streamer command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('streamer')});
         const result = await help.callback(dummyMessage, [12345, 'secondary']);
         expect(streamer).toEqual(12345);
-        expect(result).toEqual('✔️')
+        expect(result).toEqual('👍')
     });
     test("Streamer with no args", async() => {
         // set up mock dependencies
@@ -247,7 +247,7 @@ describe("Streamer command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('streamer')});
         const result = await help.callback(dummyMessage, undefined);
         expect(streamer).toEqual(undefined);
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
     test("Streamer with non-numeric args", async() => {
         // set up mock dependencies
@@ -266,7 +266,7 @@ describe("Streamer command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('streamer')});
         const result = await help.callback(dummyMessage, ['12a345', 'secondary']);
         expect(streamer).toEqual(undefined);
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
 });
 
@@ -291,7 +291,7 @@ describe("Channel command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('output')});
         const result = await help.callback(dummyMessage, ['chat', 'add', 'en', 'general', 'secondary']);
         expect(channel).toEqual({chat: {en: 'general'}});
-        expect(result).toEqual('✔️')
+        expect(result).toEqual('👍')
     });
     test("Channel with remove args", async() => {
         // set up mock dependencies
@@ -313,7 +313,7 @@ describe("Channel command tests", () => {
         const help = commands.filter(c => { return c.aliases.includes('output')})[0];
         const result = await help.callback(dummyMessage, ['chat', 'remove', 'en', 'general', 'secondary']);
         expect(channel).toEqual({chat: {}});
-        expect(result).toEqual('✔️')
+        expect(result).toEqual('👍')
     });
     test("Channel with no args", async() => {
         // set up mock dependencies
@@ -332,7 +332,7 @@ describe("Channel command tests", () => {
         const help = commands.filter(c => { return c.aliases.includes('output')})[0];
         const result = await help.callback(dummyMessage, undefined);
         expect(channel).toEqual('general');
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
 });
 
@@ -357,7 +357,7 @@ describe("Users command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('users')});
         const result = await help.callback(dummyMessage, ['add', 12345, 'secondary', 67890]);
         expect(users).toEqual([12345, 67890]);
-        expect(result).toEqual('✔️')
+        expect(result).toEqual('👍')
     });
     test("Users add with no args", async() => {
         // set up mock dependencies
@@ -379,7 +379,7 @@ describe("Users command tests", () => {
         const help = commands.find(c => { return c.aliases.includes('users')});
         const result = await help.callback(dummyMessage, ['add']);
         expect(users).toEqual([3456, 2313]);
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
     test("Users remove with args", async() => {
         // set up mock dependencies
@@ -401,7 +401,7 @@ describe("Users command tests", () => {
         const help = commands.filter(c => { return c.aliases.includes('users')})[0];
         const result = await help.callback(dummyMessage, ['remove', 456, 'secondary', 67890]);
         expect(users).toEqual([123, 789]);
-        expect(result).toEqual('✔️')
+        expect(result).toEqual('👍')
     });
     test("Users remove with no args", async() => {
         // set up mock dependencies
@@ -423,7 +423,7 @@ describe("Users command tests", () => {
         const help = commands.filter(c => { return c.aliases.includes('users')})[0];
         const result = await help.callback(dummyMessage, ['remove']);
         expect(users).toEqual([3456, 2313]);
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
     test("Users with no args", async() => {
         // set up mock dependencies
@@ -445,7 +445,7 @@ describe("Users command tests", () => {
         const help = commands.filter(c => { return c.aliases.includes('users')})[0];
         const result = await help.callback(dummyMessage, undefined);
         expect(users).toEqual([3456, 2313]);
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
     test("Users with bad first args", async() => {
         // set up mock dependencies
@@ -467,7 +467,7 @@ describe("Users command tests", () => {
         const help = commands.filter(c => { return c.aliases.includes('users')})[0];
         const result = await help.callback(dummyMessage, ['nonsense']);
         expect(users).toEqual([3456, 2313]);
-        expect(result).toEqual('❌');
+        expect(result).toEqual('🖕');
     });
 });
 
@@ -615,7 +615,7 @@ describe("Remote command tests", () => {
         const remote = commands.find(c => { return c.aliases.includes('remote')});
         const result = await remote.callback(dummyMessage, ['11223344', 'prefix', '?']);
         expect(newProp).toBe('?');
-        expect(result).toBe('✔️');
+        expect(result).toBe('👍');
     });
 });
 

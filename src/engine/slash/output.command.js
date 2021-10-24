@@ -45,11 +45,11 @@ function command(appConfig){
         .addSubcommandGroup(chat =>
             chat
             .setName('chat')
-            .setDescription('Add or remove the given language.')
+            .setDescription('Adds or removes a language output channel.')
             .addSubcommand(add =>
                 add
                 .setName('add')
-                .setDescription('Adds the given language')
+                .setDescription('Adds a language output channel.')
                 .addStringOption(lang =>
                     lang
                     .setName('language')
@@ -65,7 +65,7 @@ function command(appConfig){
             .addSubcommand(remove =>
                 remove
                 .setName('remove')
-                .setDescription('Removes the given language.')
+                .setDescription('Removes a language output channel.')
                 .addStringOption(lang =>
                     lang
                     .setName('language')
@@ -76,15 +76,15 @@ function command(appConfig){
         ).addSubcommandGroup(alert =>
             alert
             .setName('alert')
-            .setDescription('Designates the alert channel.')
+            .setDescription('Designates the go-live alert channel.')
             .addSubcommand(set => 
                 set
                 .setName('set')
-                .setDescription('TODO:!!!')
+                .setDescription('Sets the channel to output into.')
                 .addChannelOption(channel =>
                     channel
                     .setName('channel')
-                    .setDescription('TODO:!!!')
+                    .setDescription('The channel to output into.')
                     .setRequired(true)
                     )
             )
@@ -104,7 +104,7 @@ function command(appConfig){
                 `Sets the server channel which stream go-live alerts will be posted to.`
             ),
         ],
-        `Designates which channels various messages output to.`
+        `Designates which channels various messages output into.`
     );
 }
 
