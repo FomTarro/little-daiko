@@ -11,7 +11,7 @@ const oneline = require('oneline');
  */
 function command(appConfig){
     return new SlashCommand(
-        ['role', 'r'],
+        ['role'],
         3,
         async (interaction) => { 
             const configKey = interaction.guild;

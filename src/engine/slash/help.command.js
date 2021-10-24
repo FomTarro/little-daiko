@@ -10,7 +10,7 @@ const oneline = require('oneline');
  */
 function command(appConfig){
     return new SlashCommand(
-        ['help', 'h'],
+        ['help'],
         1,
         async (interaction) => { 
             const args = interaction.options.get('command');

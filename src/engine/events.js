@@ -123,6 +123,8 @@ function events(appConfig) {
                     }).catch((e) => { 
                         onError(interaction, e);
                     });
+                }else{
+                    interaction.reply({content: "You do not have permission to use this command."})
                 }
             }
         }],
