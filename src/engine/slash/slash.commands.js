@@ -5,6 +5,7 @@ const { ConfigCommand } = require("./config.command");
 const { HelpCommand } = require("./help.command");
 const { StreamerCommand } = require("./streamer.command");
 const { OutputCommand } = require("./output.command");
+const { EmoteCommand } = require("./emote.command");
 
 /**
  * A list of command definitions for the bot to listen to, 
@@ -20,6 +21,7 @@ const { OutputCommand } = require("./output.command");
         StreamerCommand(appConfig),
         RoleCommand(appConfig),
         OutputCommand(appConfig),
+        EmoteCommand(appConfig)
     ];
 }
 
