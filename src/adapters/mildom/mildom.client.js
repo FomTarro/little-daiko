@@ -69,24 +69,28 @@ async function getLiveInfo(roomId, guestId, logger){
     url.searchParams.append("__sfr", "pc")
     const liveInfo = await getRequest(url, logger);
     //console.log(JSON.stringify(liveInfo))
-    if(liveInfo){
-        if(liveInfo.body){        
-            return new LiveInfo(liveInfo.body['live_start_ms'], 
-            Boolean( // I honestly have no idea what the best way to check live status is. 
+    if(liveInfo && liveInfo.body){        
+        return new LiveInfo(
+            liveInfo.body['live_start_ms'], 
+            Boolean( 
+                // I honestly have no idea what the best way to check live status is. 
                 // These properties seem to only exist on live streams.
                 liveInfo.body['channel_key'] && 
                 liveInfo.body['channel_lang'] && 
-                liveInfo.body['channel_lang'].length > 0),
+                liveInfo.body['channel_lang'].length > 0
+            ),
             false
-            );
-        }else if(liveInfo.code == 1001 && 
-                liveInfo.message && 
-                liveInfo.message.includes('サブスクライバ')){
-            return new LiveInfo(0, 
+        );
+    }else if(liveInfo.code == 1001 && 
+            liveInfo.message && 
+            liveInfo.message.includes('サブスクライバ')){
+        return new LiveInfo(
+            0, 
             true, 
-            true);
-        }
+            true
+        );
     }
+
     return new LiveInfo(0, false, false);
 }
 
@@ -187,7 +191,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
-                        await onLiveStart(new LiveInfo(Date.parse(new Date()), true, false));
+                        await onLiveStart(getLiveInfo(roomId, guestId, logger));
                         break;
                     case "onLiveEnd":
                         logger.log(`Live has ended, thank you for watching!`);

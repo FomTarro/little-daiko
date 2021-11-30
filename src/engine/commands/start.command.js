@@ -66,7 +66,7 @@ function command(appConfig){
                 const alertRole = appConfig.DISCORD_HELPERS.getRole(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'role').alert);
                 const alertChannel = appConfig.DISCORD_HELPERS.getChannel(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').alert);
                 if(alertChannel){
-                    const post = `${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`;
+                    const post = `${alertRole ? alertRole : 'NOW LIVE:'}${live.isMembership() ? ' (Membership Only)' : ''} https://www.mildom.com/${streamer}`;
                     logger.log(`Posting: ${post} in channel: ${alertChannel.id}`);
                     alertChannel.send({content: post });
                 }
