@@ -54,7 +54,7 @@ async function getServerInfo(roomId, logger){
  * @param {Number} roomId Channel ID, must be numeric.
  * @param {string} guestId Guest ID fort he client.
  * @param {console} logger Logging implementation.
- * @returns {LiveInfo} The live info.
+ * @returns {Promise<LiveInfo>} The live info.
  */
 async function getLiveInfo(roomId, guestId, logger){
     const url = new URL(liveInfoURL);
@@ -191,7 +191,8 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
-                        await onLiveStart(getLiveInfo(roomId, guestId, logger));
+                        const liveInfo = await getLiveInfo(roomId, guestId, logger);
+                        await onLiveStart(liveInfo);
                         break;
                     case "onLiveEnd":
                         logger.log(`Live has ended, thank you for watching!`);

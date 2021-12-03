@@ -190,7 +190,7 @@ function getChannelById(guild, channel){
  */
 function getChannel(guild, channelIdentifier){
     return !isNaN(Number(channelIdentifier)) ? 
-    getChannelById(guild, Number(channelIdentifier)) : 
+    getChannelById(guild, channelIdentifier) : 
     getChannelByName(guild, channelIdentifier);
 }
 

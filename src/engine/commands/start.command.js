@@ -37,6 +37,7 @@ function command(appConfig){
                         if(comment.time > startEpoch){
                             const liveInfo = await listener.getLiveStatus();
                             if(liveInfo.isMembership() == false){ // bypass all this if it's membership only
+                                // TODO: why does this not work any more?
                                 const chatChannel = appConfig.DISCORD_HELPERS.getChannel(guild, channels[language]);
                                 if(chatChannel){
                                     const emotes = appConfig.CONFIG_STORAGE.getProperty(configKey, "emotes");
