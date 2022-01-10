@@ -5,7 +5,6 @@ const { Command, HelpTip } = require('../../models/command');
 const { Timestamp } = require("../../models/timestamp");
 const { LiteralConstants } = require('../../utils/literal.constants');
 const { Logger } = require('../../utils/logger');
-const { formatTime } = require('../../utils/time.utils');
 const oneline = require('oneline');
 
 /**
@@ -66,7 +65,7 @@ function command(appConfig){
                 const alertRole = appConfig.DISCORD_HELPERS.getRole(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'role').alert);
                 const alertChannel = appConfig.DISCORD_HELPERS.getChannel(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').alert);
                 if(alertChannel){
-                    const post = `${alertRole ? alertRole : 'NOW LIVE:'} https://www.mildom.com/${streamer}`;
+                    const post = `${alertRole ? alertRole : 'NOW LIVE:'}${live.isMembership() ? ' (Membership Only)' : ''} https://www.mildom.com/${streamer}`;
                     logger.log(`Posting: ${post} in channel: ${alertChannel.id}`);
                     alertChannel.send({content: post });
                 }
