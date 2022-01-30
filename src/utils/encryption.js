@@ -8,7 +8,6 @@ const { Logger } = require('./logger');
  * @param {Logger} logger The logger implementation.
  * @returns {ArrayBuffer} The encrypted binary buffer.
  */
-  
 function Encrypt3(obj, key, logger){
     try{
         const encryption = xxtea.encrypt(xxtea.toBytes(JSON.stringify(obj)), xxtea.toBytes(key));
