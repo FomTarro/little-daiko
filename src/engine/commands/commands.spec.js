@@ -487,6 +487,7 @@ describe("Start command tests", () => {
 
                 }
             },
+            ENCRYPTION_KEY: "abc123",
             MILDOM_CLIENT: AppConfig.MILDOM_CLIENT,
             LISTENER_STORAGE: {
                 setListener(message, l){

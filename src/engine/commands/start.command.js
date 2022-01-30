@@ -23,7 +23,9 @@ function command(appConfig){
             const startEpoch = Date.parse(new Date());
             const streamer = Number(appConfig.CONFIG_STORAGE.getProperty(configKey, 'streamer'));
             logger.log(`Starting listener for streamer: ${streamer}!`)
-            const listener = await appConfig.MILDOM_CLIENT.startListener(streamer, 
+            const listener = await appConfig.MILDOM_CLIENT.startListener(
+            appConfig,
+            streamer, 
             // on message
             async (comment) => {
                 // console.log(comment);

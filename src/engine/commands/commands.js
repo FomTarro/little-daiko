@@ -14,6 +14,7 @@ const { RemoteCommand } = require("./remote.command");
 const { ServerCommand } = require("./servers.command");
 const { StopCommand } = require("./stop.command");
 const { EmoteCommand } = require("./emote.command");
+const { FlushCommand } = require("./flush.command");
 
 /**
  * A list of command definitions for the bot to listen to, 
@@ -37,6 +38,7 @@ function commands(appConfig){
         RemoteCommand(appConfig),
         ServerCommand(appConfig),
         EmoteCommand(appConfig),
+        FlushCommand(appConfig),
     ];
 }
 
