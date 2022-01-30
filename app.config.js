@@ -9,7 +9,14 @@ class AppConfig{
     get DOMAIN(){ return process.env.domain || `http://localhost:${this.PORT}` };
     get DISCORD_BOT_TOKEN(){return process.env.discord_bot_token};
     get DISCORD_BOT_NAME(){return 'little-daiko'};
-    get ENCRYPTION_KEY(){return process.env.encryption_key || "UNKNOWN"}; // make this throw if not loaded
+    get ENCRYPTION_KEY(){
+        if(process.env.encryption_key){
+            return process.env.encryption_key;
+        }
+        else{
+            throw 'Encryption key MUST be set!'; 
+        }
+     }; // make this throw if not loaded
 
     get MILDOM_CLIENT(){ return require('./src/adapters/mildom/mildom.client')};
     get DISCORD_CLIENT(){ return require('./src/adapters/discord/discord.client')};
