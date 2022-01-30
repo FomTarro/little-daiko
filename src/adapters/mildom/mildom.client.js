@@ -189,24 +189,27 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
                             message.userImg,
                             message.msg,
                             message.time,
+                            true
                         ));
                         break;
                     case "onAdd":
                         // only alert when streamer enters
-                        if(roomId == message.userId){
+                        const onAddLiveInfo = await getLiveInfo(roomId, guestId, logger);
+                        if(roomId == message.userId && onAddLiveInfo.live == false){
                             await onChatMessage(new ChatMessage(
                                 message.userName,
                                 message.userId,
                                 message.userImg,
                                 `User has entered the room.`,
-                                Date.parse(new Date()),
+                                Date.parse(new Date(),
+                                false),
                             ));
                         }
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
-                        const liveInfo = await getLiveInfo(roomId, guestId, logger);
-                        await onLiveStart(liveInfo);
+                        const onLiveStartLiveInfo = await getLiveInfo(roomId, guestId, logger);
+                        await onLiveStart(onLiveStartLiveInfo);
                         break;
                     case "onLiveEnd":
                         logger.log(`Live has ended, thank you for watching!`);

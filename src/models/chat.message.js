@@ -9,13 +9,15 @@ class ChatMessage{
      * @param {URL} userImg A URL to an avatar of the author.
      * @param {string} msg The content of the message.
      * @param {number} timestamp A UTC timestamp.
+     * @param {boolean} shouldLog Should this message be logged?
      */
-    constructor(userName, userId, userImg, msg, timestamp){
+    constructor(userName, userId, userImg, msg, timestamp, shouldLog){
         this.authorName = userName;
         this.authorId = userId;
         this.authorImage = userImg;
         this.message = msg;
         this.time = timestamp;
+        this.shouldLog = shouldLog != undefined ? this.shouldLog : true
     }
 }
 
