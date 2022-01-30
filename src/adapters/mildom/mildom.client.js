@@ -154,20 +154,13 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
             logger.log(`Connecting to chat for roomId: ${roomId} at url ${wsUrl}...`);
             let data = encrypt(
                 {
-                    userId: 0,
                     level: 1,
-                    userName: 'little-daiko',
-                    gareaArgsObj: { source: 'homepage', sub_source: '' },
+                    userName: "little-daiko",
                     guestId: guestId,
                     roomId: roomId,
                     reqId: 1,
-                    cmd: 'enterRoom',
-                    reConnect: 0,
-                    nobleLevel: 0,
-                    avatarDecortaion: 0,
-                    enterroomEffect: 0,
-                    nobleClose: 0,
-                    nobleSeatClose: 0
+                    nonopara: "nonopara",
+                    cmd: "enterRoom",
                 },
                 appConfig.ENCRYPTION_KEY, logger);
             ws.send(data);
