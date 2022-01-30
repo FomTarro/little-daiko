@@ -35,12 +35,12 @@ function Encrypt3(obj, key, logger){
  */
 function Decrypt(buf, key, logger){
     const buffer = Buffer.from(buf);
-    try {
+    try{
         const slice = buffer.slice(8);
         const str = xxtea.toString(xxtea.decrypt(slice, xxtea.toBytes(key)))
         const obj = JSON.parse(str);
         return obj;
-    } catch (e) {
+    }catch (e){
         logger.error(e);
         throw e;
     }
