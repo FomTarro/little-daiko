@@ -84,6 +84,20 @@ Sets the Discord emote equivalent of a Mildom emote that is contained in a trans
 
 Removes the Discord emote equivalent of a Mildom emote.
 
+### `flush`
+
+Command Information:
+
+Alternate Names: `[flush, f]`
+
+Usable by: Operator Role, Server Owner or Developer.
+
+`!flush`
+
+Flushes all timestamps to log files immediately, and posts them to their respective channels. 
+
+Flushing happens automatically on stream end, so you will probably never need to invoke this command manually.
+
 ### `help`
 
 Command Information:

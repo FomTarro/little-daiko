@@ -23,7 +23,9 @@ function command(appConfig){
             const startEpoch = Date.parse(new Date());
             const streamer = Number(appConfig.CONFIG_STORAGE.getProperty(configKey, 'streamer'));
             logger.log(`Starting listener for streamer: ${streamer}!`)
-            const listener = await appConfig.MILDOM_CLIENT.startListener(streamer, 
+            const listener = await appConfig.MILDOM_CLIENT.startListener(
+            appConfig,
+            streamer, 
             // on message
             async (comment) => {
                 // console.log(comment);
@@ -45,7 +47,7 @@ function command(appConfig){
                                     logger.log(`Posting: ${JSON.stringify(comment)} in channel: ${chatChannel.id}`);
                                     const embed = await chatChannel.send({ embeds: [appConfig.DISCORD_HELPERS.generateEmbed(comment)]});
                                     // post message to timestamps log if we're live
-                                    if(liveInfo.isLive()){
+                                    if(comment.shouldLog == true && liveInfo.isLive()){
                                         const now = Date.parse(new Date())
                                         const timestamp = new Timestamp(liveInfo.startTime, now, 0, 0, `${comment.authorName}: ${comment.message}`);
                                         appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, timestamp);

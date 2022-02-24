@@ -1,6 +1,8 @@
 const { ChatMessage } = require('../../models/chat.message');
 const { LiveInfo } = require('../../models/live.info');
 const { v4 } = require('uuid');
+const { encrypt, decrypt } = require('../../utils/encryption');
+const { AppConfig } = require('../../../app.config');
 const https = require('https');
 const WebSocket = require('ws');
 
@@ -111,6 +113,7 @@ async function getLiveInfo(roomId, guestId, logger){
 
 /**
  * Creates and starts a listener to the mildom channel of the given ID.
+ * @param {AppConfig} appConfig The dependency injection config.
  * @param {Number} roomId Channel ID, must be numeric.
  * @param {ChatMessageCallback} onChatMessage Callback to execute upon recieving a chat message.
  * @param {LiveInfoCallback} onLiveStart Callback to execute upon the channel going live.
@@ -120,7 +123,7 @@ async function getLiveInfo(roomId, guestId, logger){
  * @param {console} logger Logging implementation.
  * @returns {ChatListener} The listener to the channel.
  */
-async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOpen, onClose, logger){
+async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLiveEnd, onOpen, onClose, logger){
     
     const uuId = v4();
     const guestId = `pc-gp-${uuId}`;
@@ -129,40 +132,51 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
     console.log(serverInfo);
     if(serverInfo['wss_server']){
         const wsUrl = `wss://${serverInfo['wss_server']}?roomId=${roomId}`;
+        // const wsUrl = "wss://weex-ws-jp.mildom.com/nonolive/weex_ws/interactive/ws?roomId=" + roomId;
         logger.log(`Obtained websocket URL: ${wsUrl}`);
-        const ws = generateWebSocket(wsUrl, roomId, guestId, logger);
+        const ws = generateWebSocket(appConfig, wsUrl, roomId, guestId, logger);
         return new ChatListener(roomId, guestId, ws, logger);
     }
 
     /**
      * Generates a websocket with the provided callbacks for various events.
+     * @param {AppConfig} appConfig The dependency injection config.
      * @param {URL} wsUrl Websocket URL.
      * @param {Number} roomId Channel ID.
      * @param {string} guestId User ID
      * @param {console} logger Logging implementation.
      * @returns {WebSocket}
      */
-    function generateWebSocket(wsUrl, roomId, guestId, logger){
+    function generateWebSocket(appConfig, wsUrl, roomId, guestId, logger){
         const ws = new WebSocket(wsUrl);
+        ws.binaryType = 'arraybuffer';
         ws.on('open', async () => {
-            logger.log(`Connecting to chat for roomId: ${roomId}...`);
-            ws.send(JSON.stringify(
-            {
-                level: 1,
-                userName: "little-daiko",
-                guestId: guestId,
-                roomId: roomId,
-                reqId: 1,
-                nonopara: "nonopara",
-                cmd: "enterRoom",
-            }));
+            logger.log(`Connecting to chat for roomId: ${roomId} at url ${wsUrl}...`);
+            let data = encrypt(
+                {
+                    level: 1,
+                    userName: "little-daiko",
+                    guestId: guestId,
+                    roomId: roomId,
+                    reqId: 1,
+                    nonopara: "nonopara",
+                    cmd: "enterRoom",
+                },
+                appConfig.ENCRYPTION_KEY, logger);
+            ws.send(data);
             if(onOpen){
                 await onOpen();
             }
+            logger.log(`Connected to chat websocket.`);
         });   
+        ws.on('error', async (data) => {
+            logger.error(data);
+        })
         ws.on('message', async (data) => {
+            // console.log(data);
             if(data){
-                const message = JSON.parse(data);
+                const message = decrypt(data, appConfig.ENCRYPTION_KEY, logger);
+                // console.log(message);
                 switch(message.cmd)
                 {
                     case "enterRoom":
@@ -175,24 +189,27 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
                             message.userImg,
                             message.msg,
                             message.time,
+                            true
                         ));
                         break;
                     case "onAdd":
                         // only alert when streamer enters
-                        if(roomId == message.userId){
+                        const onAddLiveInfo = await getLiveInfo(roomId, guestId, logger);
+                        if(roomId == message.userId && onAddLiveInfo.live == false){
                             await onChatMessage(new ChatMessage(
                                 message.userName,
                                 message.userId,
                                 message.userImg,
                                 `User has entered the room.`,
-                                Date.parse(new Date()),
+                                Date.parse(new Date(),
+                                false),
                             ));
                         }
                         break;
                     case "onLiveStart":
                         logger.log(`Live has started, let's watch!`);
-                        const liveInfo = await getLiveInfo(roomId, guestId, logger);
-                        await onLiveStart(liveInfo);
+                        const onLiveStartLiveInfo = await getLiveInfo(roomId, guestId, logger);
+                        await onLiveStart(onLiveStartLiveInfo);
                         break;
                     case "onLiveEnd":
                         logger.log(`Live has ended, thank you for watching!`);
@@ -208,7 +225,7 @@ async function startListener(roomId, onChatMessage, onLiveStart, onLiveEnd, onOp
             }
         })
         // Stored function configuration to allow the websocket to recreate itself later.
-        ws.reopen = () => { return generateWebSocket(wsUrl, roomId, guestId, logger)};
+        ws.reopen = () => { return generateWebSocket(appConfig, wsUrl, roomId, guestId, logger)};
         return ws;
     }
 }
