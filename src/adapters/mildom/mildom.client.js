@@ -18,10 +18,10 @@ const serverUrl = "https://im.mildom.com/"
 async function getRequest(url, logger){
     const promise = new Promise(function(resolve, reject){
         const req = https.get(url, res => {
-            logger.log(`GET Server Info status code: ${res.statusCode}`)
+            logger.log(`GET status code: [${res.statusCode}] from URL: ${url}`)
             res.on('data', d => {
                 if(res.statusCode != 200){
-                    reject(`Bad status code: [${res.statusCode}]`);
+                    reject(`GET bad status code: [${res.statusCode}] from URL: ${url}`);
                     return;
                 }else{
                     resolve(d);
@@ -177,6 +177,9 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
             if(data){
                 const message = decrypt(data, appConfig.ENCRYPTION_KEY, logger);
                 // console.log(message);
+                if(message.cmd != "onChat"){
+                    logger.log(`Incoming event: [${message.cmd}] -> ${JSON.stringify(message)}`)
+                }
                 switch(message.cmd)
                 {
                     case "enterRoom":
