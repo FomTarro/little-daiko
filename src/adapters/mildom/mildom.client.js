@@ -6,7 +6,7 @@ const { AppConfig } = require('../../../app.config');
 const https = require('https');
 const WebSocket = require('ws');
 
-const liveInfoURL = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
+const liveInfoUrl = "https://cloudac.mildom.com/nonolive/gappserv/live/enterstudio"
 const serverUrl = "https://im.mildom.com/"
 
 /**
@@ -59,7 +59,7 @@ async function getServerInfo(roomId, logger){
  * @returns {Promise<LiveInfo>} The live info.
  */
 async function getLiveInfo(roomId, guestId, logger){
-    const url = new URL(liveInfoURL);
+    const url = new URL(liveInfoUrl);
     url.searchParams.append("user_id", roomId);
     url.searchParams.append("timestamp", Date.parse(new Date()))
     url.searchParams.append("__guest_id", guestId)
@@ -177,7 +177,7 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
             if(data){
                 const message = decrypt(data, appConfig.ENCRYPTION_KEY, logger);
                 // console.log(message);
-                if(message.cmd != "onChat"){
+                if(message.cmd != "onChat" && message.cmd != "onAdd"){
                     logger.log(`Incoming event: [${message.cmd}] -> ${JSON.stringify(message)}`)
                 }
                 switch(message.cmd)
@@ -197,16 +197,18 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
                         break;
                     case "onAdd":
                         // only alert when streamer enters
-                        const onAddLiveInfo = await getLiveInfo(roomId, guestId, logger);
-                        if(roomId == message.userId && onAddLiveInfo.live == false){
-                            await onChatMessage(new ChatMessage(
-                                message.userName,
-                                message.userId,
-                                message.userImg,
-                                `User has entered the room.`,
-                                Date.parse(new Date(),
-                                false),
-                            ));
+                        if(roomId == message.userId){
+                            const onAddLiveInfo = await getLiveInfo(roomId, guestId, logger);
+                            if(onAddLiveInfo.isLive == false){
+                                await onChatMessage(new ChatMessage(
+                                    message.userName,
+                                    message.userId,
+                                    message.userImg,
+                                    `User has entered the room.`,
+                                    Date.parse(new Date(),
+                                    false),
+                                ));
+                            }
                         }
                         break;
                     case "onLiveStart":
@@ -217,6 +219,12 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
                     case "onLiveEnd":
                         logger.log(`Live has ended, thank you for watching!`);
                         await onLiveEnd(new LiveInfo(0, false, false));
+                        break;
+                    case "runCmdNotify":
+                        if(message.runBody && message.runBody.realtime_v_id){
+                            const archiveUrl = `https://www.mildom.com/playback/${roomId}/${message.runBody.realtime_v_id}`;
+                            logger.log(`Archive URL discovered: ${archiveUrl}`);
+                        }
                         break;
                 }
             }
