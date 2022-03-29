@@ -22,8 +22,13 @@ function command(appConfig){
                     appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
                     return LiteralConstants.REACT_OK_EMOJI;
                 }
-                if(type === 'alert'){
+                else if(type === 'alert'){
                     roles.alert = args[1];
+                    appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
+                    return LiteralConstants.REACT_OK_EMOJI;
+                }
+                else if(type === 'membership'){
+                    roles.membership = args[1];
                     appConfig.CONFIG_STORAGE.setProperty(configKey, "role", roles);
                     return LiteralConstants.REACT_OK_EMOJI;
                 }
@@ -39,6 +44,11 @@ function command(appConfig){
             new HelpTip(
                 `role alert <role name or id>`,
                 oneline`Sets the role to ping when the designated streamer goes live. 
+                The alert will be posted in the designated alert channel.`
+            ),
+            new HelpTip(
+                `role membership <role name or id>`,
+                oneline`Sets the role to ping when the designated streamer goes live with a members-only stream. 
                 The alert will be posted in the designated alert channel.`
             ),
         ],

@@ -178,7 +178,7 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
                 const message = decrypt(data, appConfig.ENCRYPTION_KEY, logger);
                 // console.log(message);
                 if(message.cmd != "onChat" && message.cmd != "onAdd"){
-                    logger.log(`Incoming event: [${message.cmd}] -> ${JSON.stringify(message)}`)
+                    logger.log(`Incoming event: [${message.cmd}] -> ${JSON.stringify(message)}`);
                 }
                 switch(message.cmd)
                 {
@@ -198,8 +198,9 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
                     case "onAdd":
                         // only alert when streamer enters
                         if(roomId == message.userId){
+                            logger.log(`Incoming event: [${message.cmd}] -> ${JSON.stringify(message)}`);
                             const onAddLiveInfo = await getLiveInfo(roomId, guestId, logger);
-                            if(onAddLiveInfo.isLive == false){
+                            if(onAddLiveInfo.isLive() == false){
                                 await onChatMessage(new ChatMessage(
                                     message.userName,
                                     message.userId,
@@ -236,7 +237,7 @@ async function startListener(appConfig, roomId, onChatMessage, onLiveStart, onLi
             }
         })
         // Stored function configuration to allow the websocket to recreate itself later.
-        ws.reopen = () => { return generateWebSocket(appConfig, wsUrl, roomId, guestId, logger)};
+        ws.reopen = () => { return generateWebSocket(appConfig, wsUrl, roomId, guestId, logger) };
         return ws;
     }
 }

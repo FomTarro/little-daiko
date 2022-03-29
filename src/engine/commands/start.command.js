@@ -65,9 +65,15 @@ function command(appConfig){
             // on go live
             async (live) => {
                 const alertRole = appConfig.DISCORD_HELPERS.getRole(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'role').alert);
+                const membershipRole = appConfig.DISCORD_HELPERS.getRole(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'role').membership);
                 const alertChannel = appConfig.DISCORD_HELPERS.getChannel(guild, appConfig.CONFIG_STORAGE.getProperty(configKey, 'output').alert);
                 if(alertChannel){
-                    const post = `${alertRole ? alertRole : 'NOW LIVE:'}${live.isMembership() ? ' (Membership Only)' : ''} https://www.mildom.com/${streamer}`;
+                    // if membership stream and membserhip alert role exists, 
+                    // else use alert role if it exists, else use "NOW LIVE"
+                    const role = live.isMembership() ? 
+                    (membershipRole ? membershipRole : (alertRole ? alertRole : "NOW LIVE:")) : 
+                    (alertRole ? alertRole : "NOW LIVE:"); 
+                    const post = `${role} https://www.mildom.com/${streamer}`;
                     logger.log(`Posting: ${post} in channel: ${alertChannel.id}`);
                     alertChannel.send({content: post });
                 }
