@@ -17,7 +17,7 @@ class ChatMessage{
         this.authorImage = userImg;
         this.message = msg;
         this.time = timestamp;
-        this.shouldLog = shouldLog != undefined ? this.shouldLog : true
+        this.shouldLog = shouldLog != undefined ? shouldLog : true
     }
 }
 

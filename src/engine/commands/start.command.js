@@ -48,6 +48,7 @@ function command(appConfig){
                                     const embed = await chatChannel.send({ embeds: [appConfig.DISCORD_HELPERS.generateEmbed(comment)]});
                                     // post message to timestamps log if we're live
                                     if(comment.shouldLog == true && liveInfo.isLive()){
+                                        logger.log(`Timestamping...`);
                                         const now = Date.parse(new Date())
                                         const timestamp = new Timestamp(liveInfo.startTime, now, 0, 0, `${comment.authorName}: ${comment.message}`);
                                         appConfig.TIMESTAMP_STORAGE.addTimestamp(guild, language, embed.id, timestamp);
